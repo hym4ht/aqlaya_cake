@@ -1,0 +1,122 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Product;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
+
+class ProductController extends Controller
+{
+    public function index(): View
+    {
+        $products = Product::query()
+            ->with('category')
+            ->latest()
+            ->paginate(10);
+
+        return view('admin.products.index', compact('products'));
+    }
+
+    public function create(): View
+    {
+        return view('admin.products.form', [
+            'product' => new Product(),
+            'categories' => Category::query()->orderBy('name')->get(),
+            'formAction' => route('admin.products.store'),
+            'formMethod' => 'POST',
+        ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $this->validateProduct($request);
+        $validated['slug'] = $this->uniqueSlug($validated['name']);
+
+        Product::query()->create($validated);
+
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
+    }
+
+    public function edit(Product $product): View
+    {
+        return view('admin.products.form', [
+            'product' => $product,
+            'categories' => Category::query()->orderBy('name')->get(),
+            'formAction' => route('admin.products.update', $product),
+            'formMethod' => 'PUT',
+        ]);
+    }
+
+    public function update(Request $request, Product $product): RedirectResponse
+    {
+        $validated = $this->validateProduct($request);
+        $validated['slug'] = $product->slug === Str::slug($validated['name'])
+            ? $product->slug
+            : $this->uniqueSlug($validated['name'], $product->id);
+
+        $product->update($validated);
+
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui.');
+    }
+
+    public function destroy(Product $product): RedirectResponse
+    {
+        $product->delete();
+
+        return back()->with('success', 'Produk berhasil dihapus.');
+    }
+
+    private function validateProduct(Request $request): array
+    {
+        $validated = $request->validate([
+            'category_id' => ['nullable', Rule::exists('categories', 'id')],
+            'name' => ['required', 'string', 'max:255'],
+            'excerpt' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'price' => ['required', 'numeric', 'min:1000'],
+            'stock' => ['required', 'integer', 'min:0'],
+            'image_url' => ['nullable', 'url'],
+            'sizes_input' => ['required', 'string'],
+            'is_active' => ['nullable', 'boolean'],
+            'is_best_seller' => ['nullable', 'boolean'],
+        ]);
+
+        $validated['sizes'] = collect(preg_split('/[\r\n,]+/', $validated['sizes_input']))
+            ->map(fn ($size) => trim((string) $size))
+            ->filter()
+            ->values()
+            ->all();
+
+        unset($validated['sizes_input']);
+
+        $validated['is_active'] = $request->boolean('is_active');
+        $validated['is_best_seller'] = $request->boolean('is_best_seller');
+
+        return $validated;
+    }
+
+    private function uniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $baseSlug = Str::slug($name);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (
+            Product::query()
+                ->when($ignoreId, fn ($query) => $query->whereKeyNot($ignoreId))
+                ->where('slug', $slug)
+                ->exists()
+        ) {
+            $slug = "{$baseSlug}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
+    }
+}
