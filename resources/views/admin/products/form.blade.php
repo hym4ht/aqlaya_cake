@@ -18,7 +18,7 @@
                 <p class="text-sm text-slate-500 mt-1">{{ $product->exists ? 'Perbarui informasi produk di katalog' : 'Masukkan produk baru ke katalog Aqlaya Cake' }}</p>
             </div>
 
-            <form method="POST" action="{{ $formAction }}" class="space-y-5">
+            <form method="POST" action="{{ $formAction }}" enctype="multipart/form-data" class="space-y-5">
                 @csrf
                 @if($formMethod !== 'POST')
                     @method($formMethod)
@@ -53,7 +53,7 @@
                         class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 focus:border-slate-400 focus:ring-2 focus:ring-slate-200 outline-none transition resize-none" placeholder="Deskripsi lengkap produk...">{{ old('description', $product->description) }}</textarea>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label class="block text-xs font-medium text-slate-500 mb-1.5">Harga Dasar</label>
                         <input type="number" name="price" value="{{ old('price', $product->price) }}" required
@@ -64,10 +64,34 @@
                         <input type="number" name="stock" value="{{ old('stock', $product->stock ?? 0) }}" required
                             class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 focus:border-slate-400 focus:ring-2 focus:ring-slate-200 outline-none transition" placeholder="0" />
                     </div>
+                </div>
+
+                {{-- Image Upload Section --}}
+                <div class="space-y-3">
                     <div>
-                        <label class="block text-xs font-medium text-slate-500 mb-1.5">URL Gambar</label>
+                        <label class="block text-xs font-medium text-slate-500 mb-1.5">Gambar Produk</label>
+                        <div class="relative">
+                            <input type="file" name="image_file" accept="image/jpeg,image/png,image/jpg,image/gif"
+                                class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 focus:border-slate-400 focus:ring-2 focus:ring-slate-200 outline-none transition file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 transition" />
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1">Format: JPEG, PNG, GIF. Maksimal 5MB. Gambar akan diubah ukurannya menjadi 600x800px</p>
+                    </div>
+
+                    @if($product->image_path)
+                        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+                            <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-12 h-16 object-cover rounded-lg">
+                            <div class="flex-1">
+                                <p class="text-xs font-medium text-slate-700">Gambar saat ini</p>
+                                <p class="text-[11px] text-slate-500">{{ basename($product->image_path) }}</p>
+                            </div>
+                        </div>
+                    @endif
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 mb-1.5">URL Gambar (Fallback)</label>
                         <input type="url" name="image_url" value="{{ old('image_url', $product->image_url) }}"
                             class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 focus:border-slate-400 focus:ring-2 focus:ring-slate-200 outline-none transition" placeholder="https://..." />
+                        <p class="text-[11px] text-slate-400 mt-1">Digunakan jika tidak ada file gambar yang diunggah</p>
                     </div>
                 </div>
 

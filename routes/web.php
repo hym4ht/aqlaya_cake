@@ -54,6 +54,7 @@ Route::prefix('admin')
         Route::get('/', DashboardController::class)->name('dashboard');
         Route::patch('/customers/{user}/decision', CustomerApprovalController::class)->name('customers.decide');
         Route::resource('products', AdminProductController::class)->except('show');
+        Route::patch('/products/{product}/toggle-best-seller', [AdminProductController::class, 'toggleBestSeller'])->name('products.toggle-best-seller');
         Route::resource('banners', AdminBannerController::class)->except('show');
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');

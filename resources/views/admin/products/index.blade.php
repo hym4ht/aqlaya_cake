@@ -27,6 +27,7 @@
                         <th class="px-6 py-3.5">Harga</th>
                         <th class="px-6 py-3.5">Stok</th>
                         <th class="px-6 py-3.5">Status</th>
+                        <th class="px-6 py-3.5">Best Seller</th>
                         <th class="px-6 py-3.5"></th>
                     </tr>
                 </thead>
@@ -57,6 +58,16 @@
                                     </span>
                                 @endif
                             </td>
+                            <td class="px-6 py-3.5">
+                                <form method="POST" action="{{ route('admin.products.toggle-best-seller', $product) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" title="{{ $product->is_best_seller ? 'Hapus dari Best Seller' : 'Tandai sebagai Best Seller' }}"
+                                        class="relative inline-flex h-6 w-10 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 {{ $product->is_best_seller ? 'bg-amber-500 focus:ring-amber-300' : 'bg-slate-200 focus:ring-slate-300' }}">
+                                        <span class="inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform duration-200 {{ $product->is_best_seller ? 'translate-x-[18px]' : 'translate-x-0.5' }}"></span>
+                                    </button>
+                                </form>
+                            </td>
                             <td class="px-6 py-3.5 text-right">
                                 <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <a href="{{ route('admin.products.edit', $product) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 transition">
@@ -76,7 +87,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center">
+                            <td colspan="7" class="px-6 py-12 text-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto mb-3 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                 </svg>

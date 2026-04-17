@@ -52,54 +52,14 @@
                 @enderror
             </div>
 
-            {{-- Title --}}
+            {{-- Active --}}
             <div>
-                <label for="title" class="block text-sm font-medium text-slate-700 mb-2">Judul (Opsional)</label>
-                <input type="text" name="title" id="title" value="{{ old('title', $banner->title) }}"
-                       class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-slate-200 focus:border-slate-400 outline-none transition"
-                       placeholder="Contoh: Promo Ramadan 50%">
-                @error('title')
-                    <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            {{-- Subtitle --}}
-            <div>
-                <label for="subtitle" class="block text-sm font-medium text-slate-700 mb-2">Subtitle (Opsional)</label>
-                <input type="text" name="subtitle" id="subtitle" value="{{ old('subtitle', $banner->subtitle) }}"
-                       class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-slate-200 focus:border-slate-400 outline-none transition"
-                       placeholder="Contoh: Berlaku hingga akhir bulan">
-                @error('subtitle')
-                    <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            {{-- Link URL --}}
-            <div>
-                <label for="link_url" class="block text-sm font-medium text-slate-700 mb-2">Link URL (Opsional)</label>
-                <input type="url" name="link_url" id="link_url" value="{{ old('link_url', $banner->link_url) }}"
-                       class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-slate-200 focus:border-slate-400 outline-none transition"
-                       placeholder="https://...">
-                @error('link_url')
-                    <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            {{-- Sort Order & Active --}}
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="sort_order" class="block text-sm font-medium text-slate-700 mb-2">Urutan</label>
-                    <input type="number" name="sort_order" id="sort_order" value="{{ old('sort_order', $banner->sort_order) }}" min="0"
-                           class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-slate-200 focus:border-slate-400 outline-none transition">
-                </div>
-                <div class="flex items-end pb-1">
-                    <label class="flex items-center gap-3 cursor-pointer">
-                        <input type="hidden" name="is_active" value="0">
-                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $banner->is_active) ? 'checked' : '' }}
-                               class="w-5 h-5 rounded border-slate-300 text-slate-900 focus:ring-slate-200">
-                        <span class="text-sm font-medium text-slate-700">Aktif</span>
-                    </label>
-                </div>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="hidden" name="is_active" value="0">
+                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', $banner->is_active) ? 'checked' : '' }}
+                           class="w-5 h-5 rounded border-slate-300 text-slate-900 focus:ring-slate-200">
+                    <span class="text-sm font-medium text-slate-700">Aktif</span>
+                </label>
             </div>
 
             {{-- Submit --}}

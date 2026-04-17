@@ -20,7 +20,7 @@ class HomeController extends Controller
             ->withCount('reviews')
             ->withSum('orderItems as total_sold', 'quantity')
             ->when($request->filled('search'), function ($query) use ($request) {
-                $query->where('name', 'like', '%'.$request->string('search')->trim().'%');
+                $query->where('name', 'like', '%' . $request->string('search')->trim() . '%');
             })
             ->when($request->filled('category'), function ($query) use ($request) {
                 $query->whereHas('category', function ($categoryQuery) use ($request) {
@@ -47,12 +47,20 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        $banners = Banner::active()->ordered()->get();
+        // Best seller products for carousel — only products marked as best seller
+        $bestSellerCarousel = Product::query()
+            ->where('is_best_seller', true)
+            ->available()
+            ->latest()
+            ->get();
+
+        $banners = Banner::active()->latest()->get();
 
         return view('home', [
             'categories' => $categories,
             'products' => $products,
             'bestSellers' => $bestSellers,
+            'bestSellerCarousel' => $bestSellerCarousel,
             'banners' => $banners,
             'minimumOrderDate' => $leadTimeService->minimumOrderDate()->toDateString(),
         ]);
@@ -67,7 +75,7 @@ class HomeController extends Controller
 
         $relatedProducts = Product::query()
             ->whereKeyNot($product->id)
-            ->when($product->category_id, fn ($query) => $query->where('category_id', $product->category_id))
+            ->when($product->category_id, fn($query) => $query->where('category_id', $product->category_id))
             ->available()
             ->take(3)
             ->get();

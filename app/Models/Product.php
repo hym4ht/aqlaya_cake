@@ -22,6 +22,7 @@ class Product extends Model
         'is_active',
         'sizes',
         'image_url',
+        'image_path',
         'is_best_seller',
     ];
 

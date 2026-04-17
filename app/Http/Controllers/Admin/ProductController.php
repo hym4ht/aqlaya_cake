@@ -7,9 +7,11 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+
 
 class ProductController extends Controller
 {
@@ -38,6 +40,10 @@ class ProductController extends Controller
         $validated = $this->validateProduct($request);
         $validated['slug'] = $this->uniqueSlug($validated['name']);
 
+        if ($request->hasFile('image_file')) {
+            $validated['image_path'] = $this->storeProductImage($request->file('image_file'));
+        }
+
         Product::query()->create($validated);
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
@@ -60,6 +66,13 @@ class ProductController extends Controller
             ? $product->slug
             : $this->uniqueSlug($validated['name'], $product->id);
 
+        if ($request->hasFile('image_file')) {
+            if ($product->image_path) {
+                Storage::disk('public')->delete($product->image_path);
+            }
+            $validated['image_path'] = $this->storeProductImage($request->file('image_file'));
+        }
+
         $product->update($validated);
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui.');
@@ -72,6 +85,15 @@ class ProductController extends Controller
         return back()->with('success', 'Produk berhasil dihapus.');
     }
 
+    public function toggleBestSeller(Product $product): RedirectResponse
+    {
+        $product->update(['is_best_seller' => !$product->is_best_seller]);
+
+        $status = $product->is_best_seller ? 'ditandai sebagai' : 'dihapus dari';
+
+        return back()->with('success', "Produk \"{$product->name}\" berhasil {$status} Best Seller.");
+    }
+
     private function validateProduct(Request $request): array
     {
         $validated = $request->validate([
@@ -82,13 +104,14 @@ class ProductController extends Controller
             'price' => ['required', 'numeric', 'min:1000'],
             'stock' => ['required', 'integer', 'min:0'],
             'image_url' => ['nullable', 'url'],
+            'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:5120'],
             'sizes_input' => ['required', 'string'],
             'is_active' => ['nullable', 'boolean'],
             'is_best_seller' => ['nullable', 'boolean'],
         ]);
 
         $validated['sizes'] = collect(preg_split('/[\r\n,]+/', $validated['sizes_input']))
-            ->map(fn ($size) => trim((string) $size))
+            ->map(fn($size) => trim((string) $size))
             ->filter()
             ->values()
             ->all();
@@ -109,7 +132,7 @@ class ProductController extends Controller
 
         while (
             Product::query()
-                ->when($ignoreId, fn ($query) => $query->whereKeyNot($ignoreId))
+                ->when($ignoreId, fn($query) => $query->whereKeyNot($ignoreId))
                 ->where('slug', $slug)
                 ->exists()
         ) {
@@ -118,5 +141,13 @@ class ProductController extends Controller
         }
 
         return $slug;
+    }
+
+    private function storeProductImage($file): string
+    {
+        $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs('products', $filename, 'public');
+
+        return $path;
     }
 }

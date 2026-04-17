@@ -12,12 +12,28 @@ export default {
     theme: {
         extend: {
             colors: {
-                linen: '#F7EDE2',
-                'mint-leaf': '#63B587',
-                'honey-bronze': '#F6BD60',
+                // Monochrome palette
+                mono: {
+                    50: '#fafafa',
+                    100: '#f5f5f5',
+                    200: '#e5e5e5',
+                    300: '#d4d4d4',
+                    400: '#a3a3a3',
+                    500: '#737373',
+                    600: '#525252',
+                    700: '#404040',
+                    800: '#262626',
+                    900: '#171717',
+                    950: '#0a0a0a',
+                },
             },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Plus Jakarta Sans', ...defaultTheme.fontFamily.sans],
+                serif: ['Noto Serif', ...defaultTheme.fontFamily.serif],
+                logo: ['Shalimar', 'cursive'],
+            },
+            letterSpacing: {
+                'ultra-wide': '0.3em',
             },
         },
     },

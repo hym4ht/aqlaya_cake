@@ -5,269 +5,381 @@
 @section('content')
     @php
         $heroProduct = $bestSellers->first() ?? $products->first();
-        $heroBanner = $banners->first();
-        $heroImage = $heroBanner?->image_path
-            ? asset('storage/' . $heroBanner->image_path)
-            : ($heroProduct?->image_url ?: asset('images/hero.png'));
-        $heroTitle = $heroBanner?->title ?: 'Aqlaya Cake';
-        $heroSubtitle = $heroBanner?->subtitle ?: 'Koleksi kue dan dessert table dengan rasa yang hangat, styling yang rapi, dan presentasi yang terasa seperti editorial spread.';
         $minimumOrderLabel = \Illuminate\Support\Carbon::parse($minimumOrderDate)->locale('id')->translatedFormat('d M Y');
         $signatureProducts = $bestSellers
             ->concat($products->getCollection())
             ->unique('id')
             ->take(6)
             ->values();
+
+        // Static banners with metadata
+        $staticBanners = [
+            [
+                'type' => 'static_grid',
+                'title' => 'Aqlaya Cake',
+                'left_image' => 'images/hero1.png',
+                'right_image' => 'images/hero2.png',
+            ],
+            [
+                'type' => 'static_list',
+                'title' => 'List Cakes',
+                'background_image' => 'images/hero2.png',
+                'categories' => [
+                    [
+                        'name' => 'Cakes',
+                        'items' => ['Butter Cake', 'Fruit Cake', 'Birthday Cake Custom', 'Vanilla Cake', 'Tiramisu Cake']
+                    ],
+                    [
+                        'name' => 'Bread',
+                        'items' => ['Roti Coklat', 'Donat', 'Pizza', 'Roti Sisir', 'Roti Abon']
+                    ],
+                    [
+                        'name' => 'Pastry',
+                        'items' => ['Croissant', 'Danish Strawberry', 'Danish Chocolate', 'Cheese Puff']
+                    ],
+                    [
+                        'name' => 'Dessert',
+                        'items' => ['Cheesecake', 'Tiramisu Cup', 'Pudding Cokelat', 'Panna Cotta', 'Dessert Box (cokelat/oreo)', 'Banana Dessert']
+                    ],
+                ],
+            ],
+        ];
+
+        // Combine static and dynamic banners
+        $allBanners = collect($staticBanners)->concat($banners);
+        $totalBanners = $allBanners->count();
+
+        // Best sellers data - dynamic from database, chunked into slides of 3
+        $bestSellersSlides = $bestSellerCarousel->chunk(3)->values();
     @endphp
 
-    <section class="border-b border-black/10 pt-28 sm:pt-32 lg:pt-36">
-        <div class="mx-auto max-w-[1600px] px-5 pb-12 sm:px-8 sm:pb-14 lg:px-12 lg:pb-16">
-            <div class="mb-6">
-                @include('partials.flash')
-            </div>
+    <section>
+        <div class="mx-auto w-full">
+            @include('partials.flash')
 
-            <div class="overflow-hidden rounded-[28px] bg-[#111111] text-white">
-                <div class="grid lg:grid-cols-[1.1fr_0.9fr]">
-                    <div class="flex min-h-[26rem] flex-col justify-between px-6 py-8 sm:px-10 sm:py-10 lg:min-h-[36rem] lg:px-14 lg:py-14">
-                        <div>
-                            <span class="sr-only">Sistem pemesanan kue</span>
-                            <p class="text-[11px] uppercase tracking-[0.34em] text-white/60">Curated Patisserie</p>
-                            <h1 class="mt-6 max-w-[11ch] font-serif text-5xl font-semibold uppercase leading-[0.86] tracking-[-0.04em] text-white sm:text-6xl lg:text-[5.5rem]">
-                                {{ $heroTitle }}
-                            </h1>
-                            <p class="mt-6 max-w-xl text-sm leading-7 text-white/72 sm:text-base">
-                                {{ $heroSubtitle }}
-                            </p>
-                        </div>
+            <!-- Combined Banner Carousel -->
+            <div class="relative overflow-hidden h-[70vh] lg:h-[80vh] bg-white" x-data="{
+                                currentSlide: 0,
+                                totalSlides: {{ $totalBanners }},
+                                autoplayInterval: null,
+                                startAutoplay() {
+                                    this.autoplayInterval = setInterval(() => {
+                                        this.currentSlide = this.currentSlide === this.totalSlides - 1 ? 0 : this.currentSlide + 1;
+                                    }, 5000);
+                                },
+                                stopAutoplay() {
+                                    if (this.autoplayInterval) {
+                                        clearInterval(this.autoplayInterval);
+                                        this.autoplayInterval = null;
+                                    }
+                                },
+                                resetAutoplay() {
+                                    this.stopAutoplay();
+                                    this.startAutoplay();
+                                }
+                            }" x-init="startAutoplay()" @mouseenter="stopAutoplay()" @mouseleave="startAutoplay()">
+                @foreach($allBanners as $index => $banner)
+                    <div class="absolute inset-0 transition-opacity duration-700" x-show="currentSlide === {{ $index }}"
+                        x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-700"
+                        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                        style="{{ $index === 0 ? '' : 'display: none;' }}">
 
-                        <div class="mt-10 flex flex-col gap-8">
-                            <div class="flex flex-wrap gap-3">
-                                <a href="#catalog-grid" class="bg-white px-6 py-3 text-[11px] uppercase tracking-[0.24em] text-black transition hover:bg-white/90">
-                                    Lihat katalog
-                                </a>
-                                <a href="#about" class="border border-white/20 px-6 py-3 text-[11px] uppercase tracking-[0.24em] text-white transition hover:border-white/45">
-                                    Tentang studio
-                                </a>
-                            </div>
+                        @if(is_array($banner) && isset($banner['type']) && $banner['type'] === 'static_grid')
+                            <!-- Static Grid Banner -->
+                            <div class="relative w-full h-full bg-white overflow-hidden">
+                                <!-- Right Image (Large) -->
+                                <img src="{{ asset($banner['right_image']) }}" alt="Aqlaya Cake"
+                                    class="absolute w-[47.78%] h-auto right-[-15.69%] top-[-4.14%] object-cover">
+                                <!-- Left Image (Small) -->
+                                <img src="{{ asset($banner['left_image']) }}" alt="Aqlaya Cake"
+                                    class="absolute w-[29.24%] h-auto left-[-8.33%] top-[41.82%] object-cover">
 
-                            <div class="grid gap-4 border-t border-white/10 pt-5 text-[11px] uppercase tracking-[0.2em] text-white/58 sm:grid-cols-3">
-                                <div>
-                                    <p class="text-white/40">Pre-order</p>
-                                    <p class="mt-2 text-white">{{ $minimumOrderLabel }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-white/40">Best Seller</p>
-                                    <p class="mt-2 text-white">{{ $heroProduct?->name ?? 'Aqlaya Selection' }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-white/40">Location</p>
-                                    <p class="mt-2 text-white">Pekalongan, Jawa Tengah</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                <!-- Center Text -->
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
+                                    <h1 class="text-6xl sm:text-7xl lg:text-9xl font-normal text-black"
+                                        style="font-family: 'Shalimar', cursive;">
+                                        {{ $banner['title'] }}
+                                    </h1>
 
-                    <div class="relative min-h-[22rem] border-t border-white/10 lg:min-h-full lg:border-l lg:border-t-0">
-                        <img
-                            src="{{ $heroImage }}"
-                            alt="{{ $heroTitle }}"
-                            class="absolute inset-0 h-full w-full object-cover"
-                        >
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-black/5"></div>
-                        <div class="absolute right-5 top-5 h-3.5 w-3.5 bg-white mix-blend-difference sm:right-6 sm:top-6"></div>
-
-                        <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6 lg:p-8">
-                            <div class="border-t border-white/15 pt-4">
-                                <div class="flex items-end justify-between gap-4 border-b border-white/15 pb-3">
-                                    <div>
-                                        <p class="text-[10px] uppercase tracking-[0.22em] text-white/55">{{ $heroProduct?->category?->name ?? 'Signature Cake' }}</p>
-                                        <h2 class="mt-2 font-serif text-2xl font-semibold uppercase text-white sm:text-3xl">
-                                            {{ $heroProduct?->name ?? 'Aqlaya Signature' }}
-                                        </h2>
+                                    <!-- Order Now Button -->
+                                    <div class="mt-8">
+                                        <a href="#catalog-grid"
+                                            class="inline-flex items-center justify-center w-32 h-10 bg-zinc-600/80 hover:bg-zinc-700 rounded-3xl text-white text-xs font-medium tracking-wide transition-colors"
+                                            style="font-family: 'Poppins', sans-serif;">
+                                            Order Now
+                                        </a>
                                     </div>
-                                    @if($heroProduct)
-                                        <span class="shrink-0 text-[10px] uppercase tracking-[0.26em] text-white/72">
-                                            Rp{{ number_format($heroProduct->price, 0, ',', '.') }}
-                                        </span>
-                                    @endif
                                 </div>
-                                <p class="mt-3 max-w-md text-sm leading-6 text-white/70">
-                                    {{ $heroProduct?->excerpt ?? 'Presentasi yang tenang, clean, dan elegan untuk hadiah maupun momen spesial.' }}
-                                </p>
                             </div>
-                        </div>
+                        @elseif(is_array($banner) && isset($banner['type']) && $banner['type'] === 'static_list')
+                            <!-- Static List Banner -->
+                            <div class="relative w-full h-full bg-white overflow-hidden">
+                                <!-- Background Image (Left) - Mirror position dari right_image di banner 1 -->
+                                <img src="{{ asset($banner['background_image']) }}" alt="Background"
+                                    class="absolute w-[47.78%] h-auto left-[-29%] top-[-4.14%] object-cover opacity-90">
+
+                                <!-- Main Content Area -->
+                                <div class="absolute inset-0 h-full flex flex-col justify-center items-center px-4 lg:px-8">
+                                    <!-- Title -->
+                                    <h2 class="text-5xl lg:text-6xl font-bold mb-12 text-gray-900"
+                                        style="font-family: 'Poppins', sans-serif;">
+                                        {{ $banner['title'] }}
+                                    </h2>
+
+                                    <!-- Categories Grid -->
+                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+                                        @foreach($banner['categories'] as $category)
+                                            <div class="space-y-4">
+                                                <!-- Category Title -->
+                                                <h3 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-4"
+                                                    style="font-family: 'Plus Jakarta Sans', sans-serif;">
+                                                    {{ $category['name'] }}
+                                                </h3>
+                                                <!-- Product List -->
+                                                <ul class="space-y-2">
+                                                    @foreach($category['items'] as $item)
+                                                        <li class="text-sm lg:text-base text-gray-600"
+                                                            style="font-family: 'Plus Jakarta Sans', sans-serif;">
+                                                            {{ $item }}
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <!-- Dynamic Banner -->
+                            <img src="{{ asset('storage/' . $banner->image_path) }}" alt="{{ $banner->title ?? 'Aqlaya Cake' }}"
+                                class="absolute inset-0 h-full w-full object-cover">
+
+                            <div class="relative flex h-full flex-col items-center justify-center px-5 py-16 text-center">
+                                <div class="max-w-4xl">
+                                    <a href="#catalog-grid"
+                                        class="inline-block border border-white/20 bg-white/5 backdrop-blur-md px-12 py-4 text-[11px] font-medium uppercase tracking-ultra-wide text-white shadow-lg transition hover:bg-white/10 hover:border-white/30">
+                                        Order
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
                     </div>
-                </div>
+                @endforeach
+
+                <!-- Dots Indicator -->
+                @if($totalBanners > 1)
+                    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                        @foreach($allBanners as $index => $banner)
+                            <button @click="currentSlide = {{ $index }}; resetAutoplay()"
+                                class="h-2 w-2 rounded-full transition-all"
+                                :class="currentSlide === {{ $index }} ? 'bg-mono-900 w-8' : 'bg-mono-900/50'"
+                                aria-label="Go to banner {{ $index + 1 }}"></button>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
     </section>
 
-    <section id="about" class="scroll-mt-32 border-b border-black/10 bg-[#efe7dd]">
-        <div class="mx-auto max-w-[1600px] px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
-            <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-end">
-                <div>
-                    <p class="text-[11px] uppercase tracking-[0.32em] text-black/45">Editorial Landing</p>
-                    <h2 class="mt-5 max-w-[10ch] font-serif text-[clamp(3.8rem,10vw,8.5rem)] font-semibold uppercase leading-[0.82] tracking-[-0.06em] text-black">
-                        Aqlaya<br>
-                        <span class="font-normal italic normal-case">cake</span>
-                    </h2>
-                </div>
-                <div class="lg:pb-3">
-                    <p class="text-sm leading-7 text-black/65">
-                        Tema halaman ini dibentuk seperti katalog editorial: ruang kosong yang lega, kontras hitam-putih yang kuat, dan fokus pada foto produk agar tiap koleksi terasa lebih eksklusif.
-                    </p>
-                    <div class="mt-6 h-px w-24 bg-black/25"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="mx-auto max-w-[1600px] px-5 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
-        <div class="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-                <p class="text-[11px] uppercase tracking-[0.3em] text-black/45">Signature Selection</p>
-                <h2 class="mt-4 font-serif text-3xl font-semibold text-black sm:text-4xl lg:text-5xl">
-                    Koleksi utama dengan presentasi yang clean.
+    <!-- Best Sellers Carousel Section -->
+    @if($bestSellerCarousel->isNotEmpty())
+    <section id="about" class="scroll-mt-32 bg-white py-16 lg:py-24">
+        <div class="mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12">
+            <div class="mb-16 lg:mb-24 text-center">
+                <h2 class="font-serif text-4xl font-light text-mono-900 sm:text-5xl lg:text-6xl">
+                    Our Best Seller
                 </h2>
             </div>
-            <a href="#catalog-grid" class="text-[11px] uppercase tracking-[0.24em] text-black/55 transition hover:text-black">
-                Explore catalog
-            </a>
-        </div>
 
-        <div class="grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-2 xl:grid-cols-3">
-            @foreach($signatureProducts as $product)
-                <article class="group">
-                    <a href="{{ route('products.show', $product) }}" class="block">
-                        <div class="relative overflow-hidden bg-[#ece6dc]">
-                            <img
-                                src="{{ $product->image_url ?: asset('images/hero.png') }}"
-                                alt="{{ $product->name }}"
-                                class="aspect-[4/5] h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
-                            >
-                            <div class="absolute right-4 top-4 h-3.5 w-3.5 {{ $loop->odd ? 'bg-black' : 'bg-white mix-blend-difference' }}"></div>
-                        </div>
-                        <div class="mt-5 flex items-end justify-between gap-4 border-b border-black/10 pb-3">
-                            <div class="min-w-0">
-                                <p class="mb-2 text-[10px] uppercase tracking-[0.24em] text-black/45">{{ $product->category?->name ?? 'Cake Series' }}</p>
-                                <h3 class="truncate font-serif text-2xl font-semibold uppercase text-black">
-                                    {{ $product->name }}
-                                </h3>
+            @if($bestSellersSlides->count() > 1)
+            <!-- Carousel Container (multiple slides) -->
+            <div class="relative overflow-hidden pb-32" x-data="{
+                                currentSlide: 0,
+                                totalSlides: {{ $bestSellersSlides->count() }},
+                                autoplayInterval: null,
+                                startAutoplay() {
+                                    this.autoplayInterval = setInterval(() => {
+                                        this.currentSlide = this.currentSlide === this.totalSlides - 1 ? 0 : this.currentSlide + 1;
+                                    }, 4000);
+                                },
+                                stopAutoplay() {
+                                    if (this.autoplayInterval) {
+                                        clearInterval(this.autoplayInterval);
+                                        this.autoplayInterval = null;
+                                    }
+                                },
+                                resetAutoplay() {
+                                    this.stopAutoplay();
+                                    this.startAutoplay();
+                                }
+                            }" x-init="startAutoplay()">
+
+                <!-- Slides Wrapper -->
+                <div class="flex transition-transform duration-700 ease-in-out pb-16"
+                    :style="`transform: translateX(-${currentSlide * 100}%)`">
+                    @foreach($bestSellersSlides as $slideIndex => $slide)
+                        <div class="w-full flex-shrink-0">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
+                                @foreach($slide->values() as $productIndex => $bsProduct)
+                                    <article class="group flex flex-col items-center {{ $productIndex === 1 ? 'lg:mt-32' : 'lg:mt-0' }}">
+                                        <a href="{{ route('products.show', $bsProduct) }}" class="block w-full max-w-md">
+                                            <div class="relative overflow-hidden bg-white">
+                                                <img src="{{ $bsProduct->image_path ? asset('storage/' . $bsProduct->image_path) : ($bsProduct->image_url ?: asset('images/hero1.png')) }}"
+                                                    alt="{{ $bsProduct->name }}"
+                                                    class="aspect-square h-full w-full object-cover transition duration-700 group-hover:scale-105">
+                                            </div>
+                                            <div class="mt-8 text-center px-4">
+                                                <h3 class="font-serif text-2xl font-light uppercase tracking-wider text-mono-900 sm:text-3xl lg:text-4xl"
+                                                    style="letter-spacing: 0.08em;">
+                                                    {{ $bsProduct->name }}
+                                                </h3>
+                                                <p class="mt-6 text-sm leading-relaxed text-mono-600 max-w-xs mx-auto">
+                                                    {{ $bsProduct->excerpt }}
+                                                </p>
+                                            </div>
+                                        </a>
+                                    </article>
+                                @endforeach
                             </div>
-                            <span class="shrink-0 text-[10px] uppercase tracking-[0.24em] text-black/65">
-                                Rp{{ number_format($product->price, 0, ',', '.') }}
-                            </span>
                         </div>
-                        <p class="mt-3 text-sm leading-6 text-black/62">
-                            {{ $product->excerpt }}
-                        </p>
-                    </a>
-                </article>
-            @endforeach
-        </div>
-    </section>
-
-    <section class="border-y border-black/10 bg-[#f1ece5]">
-        <div class="mx-auto flex max-w-[1200px] flex-col items-center px-5 py-16 text-center sm:px-8 lg:px-12 lg:py-24">
-            <div class="max-w-4xl">
-                <p class="font-serif text-3xl leading-tight text-black sm:text-4xl lg:text-5xl">
-                    "Kami tidak hanya membuat kue, tetapi menyusun momen yang terasa tenang, hangat, dan layak diingat dari tampilan pertamanya."
-                </p>
-            </div>
-            <p class="mt-6 text-[11px] uppercase tracking-[0.28em] text-black/55">Aqlaya Cake Studio</p>
-        </div>
-    </section>
-
-    <section id="catalog-grid" class="scroll-mt-32">
-        <div class="mx-auto max-w-[1600px] px-5 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
-            <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(320px,420px)] lg:items-end">
-                <div>
-                    <p class="text-[11px] uppercase tracking-[0.3em] text-black/45">Full Catalog</p>
-                    <h2 class="mt-4 font-serif text-3xl font-semibold text-black sm:text-4xl lg:text-5xl">
-                        Jelajahi seluruh koleksi Aqlaya.
-                    </h2>
-                    <p class="mt-4 max-w-2xl text-sm leading-7 text-black/62">
-                        Gunakan filter untuk menemukan kue, dessert box, atau hadiah manis yang paling cocok untuk acara Anda.
-                    </p>
+                    @endforeach
                 </div>
+            </div>
+            @else
+            <!-- Single slide (no carousel needed) -->
+            <div class="pb-32">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
+                    @foreach($bestSellerCarousel as $productIndex => $bsProduct)
+                        <article class="group flex flex-col items-center {{ $productIndex === 1 ? 'lg:mt-32' : 'lg:mt-0' }}">
+                            <a href="{{ route('products.show', $bsProduct) }}" class="block w-full max-w-md">
+                                <div class="relative overflow-hidden bg-white">
+                                    <img src="{{ $bsProduct->image_path ? asset('storage/' . $bsProduct->image_path) : ($bsProduct->image_url ?: asset('images/hero1.png')) }}"
+                                        alt="{{ $bsProduct->name }}"
+                                        class="aspect-square h-full w-full object-cover transition duration-700 group-hover:scale-105">
+                                </div>
+                                <div class="mt-8 text-center px-4">
+                                    <h3 class="font-serif text-2xl font-light uppercase tracking-wider text-mono-900 sm:text-3xl lg:text-4xl"
+                                        style="letter-spacing: 0.08em;">
+                                        {{ $bsProduct->name }}
+                                    </h3>
+                                    <p class="mt-6 text-sm leading-relaxed text-mono-600 max-w-xs mx-auto">
+                                        {{ $bsProduct->excerpt }}
+                                    </p>
+                                </div>
+                            </a>
+                        </article>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+        </div>
+    </section>
+    @endif
 
-                <form method="GET" action="{{ route('catalog') }}" class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_220px_auto]">
-                    <label class="block">
-                        <span class="sr-only">Cari produk</span>
-                        <input
-                            type="text"
-                            name="search"
-                            value="{{ request('search') }}"
-                            class="w-full border border-black/15 bg-transparent px-4 py-3 text-sm text-black outline-none transition placeholder:text-black/35 focus:border-black/35"
-                            placeholder="Cari kue, pastry, atau gift set"
-                        >
-                    </label>
-                    <label class="block">
-                        <span class="sr-only">Pilih kategori</span>
-                        <select name="category" class="w-full border border-black/15 bg-transparent px-4 py-3 text-sm text-black outline-none transition focus:border-black/35">
-                            <option value="">Semua kategori</option>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->slug }}" @selected(request('category') === $category->slug)>{{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                    </label>
-                    <button type="submit" class="bg-black px-5 py-3 text-[11px] uppercase tracking-[0.22em] text-white transition hover:bg-black/85">
-                        Filter
+    <section id="catalog-grid" class="scroll-mt-32 bg-mono-50/50">
+        <div class="mx-auto max-w-[1600px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-28">
+
+            <!-- Header -->
+            <div class="mb-12 lg:mb-16 text-center">
+                <p class="text-xs uppercase tracking-[0.3em] text-mono-400 mb-3">Catalog</p>
+                <h2 class="font-serif text-4xl font-light text-mono-900 sm:text-5xl lg:text-6xl">
+                    Koleksi Aqlaya
+                </h2>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="mx-auto max-w-2xl mb-12 lg:mb-16">
+                <form method="GET" action="{{ route('catalog') }}"
+                    class="flex items-center gap-3 rounded-full border border-mono-200 bg-white px-6 py-3 shadow-sm transition focus-within:border-mono-400 focus-within:shadow-md">
+                    <svg class="h-5 w-5 flex-shrink-0 text-mono-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6m2-5a7 7 0 11-14 0 7 7 0114 0z" />
+                    </svg>
+                    <input type="text" name="search" value="{{ request('search') }}"
+                        class="flex-1 bg-transparent text-sm text-mono-900 outline-none placeholder:text-mono-400"
+                        placeholder="Cari produk favorit Anda...">
+                    <select name="category"
+                        class="border-l border-mono-200 bg-transparent pl-3 pr-1 text-sm text-mono-600 outline-none">
+                        <option value="">Semua</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->slug }}" @selected(request('category') === $category->slug)>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <button type="submit"
+                        class="rounded-full bg-mono-900 px-6 py-2 text-xs font-medium uppercase tracking-wider text-white transition hover:bg-mono-800">
+                        Cari
                     </button>
                 </form>
             </div>
 
-            <div data-catalog-shell class="mt-10">
-                <div class="flex flex-wrap gap-2 border-b border-black/10 pb-6">
-                    <a href="{{ route('catalog') }}" class="border px-3 py-2 text-[10px] uppercase tracking-[0.22em] transition {{ !request('category') ? 'border-black bg-black text-white' : 'border-black/10 text-black/60 hover:border-black/25 hover:text-black' }}">
+            <div data-catalog-shell>
+                <!-- Category Tabs -->
+                <div
+                    class="flex items-center justify-center gap-2 sm:gap-3 overflow-x-auto pb-px scrollbar-hide mb-12 lg:mb-16">
+                    <a href="{{ route('catalog') }}"
+                        class="whitespace-nowrap rounded-full px-5 py-2.5 text-xs uppercase tracking-wider transition {{ !request('category') ? 'bg-mono-900 text-white font-medium shadow-sm' : 'bg-white text-mono-500 hover:text-mono-800 hover:bg-mono-100 border border-mono-200' }}">
                         Semua
                     </a>
                     @foreach($categories as $category)
-                        <a href="{{ route('catalog', ['category' => $category->slug]) }}" class="border px-3 py-2 text-[10px] uppercase tracking-[0.22em] transition {{ request('category') === $category->slug ? 'border-black bg-black text-white' : 'border-black/10 text-black/60 hover:border-black/25 hover:text-black' }}">
+                        <a href="{{ route('catalog', ['category' => $category->slug]) }}"
+                            class="whitespace-nowrap rounded-full px-5 py-2.5 text-xs uppercase tracking-wider transition {{ request('category') === $category->slug ? 'bg-mono-900 text-white font-medium shadow-sm' : 'bg-white text-mono-500 hover:text-mono-800 hover:bg-mono-100 border border-mono-200' }}">
                             {{ $category->name }}
                         </a>
                     @endforeach
                 </div>
 
-                <div class="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 xl:grid-cols-4">
+                <!-- Product Grid -->
+                <div
+                    class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-10 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-12">
                     @forelse($products as $product)
-                        <article class="group">
-                            <a href="{{ route('products.show', $product) }}" class="block">
-                                <div class="relative overflow-hidden bg-[#ece6dc]">
-                                    <img
-                                        src="{{ $product->image_url ?: asset('images/hero.png') }}"
+                        <article class="group flex flex-col h-full">
+                            <a href="{{ route('products.show', $product) }}" class="block flex-1 flex flex-col">
+                                <div
+                                    class="relative overflow-hidden rounded-2xl bg-white shadow-sm transition duration-300 group-hover:shadow-lg flex-1">
+                                    <img src="{{ $product->image_path ? asset('storage/' . $product->image_path) : ($product->image_url ?: asset('images/hero.png')) }}"
                                         alt="{{ $product->name }}"
-                                        class="aspect-[4/5] h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
-                                    >
-                                    <div class="absolute right-3 top-3 h-3 w-3 {{ $product->is_best_seller ? 'bg-black' : 'bg-white mix-blend-difference' }}"></div>
-                                </div>
-
-                                <div class="mt-4 border-b border-black/10 pb-3">
-                                    <p class="text-[10px] uppercase tracking-[0.22em] text-black/45">{{ $product->category?->name ?? 'Cake' }}</p>
-                                    <div class="mt-2 flex items-end justify-between gap-3">
-                                        <h3 class="line-clamp-2 font-serif text-lg font-semibold uppercase text-black sm:text-2xl">
-                                            {{ $product->name }}
-                                        </h3>
-                                        <span class="shrink-0 text-[10px] uppercase tracking-[0.2em] text-black/60">
-                                            Rp{{ number_format($product->price, 0, ',', '.') }}
+                                        class="aspect-[3/4] w-full object-cover transition duration-700 group-hover:scale-105">
+                                    @if($product->is_best_seller)
+                                        <span
+                                            class="absolute left-3 top-3 rounded-full bg-mono-900 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-white shadow-sm">
+                                            Best Seller
                                         </span>
-                                    </div>
+                                    @endif
                                 </div>
 
-                                <div class="mt-3 flex items-center justify-between gap-3">
-                                    <p class="line-clamp-2 text-sm leading-6 text-black/60">{{ $product->excerpt }}</p>
-                                    <p class="shrink-0 text-[10px] uppercase tracking-[0.18em] text-black/38">{{ $product->reviews_count }} review</p>
+                                <div class="mt-4 space-y-1 px-1 flex-shrink-0">
+                                    <p class="text-[11px] uppercase tracking-[0.2em] text-mono-400 line-clamp-1">
+                                        {{ $product->category?->name ?? 'Cake' }}
+                                    </p>
+                                    <h3 class="line-clamp-2 text-sm font-medium text-mono-900 sm:text-base leading-tight">
+                                        {{ $product->name }}
+                                    </h3>
+                                    <p class="text-xs font-medium text-mono-600 pt-1">
+                                        Rp{{ number_format($product->price, 0, ',', '.') }}
+                                    </p>
                                 </div>
                             </a>
                         </article>
                     @empty
-                        <div class="col-span-full border border-black/10 px-6 py-12 text-center text-sm leading-7 text-black/60">
-                            Tidak ada produk yang sesuai dengan pencarian Anda saat ini.
+                        <div class="col-span-full py-24 text-center">
+                            <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-mono-100">
+                                <svg class="h-7 w-7 text-mono-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M21 21l-6m2-5a7 7 0 11-14 0 7 7 0114 0z" />
+                                </svg>
+                            </div>
+                            <p class="text-base text-mono-500">Tidak ada produk yang ditemukan.</p>
+                            <p class="mt-1 text-sm text-mono-400">Coba kata kunci atau kategori lain.</p>
                         </div>
                     @endforelse
                 </div>
 
                 @if($products->hasPages())
-                    <div class="mt-12 flex justify-center border-t border-black/10 pt-8">
+                    <div class="mt-14 flex justify-center border-t border-mono-200 pt-8">
                         {{ $products->links() }}
                     </div>
                 @endif
@@ -276,98 +388,97 @@
     </section>
 
     @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const catalogGrid = document.getElementById('catalog-grid');
-            if (!catalogGrid) return;
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const catalogGrid = document.getElementById('catalog-grid');
+                if (!catalogGrid) return;
 
-            const shouldFocusCatalog = @json(
-                request()->routeIs('catalog') ||
-                request()->filled('search') ||
-                request()->filled('category') ||
-                request()->filled('max_price') ||
-                request()->filled('page')
-            );
+                const shouldFocusCatalog = @json(
+                    request()->routeIs('catalog') ||
+                    request()->filled('search') ||
+                    request()->filled('category') ||
+                    request()->filled('max_price') ||
+                    request()->filled('page')
+                );
 
-            if (shouldFocusCatalog && !window.location.hash) {
-                requestAnimationFrame(() => {
-                    catalogGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                });
-            }
+                if (shouldFocusCatalog && !window.location.hash) {
+                    requestAnimationFrame(() => {
+                        catalogGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                }
 
-            const catalogUrlBase = "{{ route('catalog') }}";
-            let catalogPath = '/';
-
-            try {
-                catalogPath = new URL(catalogUrlBase).pathname;
-            } catch (e) {
-                catalogPath = catalogUrlBase;
-            }
-
-            catalogGrid.addEventListener('click', function(e) {
-                const link = e.target.closest('a');
-                if (!link) return;
+                const catalogUrlBase = "{{ route('catalog') }}";
+                let catalogPath = '/';
 
                 try {
-                    const urlObj = new URL(link.href);
-                    if (urlObj.pathname === catalogPath || link.href.includes('?page=')) {
-                        e.preventDefault();
-                        fetchCatalog(link.href);
-                    }
-                } catch (err) {}
-            });
-
-            catalogGrid.addEventListener('submit', function(e) {
-                const form = e.target.closest('form');
-                if (form) {
-                    e.preventDefault();
-                    const formData = new FormData(form);
-                    const searchParams = new URLSearchParams(formData);
-                    const action = form.getAttribute('action') || window.location.pathname;
-                    const joiner = action.includes('?') ? '&' : '?';
-                    const url = action + joiner + searchParams.toString();
-                    fetchCatalog(url);
-                }
-            });
-
-            function fetchCatalog(url) {
-                const contentContainer = catalogGrid.querySelector('[data-catalog-shell]');
-                if (contentContainer) {
-                    contentContainer.style.opacity = '0.5';
-                    contentContainer.style.pointerEvents = 'none';
-                    contentContainer.style.transition = 'opacity 0.3s';
+                    catalogPath = new URL(catalogUrlBase).pathname;
+                } catch (e) {
+                    catalogPath = catalogUrlBase;
                 }
 
-                fetch(url, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const newContent = doc.querySelector('#catalog-grid');
-                    if (newContent) {
-                        catalogGrid.innerHTML = newContent.innerHTML;
-                        window.history.pushState({ path: url }, '', url);
-                        catalogGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    } else {
-                        window.location.href = url;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching catalog:', error);
-                    window.location.href = url;
+                catalogGrid.addEventListener('click', function (e) {
+                    const link = e.target.closest('a');
+                    if (!link) return;
+
+                    try {
+                        const urlObj = new URL(link.href);
+                        if (urlObj.pathname === catalogPath || link.href.includes('?page=')) {
+                            e.preventDefault();
+                            fetchCatalog(link.href);
+                        }
+                    } catch (err) { }
                 });
-            }
 
-            window.addEventListener('popstate', function(e) {
-                if (e.state && e.state.path) {
-                    fetchCatalog(e.state.path);
-                } else if (window.location.pathname === catalogPath) {
-                    fetchCatalog(window.location.href);
+                catalogGrid.addEventListener('submit', function (e) {
+                    const form = e.target.closest('form');
+                    if (form) {
+                        e.preventDefault();
+                        const formData = new FormData(form);
+                        const searchParams = new URLSearchParams(formData);
+                        const action = form.getAttribute('action') || window.location.pathname;
+                        const joiner = action.includes('?') ? '&' : '?';
+                        const url = action + joiner + searchParams.toString();
+                        fetchCatalog(url);
+                    }
+                });
+
+                function fetchCatalog(url) {
+                    const contentContainer = catalogGrid.querySelector('[data-catalog-shell]');
+                    if (contentContainer) {
+                        contentContainer.style.opacity = '0.5';
+                        contentContainer.style.pointerEvents = 'none';
+                        contentContainer.style.transition = 'opacity 0.3s';
+                    }
+
+                    fetch(url, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const newContent = doc.querySelector('#catalog-grid');
+                            if (newContent) {
+                                catalogGrid.innerHTML = newContent.innerHTML;
+                                window.history.pushState({ path: url }, '', url);
+                            } else {
+                                window.location.href = url;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching catalog:', error);
+                            window.location.href = url;
+                        });
                 }
+
+                window.addEventListener('popstate', function (e) {
+                    if (e.state && e.state.path) {
+                        fetchCatalog(e.state.path);
+                    } else if (window.location.pathname === catalogPath) {
+                        fetchCatalog(window.location.href);
+                    }
+                });
             });
-        });
-    </script>
+        </script>
     @endpush
 @endsection

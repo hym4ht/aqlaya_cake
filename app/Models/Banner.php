@@ -7,11 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Banner extends Model
 {
     protected $fillable = [
-        'title',
-        'subtitle',
         'image_path',
-        'link_url',
-        'sort_order',
         'is_active',
     ];
 
@@ -19,17 +15,11 @@ class Banner extends Model
     {
         return [
             'is_active' => 'boolean',
-            'sort_order' => 'integer',
         ];
     }
 
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
-    }
-
-    public function scopeOrdered($query)
-    {
-        return $query->orderBy('sort_order');
     }
 }

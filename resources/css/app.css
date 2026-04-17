@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Shalimar&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,12 +10,15 @@
     scroll-behavior: smooth;
   }
   body {
-    font-family: "Inter", sans-serif;
-    background-color: #f5efe7;
-    color: #181614;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    background-color: #ffffff;
+    color: #0a0a0a;
   }
   h1, h2, h3, h4, .font-serif {
     font-family: "Noto Serif", serif;
+  }
+  .font-logo {
+    font-family: "Shalimar", cursive;
   }
 }
 
@@ -27,5 +33,11 @@
 }
 
 @layer components {
-  /* Minimal base transitions, no crazy bloated styling needed anymore */
+  /* Minimalist monochrome design - clean transitions */
+  .monochrome-card {
+    @apply bg-white border border-gray-200 transition-all duration-300;
+  }
+  .monochrome-card:hover {
+    @apply border-black shadow-lg;
+  }
 }

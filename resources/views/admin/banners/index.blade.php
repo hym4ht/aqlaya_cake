@@ -38,29 +38,20 @@
                         {{-- Thumbnail --}}
                         <div class="sm:w-64 h-40 sm:h-auto flex-shrink-0 bg-slate-100">
                             <img src="{{ asset('storage/' . $banner->image_path) }}"
-                                 alt="{{ $banner->title ?? 'Banner' }}"
+                                 alt="Banner"
                                  class="w-full h-full object-cover">
                         </div>
                         {{-- Info --}}
                         <div class="flex-1 p-5 flex flex-col justify-between">
                             <div>
                                 <div class="flex items-center gap-3 mb-2">
-                                    <h3 class="text-lg font-semibold text-slate-800">{{ $banner->title ?? '(Tanpa Judul)' }}</h3>
                                     @if($banner->is_active)
                                         <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[11px] font-bold rounded-full border border-emerald-200">Aktif</span>
                                     @else
                                         <span class="px-2 py-0.5 bg-slate-100 text-slate-500 text-[11px] font-bold rounded-full border border-slate-200">Nonaktif</span>
                                     @endif
                                 </div>
-                                @if($banner->subtitle)
-                                    <p class="text-sm text-slate-500 mb-2">{{ $banner->subtitle }}</p>
-                                @endif
-                                <div class="flex items-center gap-4 text-xs text-slate-400">
-                                    <span>Urutan: {{ $banner->sort_order }}</span>
-                                    @if($banner->link_url)
-                                        <span class="truncate max-w-[200px]">🔗 {{ $banner->link_url }}</span>
-                                    @endif
-                                </div>
+                                <p class="text-xs text-slate-400">Ditambahkan: {{ $banner->created_at->format('d M Y') }}</p>
                             </div>
                             <div class="flex items-center gap-2 mt-4">
                                 <a href="{{ route('admin.banners.edit', $banner) }}"
