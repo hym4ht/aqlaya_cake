@@ -40,8 +40,16 @@ class ProductController extends Controller
         $validated = $this->validateProduct($request);
         $validated['slug'] = $this->uniqueSlug($validated['name']);
 
-        if ($request->hasFile('image_file')) {
-            $validated['image_path'] = $this->storeProductImage($request->file('image_file'));
+        // Handle multiple image uploads
+        if ($request->hasFile('image_files')) {
+            $imageFiles = $request->file('image_files');
+            $imageFields = ['image_path', 'image_path_2', 'image_path_3'];
+
+            foreach ($imageFiles as $index => $file) {
+                if ($index < 3 && isset($imageFields[$index])) {
+                    $validated[$imageFields[$index]] = $this->storeProductImage($file);
+                }
+            }
         }
 
         Product::query()->create($validated);
@@ -66,11 +74,43 @@ class ProductController extends Controller
             ? $product->slug
             : $this->uniqueSlug($validated['name'], $product->id);
 
-        if ($request->hasFile('image_file')) {
-            if ($product->image_path) {
-                Storage::disk('public')->delete($product->image_path);
+        // Handle individual image deletion
+        $imageFields = [
+            'delete_image_1' => 'image_path',
+            'delete_image_2' => 'image_path_2',
+            'delete_image_3' => 'image_path_3',
+        ];
+
+        foreach ($imageFields as $deleteField => $imageField) {
+            if ($request->input($deleteField) === '1') {
+                // Delete the image file from storage
+                if ($product->$imageField) {
+                    Storage::disk('public')->delete($product->$imageField);
+                }
+                // Set the field to null in validated data
+                $validated[$imageField] = null;
             }
-            $validated['image_path'] = $this->storeProductImage($request->file('image_file'));
+        }
+
+        // Handle multiple image uploads
+        if ($request->hasFile('image_files')) {
+            $imageFiles = $request->file('image_files');
+            $imageFieldNames = ['image_path', 'image_path_2', 'image_path_3'];
+            $oldImages = [$product->image_path, $product->image_path_2, $product->image_path_3];
+
+            // Delete all old images when new ones are uploaded
+            foreach ($oldImages as $oldImage) {
+                if ($oldImage) {
+                    Storage::disk('public')->delete($oldImage);
+                }
+            }
+
+            // Store new images
+            foreach ($imageFiles as $index => $file) {
+                if ($index < 3 && isset($imageFieldNames[$index])) {
+                    $validated[$imageFieldNames[$index]] = $this->storeProductImage($file);
+                }
+            }
         }
 
         $product->update($validated);
@@ -96,7 +136,7 @@ class ProductController extends Controller
 
     private function validateProduct(Request $request): array
     {
-        $validated = $request->validate([
+        $rules = [
             'category_id' => ['nullable', Rule::exists('categories', 'id')],
             'name' => ['required', 'string', 'max:255'],
             'excerpt' => ['required', 'string', 'max:255'],
@@ -104,11 +144,21 @@ class ProductController extends Controller
             'price' => ['required', 'numeric', 'min:1000'],
             'stock' => ['required', 'integer', 'min:0'],
             'image_url' => ['nullable', 'url'],
-            'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:5120'],
+            'image_files.*' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:5120'],
             'sizes_input' => ['required', 'string'],
             'is_active' => ['nullable', 'boolean'],
             'is_best_seller' => ['nullable', 'boolean'],
-        ]);
+            'product_type' => ['required', 'in:pre_order,ready_stock'],
+        ];
+
+        // Only require lead_time_days for pre-order products
+        if ($request->input('product_type') === 'pre_order') {
+            $rules['lead_time_days'] = ['required', 'integer', 'min:1'];
+        } else {
+            $rules['lead_time_days'] = ['nullable', 'integer', 'min:1'];
+        }
+
+        $validated = $request->validate($rules);
 
         $validated['sizes'] = collect(preg_split('/[\r\n,]+/', $validated['sizes_input']))
             ->map(fn($size) => trim((string) $size))

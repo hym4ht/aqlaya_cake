@@ -59,25 +59,26 @@
 
             <!-- Combined Banner Carousel -->
             <div class="relative overflow-hidden h-[70vh] lg:h-[80vh] bg-white" x-data="{
-                                currentSlide: 0,
-                                totalSlides: {{ $totalBanners }},
-                                autoplayInterval: null,
-                                startAutoplay() {
-                                    this.autoplayInterval = setInterval(() => {
-                                        this.currentSlide = this.currentSlide === this.totalSlides - 1 ? 0 : this.currentSlide + 1;
-                                    }, 5000);
-                                },
-                                stopAutoplay() {
-                                    if (this.autoplayInterval) {
-                                        clearInterval(this.autoplayInterval);
-                                        this.autoplayInterval = null;
-                                    }
-                                },
-                                resetAutoplay() {
-                                    this.stopAutoplay();
-                                    this.startAutoplay();
-                                }
-                            }" x-init="startAutoplay()" @mouseenter="stopAutoplay()" @mouseleave="startAutoplay()">
+                                                                    currentSlide: 0,
+                                                                    totalSlides: {{ $totalBanners }},
+                                                                    autoplayInterval: null,
+                                                                    startAutoplay() {
+                                                                        this.autoplayInterval = setInterval(() => {
+                                                                            this.currentSlide = this.currentSlide === this.totalSlides - 1 ? 0 : this.currentSlide + 1;
+                                                                        }, 5000);
+                                                                    },
+                                                                    stopAutoplay() {
+                                                                        if (this.autoplayInterval) {
+                                                                            clearInterval(this.autoplayInterval);
+                                                                            this.autoplayInterval = null;
+                                                                        }
+                                                                    },
+                                                                    resetAutoplay() {
+                                                                        this.stopAutoplay();
+                                                                        this.startAutoplay();
+                                                                    }
+                                                                }" x-init="startAutoplay()" @mouseenter="stopAutoplay()"
+                @mouseleave="startAutoplay()">
                 @foreach($allBanners as $index => $banner)
                     <div class="absolute inset-0 transition-opacity duration-700" x-show="currentSlide === {{ $index }}"
                         x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0"
@@ -154,15 +155,6 @@
                             <!-- Dynamic Banner -->
                             <img src="{{ asset('storage/' . $banner->image_path) }}" alt="{{ $banner->title ?? 'Aqlaya Cake' }}"
                                 class="absolute inset-0 h-full w-full object-cover">
-
-                            <div class="relative flex h-full flex-col items-center justify-center px-5 py-16 text-center">
-                                <div class="max-w-4xl">
-                                    <a href="#catalog-grid"
-                                        class="inline-block border border-white/20 bg-white/5 backdrop-blur-md px-12 py-4 text-[11px] font-medium uppercase tracking-ultra-wide text-white shadow-lg transition hover:bg-white/10 hover:border-white/30">
-                                        Order
-                                    </a>
-                                </div>
-                            </div>
                         @endif
                     </div>
                 @endforeach
@@ -184,97 +176,96 @@
 
     <!-- Best Sellers Carousel Section -->
     @if($bestSellerCarousel->isNotEmpty())
-    <section id="about" class="scroll-mt-32 bg-white py-16 lg:py-24">
-        <div class="mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12">
-            <div class="mb-16 lg:mb-24 text-center">
-                <h2 class="font-serif text-4xl font-light text-mono-900 sm:text-5xl lg:text-6xl">
-                    Our Best Seller
-                </h2>
-            </div>
+        <section id="about" class="scroll-mt-32 bg-white py-16 lg:py-24">
+            <div class="mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12">
+                <div class="mb-16 lg:mb-24 text-center">
+                    <h2 class="font-serif text-4xl font-light text-mono-900 sm:text-5xl lg:text-6xl">
+                        Our Best Seller
+                    </h2>
+                </div>
 
-            @if($bestSellersSlides->count() > 1)
-            <!-- Carousel Container (multiple slides) -->
-            <div class="relative overflow-hidden pb-32" x-data="{
-                                currentSlide: 0,
-                                totalSlides: {{ $bestSellersSlides->count() }},
-                                autoplayInterval: null,
-                                startAutoplay() {
-                                    this.autoplayInterval = setInterval(() => {
-                                        this.currentSlide = this.currentSlide === this.totalSlides - 1 ? 0 : this.currentSlide + 1;
-                                    }, 4000);
-                                },
-                                stopAutoplay() {
-                                    if (this.autoplayInterval) {
-                                        clearInterval(this.autoplayInterval);
-                                        this.autoplayInterval = null;
-                                    }
-                                },
-                                resetAutoplay() {
-                                    this.stopAutoplay();
-                                    this.startAutoplay();
-                                }
-                            }" x-init="startAutoplay()">
+                @if($bestSellersSlides->count() > 1)
+                    <!-- Carousel Container (multiple slides) -->
+                    <div class="relative overflow-hidden pb-32"
+                        x-data="{
+                                                                                                                                            currentSlide: 0,
+                                                                                                                                            totalSlides: {{ $bestSellersSlides->count() }},
+                                                                                                                                            autoplayInterval: null,
+                                                                                                                                            startAutoplay() {
+                                                                                                                                                this.autoplayInterval = setInterval(() => {
+                                                                                                                                                    this.currentSlide = this.currentSlide === this.totalSlides - 1 ? 0 : this.currentSlide + 1;
+                                                                                                                                                }, 4000);
+                                                                                                                                            },
+                                                                                                                                            stopAutoplay() {
+                                                                                                                                                if (this.autoplayInterval) {
+                                                                                                                                                    clearInterval(this.autoplayInterval);
+                                                                                                                                                    this.autoplayInterval = null;
+                                                                                                                                                }
+                                                                                                                                            },
+                                                                                                                                            resetAutoplay() {
+                                                                                                                                                this.stopAutoplay();
+                                                                                                                                                this.startAutoplay();
+                                                                                                                                            }
+                                                                                                                                        }" x-init="startAutoplay()">
 
-                <!-- Slides Wrapper -->
-                <div class="flex transition-transform duration-700 ease-in-out pb-16"
-                    :style="`transform: translateX(-${currentSlide * 100}%)`">
-                    @foreach($bestSellersSlides as $slideIndex => $slide)
-                        <div class="w-full flex-shrink-0">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
-                                @foreach($slide->values() as $productIndex => $bsProduct)
-                                    <article class="group flex flex-col items-center {{ $productIndex === 1 ? 'lg:mt-32' : 'lg:mt-0' }}">
-                                        <a href="{{ route('products.show', $bsProduct) }}" class="block w-full max-w-md">
-                                            <div class="relative overflow-hidden bg-white">
-                                                <img src="{{ $bsProduct->image_path ? asset('storage/' . $bsProduct->image_path) : ($bsProduct->image_url ?: asset('images/hero1.png')) }}"
-                                                    alt="{{ $bsProduct->name }}"
-                                                    class="aspect-square h-full w-full object-cover transition duration-700 group-hover:scale-105">
-                                            </div>
-                                            <div class="mt-8 text-center px-4">
-                                                <h3 class="font-serif text-2xl font-light uppercase tracking-wider text-mono-900 sm:text-3xl lg:text-4xl"
-                                                    style="letter-spacing: 0.08em;">
-                                                    {{ $bsProduct->name }}
-                                                </h3>
-                                                <p class="mt-6 text-sm leading-relaxed text-mono-600 max-w-xs mx-auto">
-                                                    {{ $bsProduct->excerpt }}
-                                                </p>
-                                            </div>
-                                        </a>
-                                    </article>
-                                @endforeach
-                            </div>
+                        <!-- Slides Wrapper -->
+                        <div class="flex transition-transform duration-700 ease-in-out pb-16"
+                            :style="`transform: translateX(-${currentSlide * 100}%)`">
+                            @foreach($bestSellersSlides as $slideIndex => $slide)
+                                <div class="w-full flex-shrink-0">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
+                                        @foreach($slide->values() as $productIndex => $bsProduct)
+                                            <article
+                                                class="group flex flex-col items-center {{ $productIndex === 1 ? 'lg:mt-32' : 'lg:mt-0' }}">
+                                                <a href="{{ route('products.show', $bsProduct) }}"
+                                                    class="block w-full max-w-md overflow-hidden">
+                                                    <img src="{{ $bsProduct->image_path ? asset('storage/' . $bsProduct->image_path) : ($bsProduct->image_url ?: asset('images/hero1.png')) }}"
+                                                        alt="{{ $bsProduct->name }}"
+                                                        class="aspect-square w-full object-cover transition duration-700 group-hover:scale-105">
+                                                    <div class="mt-8 text-center px-4">
+                                                        <h3 class="font-serif text-2xl font-light uppercase tracking-wider text-mono-900 sm:text-3xl lg:text-4xl"
+                                                            style="letter-spacing: 0.08em;">
+                                                            {{ $bsProduct->name }}
+                                                        </h3>
+                                                        <p class="mt-6 text-sm leading-relaxed text-mono-600 max-w-xs mx-auto">
+                                                            {{ $bsProduct->excerpt }}
+                                                        </p>
+                                                    </div>
+                                                </a>
+                                            </article>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+                @else
+                    <!-- Single slide (no carousel needed) -->
+                    <div class="pb-32">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
+                            @foreach($bestSellerCarousel as $productIndex => $bsProduct)
+                                <article class="group flex flex-col items-center {{ $productIndex === 1 ? 'lg:mt-32' : 'lg:mt-0' }}">
+                                    <a href="{{ route('products.show', $bsProduct) }}" class="block w-full max-w-md overflow-hidden">
+                                        <img src="{{ $bsProduct->image_path ? asset('storage/' . $bsProduct->image_path) : ($bsProduct->image_url ?: asset('images/hero1.png')) }}"
+                                            alt="{{ $bsProduct->name }}"
+                                            class="aspect-square w-full object-cover transition duration-700 group-hover:scale-105">
+                                        <div class="mt-8 text-center px-4">
+                                            <h3 class="font-serif text-2xl font-light uppercase tracking-wider text-mono-900 sm:text-3xl lg:text-4xl"
+                                                style="letter-spacing: 0.08em;">
+                                                {{ $bsProduct->name }}
+                                            </h3>
+                                            <p class="mt-6 text-sm leading-relaxed text-mono-600 max-w-xs mx-auto">
+                                                {{ $bsProduct->excerpt }}
+                                            </p>
+                                        </div>
+                                    </a>
+                                </article>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
-            @else
-            <!-- Single slide (no carousel needed) -->
-            <div class="pb-32">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
-                    @foreach($bestSellerCarousel as $productIndex => $bsProduct)
-                        <article class="group flex flex-col items-center {{ $productIndex === 1 ? 'lg:mt-32' : 'lg:mt-0' }}">
-                            <a href="{{ route('products.show', $bsProduct) }}" class="block w-full max-w-md">
-                                <div class="relative overflow-hidden bg-white">
-                                    <img src="{{ $bsProduct->image_path ? asset('storage/' . $bsProduct->image_path) : ($bsProduct->image_url ?: asset('images/hero1.png')) }}"
-                                        alt="{{ $bsProduct->name }}"
-                                        class="aspect-square h-full w-full object-cover transition duration-700 group-hover:scale-105">
-                                </div>
-                                <div class="mt-8 text-center px-4">
-                                    <h3 class="font-serif text-2xl font-light uppercase tracking-wider text-mono-900 sm:text-3xl lg:text-4xl"
-                                        style="letter-spacing: 0.08em;">
-                                        {{ $bsProduct->name }}
-                                    </h3>
-                                    <p class="mt-6 text-sm leading-relaxed text-mono-600 max-w-xs mx-auto">
-                                        {{ $bsProduct->excerpt }}
-                                    </p>
-                                </div>
-                            </a>
-                        </article>
-                    @endforeach
-                </div>
-            </div>
-            @endif
-        </div>
-    </section>
+        </section>
     @endif
 
     <section id="catalog-grid" class="scroll-mt-32 bg-mono-50/50">
@@ -291,17 +282,20 @@
             <!-- Search Bar -->
             <div class="mx-auto max-w-2xl mb-12 lg:mb-16">
                 <form method="GET" action="{{ route('catalog') }}"
-                    class="flex items-center gap-3 rounded-full border border-mono-200 bg-white px-6 py-3 shadow-sm transition focus-within:border-mono-400 focus-within:shadow-md">
-                    <svg class="h-5 w-5 flex-shrink-0 text-mono-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6m2-5a7 7 0 11-14 0 7 7 0114 0z" />
-                    </svg>
-                    <input type="text" name="search" value="{{ request('search') }}"
-                        class="flex-1 bg-transparent text-sm text-mono-900 outline-none placeholder:text-mono-400"
-                        placeholder="Cari produk favorit Anda...">
+                    class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 rounded-2xl sm:rounded-full border border-mono-200 bg-white p-4 sm:px-6 sm:py-3 shadow-sm transition focus-within:border-mono-400 focus-within:shadow-md">
+                    <div class="flex items-center gap-3 flex-1">
+                        <svg class="h-5 w-5 flex-shrink-0 text-mono-400" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21 21l-6m2-5a7 7 0 11-14 0 7 7 0114 0z" />
+                        </svg>
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            class="flex-1 bg-transparent text-sm text-mono-900 outline-none placeholder:text-mono-400"
+                            placeholder="Cari produk favorit Anda...">
+                    </div>
                     <select name="category"
-                        class="border-l border-mono-200 bg-transparent pl-3 pr-1 text-sm text-mono-600 outline-none">
-                        <option value="">Semua</option>
+                        class="w-full sm:w-auto sm:border-l border-mono-200 bg-transparent sm:pl-3 sm:pr-1 px-3 py-2 sm:py-0 rounded-lg sm:rounded-none text-sm text-mono-600 outline-none border sm:border-0">
+                        <option value="">Semua Kategori</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->slug }}" @selected(request('category') === $category->slug)>
                                 {{ $category->name }}
@@ -309,7 +303,7 @@
                         @endforeach
                     </select>
                     <button type="submit"
-                        class="rounded-full bg-mono-900 px-6 py-2 text-xs font-medium uppercase tracking-wider text-white transition hover:bg-mono-800">
+                        class="w-full sm:w-auto rounded-full bg-mono-900 px-6 py-2.5 sm:py-2 text-xs font-medium uppercase tracking-wider text-white transition hover:bg-mono-800">
                         Cari
                     </button>
                 </form>
@@ -317,15 +311,14 @@
 
             <div data-catalog-shell>
                 <!-- Category Tabs -->
-                <div
-                    class="flex items-center justify-center gap-2 sm:gap-3 overflow-x-auto pb-px scrollbar-hide mb-12 lg:mb-16">
+                <div class="flex items-center justify-center gap-2 overflow-x-auto pb-px scrollbar-hide mb-12 lg:mb-16">
                     <a href="{{ route('catalog') }}"
-                        class="whitespace-nowrap rounded-full px-5 py-2.5 text-xs uppercase tracking-wider transition {{ !request('category') ? 'bg-mono-900 text-white font-medium shadow-sm' : 'bg-white text-mono-500 hover:text-mono-800 hover:bg-mono-100 border border-mono-200' }}">
+                        class="whitespace-nowrap rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs uppercase tracking-wider transition {{ !request('category') ? 'bg-mono-900 text-white font-medium shadow-sm' : 'bg-white text-mono-500 hover:text-mono-800 hover:bg-mono-100 border border-mono-200' }}">
                         Semua
                     </a>
                     @foreach($categories as $category)
                         <a href="{{ route('catalog', ['category' => $category->slug]) }}"
-                            class="whitespace-nowrap rounded-full px-5 py-2.5 text-xs uppercase tracking-wider transition {{ request('category') === $category->slug ? 'bg-mono-900 text-white font-medium shadow-sm' : 'bg-white text-mono-500 hover:text-mono-800 hover:bg-mono-100 border border-mono-200' }}">
+                            class="whitespace-nowrap rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs uppercase tracking-wider transition {{ request('category') === $category->slug ? 'bg-mono-900 text-white font-medium shadow-sm' : 'bg-white text-mono-500 hover:text-mono-800 hover:bg-mono-100 border border-mono-200' }}">
                             {{ $category->name }}
                         </a>
                     @endforeach
@@ -341,7 +334,7 @@
                                     class="relative overflow-hidden rounded-2xl bg-white shadow-sm transition duration-300 group-hover:shadow-lg flex-1">
                                     <img src="{{ $product->image_path ? asset('storage/' . $product->image_path) : ($product->image_url ?: asset('images/hero.png')) }}"
                                         alt="{{ $product->name }}"
-                                        class="aspect-[3/4] w-full object-cover transition duration-700 group-hover:scale-105">
+                                        class="aspect-square w-full object-cover transition duration-700 group-hover:scale-105">
                                     @if($product->is_best_seller)
                                         <span
                                             class="absolute left-3 top-3 rounded-full bg-mono-900 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-white shadow-sm">

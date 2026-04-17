@@ -30,18 +30,28 @@ class CartController extends Controller
     {
         abort_unless($product->is_active && $product->stock > 0, 404);
 
-        $request->validate([
-            'quantity' => ['required', 'integer', 'min:1', 'max:'.$product->stock],
+        $rules = [
+            'quantity' => ['required', 'integer', 'min:1', 'max:' . $product->stock],
             'size' => ['required', Rule::in($product->sizes ?? [])],
             'custom_message' => ['nullable', 'string', 'max:120'],
-            'scheduled_date' => ['required', 'date'],
-            'scheduled_time' => ['nullable', 'date_format:H:i'],
             'notes' => ['nullable', 'string', 'max:500'],
-        ]);
+        ];
 
-        if (! $this->leadTimeService->isAllowed($request->string('scheduled_date'))) {
+        // Only require scheduled date/time for pre-order products
+        if ($product->isPreOrder()) {
+            $rules['scheduled_date'] = ['required', 'date'];
+            $rules['scheduled_time'] = ['nullable', 'date_format:H:i'];
+        } else {
+            $rules['scheduled_date'] = ['nullable', 'date'];
+            $rules['scheduled_time'] = ['nullable', 'date_format:H:i'];
+        }
+
+        $request->validate($rules);
+
+        // Only validate lead time for pre-order products
+        if ($product->isPreOrder() && !$this->leadTimeService->isAllowed($request->string('scheduled_date'), $product->lead_time_days)) {
             return back()->withErrors([
-                'scheduled_date' => 'Tanggal produksi minimal H-2 dari hari ini.',
+                'scheduled_date' => 'Tanggal produksi minimal H-' . $product->lead_time_days . ' dari hari ini.',
             ])->withInput();
         }
 

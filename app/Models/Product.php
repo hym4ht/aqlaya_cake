@@ -20,9 +20,13 @@ class Product extends Model
         'price',
         'stock',
         'is_active',
+        'product_type',
+        'lead_time_days',
         'sizes',
         'image_url',
         'image_path',
+        'image_path_2',
+        'image_path_3',
         'is_best_seller',
     ];
 
@@ -33,7 +37,18 @@ class Product extends Model
             'is_active' => 'boolean',
             'is_best_seller' => 'boolean',
             'sizes' => 'array',
+            'lead_time_days' => 'integer',
         ];
+    }
+
+    public function isReadyStock(): bool
+    {
+        return $this->product_type === 'ready_stock';
+    }
+
+    public function isPreOrder(): bool
+    {
+        return $this->product_type === 'pre_order';
     }
 
     public function category(): BelongsTo

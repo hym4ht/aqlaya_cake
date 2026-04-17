@@ -59,8 +59,9 @@ class CheckoutController extends Controller
         }
 
         $scheduledFor = $cartItems
+            ->filter(fn(array $item) => !empty($item['scheduled_date']))
             ->map(function (array $item) {
-                return Carbon::parse($item['scheduled_date'].' '.($item['scheduled_time'] ?: '09:00'));
+                return Carbon::parse($item['scheduled_date'] . ' ' . ($item['scheduled_time'] ?: '09:00'));
             })
             ->sort()
             ->first();
@@ -96,10 +97,10 @@ class CheckoutController extends Controller
                     'product_price' => $item['price'],
                     'size' => $item['size'],
                     'quantity' => $item['quantity'],
-                    'scheduled_date' => $item['scheduled_date'],
-                    'scheduled_time' => $item['scheduled_time'],
-                    'custom_message' => $item['custom_message'],
-                    'notes' => $item['notes'],
+                    'scheduled_date' => $item['scheduled_date'] ?? null,
+                    'scheduled_time' => $item['scheduled_time'] ?? null,
+                    'custom_message' => $item['custom_message'] ?? null,
+                    'notes' => $item['notes'] ?? null,
                     'line_total' => $item['line_total'],
                 ]);
             }
@@ -122,7 +123,7 @@ class CheckoutController extends Controller
     private function generateOrderCode(): string
     {
         do {
-            $orderCode = 'AQL-'.now()->format('ymd').'-'.Str::upper(Str::random(5));
+            $orderCode = 'AQL-' . now()->format('ymd') . '-' . Str::upper(Str::random(5));
         } while (Order::query()->where('order_code', $orderCode)->exists());
 
         return $orderCode;

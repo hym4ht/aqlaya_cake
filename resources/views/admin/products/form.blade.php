@@ -66,26 +66,87 @@
                     </div>
                 </div>
 
-                {{-- Image Upload Section --}}
-                <div class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                        <label class="block text-xs font-medium text-slate-500 mb-1.5">Gambar Produk</label>
-                        <div class="relative">
-                            <input type="file" name="image_file" accept="image/jpeg,image/png,image/jpg,image/gif"
-                                class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 focus:border-slate-400 focus:ring-2 focus:ring-slate-200 outline-none transition file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 transition" />
-                        </div>
-                        <p class="text-[11px] text-slate-400 mt-1">Format: JPEG, PNG, GIF. Maksimal 5MB. Gambar akan diubah ukurannya menjadi 600x800px</p>
+                        <label class="block text-xs font-medium text-slate-500 mb-1.5">Tipe Produk</label>
+                        <select name="product_type" id="product_type" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 focus:border-slate-400 focus:ring-2 focus:ring-slate-200 outline-none transition">
+                            <option value="pre_order" @selected(old('product_type', $product->product_type ?? 'pre_order') == 'pre_order')>Pre Order (PO)</option>
+                            <option value="ready_stock" @selected(old('product_type', $product->product_type) == 'ready_stock')>Ready Stock</option>
+                        </select>
+                        <p class="text-[11px] text-slate-400 mt-1">Pre Order memerlukan jadwal pengiriman, Ready Stock langsung tersedia</p>
                     </div>
+                    <div id="lead_time_wrapper">
+                        <label class="block text-xs font-medium text-slate-500 mb-1.5">Lead Time (Hari)</label>
+                        <input type="number" name="lead_time_days" value="{{ old('lead_time_days', $product->lead_time_days ?? 2) }}" min="1"
+                            class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 focus:border-slate-400 focus:ring-2 focus:ring-slate-200 outline-none transition" placeholder="2" />
+                        <p class="text-[11px] text-slate-400 mt-1">Minimal hari untuk Pre Order (H-X)</p>
+                    </div>
+                </div>
 
-                    @if($product->image_path)
-                        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
-                            <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-12 h-16 object-cover rounded-lg">
-                            <div class="flex-1">
-                                <p class="text-xs font-medium text-slate-700">Gambar saat ini</p>
-                                <p class="text-[11px] text-slate-500">{{ basename($product->image_path) }}</p>
+                {{-- Image Upload Section --}}
+                <div class="space-y-4" x-data="imagePreview()">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 mb-2">Gambar Produk (Maksimal 3)</label>
+                        <p class="text-[11px] text-slate-400 mb-3">Format: JPEG, PNG, GIF. Maksimal 5MB per gambar. Bisa pilih 1, 2, atau 3 gambar sekaligus.</p>
+                        
+                        {{-- Single Multi-File Input --}}
+                        <input type="file" name="image_files[]" accept="image/jpeg,image/png,image/jpg,image/gif" multiple
+                            @change="handleFiles($event)"
+                            class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 focus:border-slate-400 focus:ring-2 focus:ring-slate-200 outline-none transition file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 transition" />
+                        
+                        {{-- Preview Selected Images --}}
+                        <div x-show="previews.length > 0" class="mt-4 space-y-2">
+                            <p class="text-xs font-medium text-slate-600">Preview gambar yang dipilih:</p>
+                            <div class="flex flex-wrap gap-3">
+                                <template x-for="(preview, index) in previews" :key="index">
+                                    <div class="relative flex items-center gap-2 p-2 bg-blue-50 rounded-lg border border-blue-200">
+                                        <img :src="preview" alt="Preview" class="w-12 h-16 object-cover rounded">
+                                        <span class="text-[10px] text-blue-600" x-text="'Gambar ' + (index + 1)"></span>
+                                        <button type="button" @click="removePreview(index)" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[10px] hover:bg-red-600 flex items-center justify-center">×</button>
+                                    </div>
+                                </template>
                             </div>
                         </div>
-                    @endif
+                        
+                        {{-- Current Images Display --}}
+                        @if($product->image_path || $product->image_path_2 || $product->image_path_3)
+                            <div class="mt-4 space-y-2">
+                                <p class="text-xs font-medium text-slate-600">Gambar saat ini:</p>
+                                <div class="flex flex-wrap gap-3">
+                                    @if($product->image_path)
+                                        <div class="relative" x-data="{ show: true }" x-show="show">
+                                            <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg border border-slate-200">
+                                                <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="w-12 h-16 object-cover rounded">
+                                                <span class="text-[10px] text-slate-500">Gambar 1</span>
+                                            </div>
+                                            <button type="button" @click="show = false; document.getElementById('delete_image_1').value = '1'" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[10px] hover:bg-red-600 flex items-center justify-center">×</button>
+                                            <input type="hidden" id="delete_image_1" name="delete_image_1" value="0">
+                                        </div>
+                                    @endif
+                                    @if($product->image_path_2)
+                                        <div class="relative" x-data="{ show: true }" x-show="show">
+                                            <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg border border-slate-200">
+                                                <img src="{{ asset('storage/' . $product->image_path_2) }}" alt="{{ $product->name }}" class="w-12 h-16 object-cover rounded">
+                                                <span class="text-[10px] text-slate-500">Gambar 2</span>
+                                            </div>
+                                            <button type="button" @click="show = false; document.getElementById('delete_image_2').value = '1'" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[10px] hover:bg-red-600 flex items-center justify-center">×</button>
+                                            <input type="hidden" id="delete_image_2" name="delete_image_2" value="0">
+                                        </div>
+                                    @endif
+                                    @if($product->image_path_3)
+                                        <div class="relative" x-data="{ show: true }" x-show="show">
+                                            <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg border border-slate-200">
+                                                <img src="{{ asset('storage/' . $product->image_path_3) }}" alt="{{ $product->name }}" class="w-12 h-16 object-cover rounded">
+                                                <span class="text-[10px] text-slate-500">Gambar 3</span>
+                                            </div>
+                                            <button type="button" @click="show = false; document.getElementById('delete_image_3').value = '1'" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[10px] hover:bg-red-600 flex items-center justify-center">×</button>
+                                            <input type="hidden" id="delete_image_3" name="delete_image_3" value="0">
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                    </div>
 
                     <div>
                         <label class="block text-xs font-medium text-slate-500 mb-1.5">URL Gambar (Fallback)</label>
@@ -134,4 +195,69 @@
             </form>
         </div>
     </div>
+
+    <script>
+        // Image Preview Component
+        function imagePreview() {
+            return {
+                previews: [],
+                files: [],
+                
+                handleFiles(event) {
+                    const input = event.target;
+                    const selectedFiles = Array.from(input.files);
+                    
+                    // Limit to 3 images
+                    if (selectedFiles.length > 3) {
+                        alert('Maksimal 3 gambar saja');
+                        input.value = '';
+                        return;
+                    }
+                    
+                    this.files = selectedFiles;
+                    this.previews = [];
+                    
+                    selectedFiles.forEach(file => {
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                this.previews.push(e.target.result);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                },
+                
+                removePreview(index) {
+                    this.previews.splice(index, 1);
+                    this.files.splice(index, 1);
+                    
+                    // Update the file input
+                    const input = document.querySelector('input[name="image_files[]"]');
+                    const dt = new DataTransfer();
+                    this.files.forEach(file => dt.items.add(file));
+                    input.files = dt.files;
+                }
+            }
+        }
+        
+        // Product Type Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const productTypeSelect = document.getElementById('product_type');
+            const leadTimeWrapper = document.getElementById('lead_time_wrapper');
+
+            function toggleLeadTime() {
+                if (productTypeSelect.value === 'ready_stock') {
+                    leadTimeWrapper.style.opacity = '0.5';
+                    leadTimeWrapper.querySelector('input').disabled = true;
+                } else {
+                    leadTimeWrapper.style.opacity = '1';
+                    leadTimeWrapper.querySelector('input').disabled = false;
+                }
+            }
+
+            productTypeSelect.addEventListener('change', toggleLeadTime);
+            toggleLeadTime(); // Initial state
+        });
+    </script>
 @endsection
