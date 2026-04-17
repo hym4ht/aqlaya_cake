@@ -271,47 +271,50 @@
     <section id="catalog-grid" class="scroll-mt-32 bg-mono-50/50">
         <div class="mx-auto max-w-[1600px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-28">
 
-            <!-- Header -->
-            <div class="mb-12 lg:mb-16 text-center">
-                <p class="text-xs uppercase tracking-[0.3em] text-mono-400 mb-3">Catalog</p>
-                <h2 class="font-serif text-4xl font-light text-mono-900 sm:text-5xl lg:text-6xl">
-                    Koleksi Aqlaya
-                </h2>
-            </div>
+            <!-- Header and Search Bar -->
+            <div class="mb-12 lg:mb-16 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                <!-- Header -->
+                <div class="text-left">
+                    <p class="text-xs uppercase tracking-[0.3em] text-mono-400 mb-3">Catalog</p>
+                    <h2 class="font-serif text-4xl font-light text-mono-900 sm:text-5xl lg:text-6xl">
+                        Koleksi Aqlaya
+                    </h2>
+                </div>
 
-            <!-- Search Bar -->
-            <div class="mx-auto max-w-2xl mb-12 lg:mb-16">
-                <form method="GET" action="{{ route('catalog') }}"
-                    class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 rounded-2xl sm:rounded-full border border-mono-200 bg-white p-4 sm:px-6 sm:py-3 shadow-sm transition focus-within:border-mono-400 focus-within:shadow-md">
-                    <div class="flex items-center gap-3 flex-1">
-                        <svg class="h-5 w-5 flex-shrink-0 text-mono-400" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M21 21l-6m2-5a7 7 0 11-14 0 7 7 0114 0z" />
-                        </svg>
-                        <input type="text" name="search" value="{{ request('search') }}"
-                            class="flex-1 bg-transparent text-sm text-mono-900 outline-none placeholder:text-mono-400"
-                            placeholder="Cari produk favorit Anda...">
-                    </div>
-                    <select name="category"
-                        class="w-full sm:w-auto sm:border-l border-mono-200 bg-transparent sm:pl-3 sm:pr-1 px-3 py-2 sm:py-0 rounded-lg sm:rounded-none text-sm text-mono-600 outline-none border sm:border-0">
-                        <option value="">Semua Kategori</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->slug }}" @selected(request('category') === $category->slug)>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <button type="submit"
-                        class="w-full sm:w-auto rounded-full bg-mono-900 px-6 py-2.5 sm:py-2 text-xs font-medium uppercase tracking-wider text-white transition hover:bg-mono-800">
-                        Cari
-                    </button>
-                </form>
+                <!-- Search Bar -->
+                <div class="w-full lg:w-auto lg:min-w-[400px] xl:min-w-[500px]">
+                    <form method="GET" action="{{ route('catalog') }}"
+                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 rounded-2xl sm:rounded-full border border-mono-200 bg-white p-4 sm:px-6 sm:py-3 shadow-sm transition focus-within:border-mono-400 focus-within:shadow-md">
+                        <div class="flex items-center gap-3 flex-1">
+                            <svg class="h-5 w-5 flex-shrink-0 text-mono-400" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 21l-6m2-5a7 7 0 11-14 0 7 7 0114 0z" />
+                            </svg>
+                            <input type="text" name="search" value="{{ request('search') }}"
+                                class="flex-1 bg-transparent text-sm text-mono-900 outline-none placeholder:text-mono-400"
+                                placeholder="Cari produk favorit Anda...">
+                        </div>
+                        <select name="category"
+                            class="w-full sm:w-auto sm:border-l border-mono-200 bg-transparent sm:pl-3 sm:pr-1 px-3 py-2 sm:py-0 rounded-lg sm:rounded-none text-sm text-mono-600 outline-none border sm:border-0">
+                            <option value="">Semua Kategori</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->slug }}" @selected(request('category') === $category->slug)>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <button type="submit"
+                            class="w-full sm:w-auto rounded-full bg-mono-900 px-6 py-2.5 sm:py-2 text-xs font-medium uppercase tracking-wider text-white transition hover:bg-mono-800">
+                            Cari
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <div data-catalog-shell>
                 <!-- Category Tabs -->
-                <div class="flex items-center justify-center gap-2 overflow-x-auto pb-px scrollbar-hide mb-12 lg:mb-16">
+                <div class="flex items-center justify-start gap-2 overflow-x-auto pb-px scrollbar-hide mb-12 lg:mb-16">
                     <a href="{{ route('catalog') }}"
                         class="whitespace-nowrap rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs uppercase tracking-wider transition {{ !request('category') ? 'bg-mono-900 text-white font-medium shadow-sm' : 'bg-white text-mono-500 hover:text-mono-800 hover:bg-mono-100 border border-mono-200' }}">
                         Semua

@@ -24,19 +24,7 @@
         </div>
 
         {{-- Desktop View --}}
-        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-            <div>
-                <p class="text-sm text-slate-500 font-medium">
-                    Menampilkan 
-                    <span class="font-bold text-slate-800">{{ $paginator->firstItem() }}</span>
-                    -
-                    <span class="font-bold text-slate-800">{{ $paginator->lastItem() }}</span>
-                    dari 
-                    <span class="font-bold text-slate-800">{{ $paginator->total() }}</span>
-                    produk
-                </p>
-            </div>
-
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-center mt-8">
             <div>
                 <span class="relative z-0 inline-flex shadow-sm rounded-xl bg-white border border-slate-200 p-1.5 gap-1">
                     {{-- Previous Page Link --}}
