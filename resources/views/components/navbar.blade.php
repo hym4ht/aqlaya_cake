@@ -25,17 +25,17 @@
             <div class="hidden items-center gap-10 md:flex">
                 <div class="flex items-center gap-8 border-r border-gray-200 pr-8">
                     <a href="{{ route('home') }}" class="relative font-sans text-sm font-normal transition duration-200"
-                        :class="activeSection === 'home' && {{ request()->routeIs('home') ? 'true' : 'false' }} ? 'text-mono-900 after:absolute after:bottom-[-28px] after:left-0 after:h-[2px] after:w-full after:bg-mono-900 after:content-[\'\']' : 'text-mono-600 hover:text-mono-900'">
+                        :class="activeSection === 'home' && {{ request()->routeIs('home') ? 'true' : 'false' }} ? 'text-mono-900 after:absolute after:bottom-[-28px] after:left-0 after:h-[2px] after:w-full after:bg-pink-600 after:content-[\'\']' : 'text-mono-600 hover:text-mono-900'">
                         Home
                     </a>
                     <a href="{{ route('home') }}#about"
                         class="relative font-sans text-sm font-normal transition duration-200"
-                        :class="activeSection === 'about' && {{ request()->routeIs('home') ? 'true' : 'false' }} ? 'text-mono-900 after:absolute after:bottom-[-28px] after:left-0 after:h-[2px] after:w-full after:bg-mono-900 after:content-[\'\']' : 'text-mono-600 hover:text-mono-900'">
+                        :class="activeSection === 'about' && {{ request()->routeIs('home') ? 'true' : 'false' }} ? 'text-mono-900 after:absolute after:bottom-[-28px] after:left-0 after:h-[2px] after:w-full after:bg-pink-600 after:content-[\'\']' : 'text-mono-600 hover:text-mono-900'">
                         About
                     </a>
                     <a href="{{ route('home') }}#catalog-grid"
                         class="relative font-sans text-sm font-normal transition duration-200"
-                        :class="(activeSection === 'catalog-grid' && {{ request()->routeIs('home') ? 'true' : 'false' }}) || {{ request()->routeIs('catalog') || request('search') ? 'true' : 'false' }} ? 'text-mono-900 after:absolute after:bottom-[-28px] after:left-0 after:h-[2px] after:w-full after:bg-mono-900 after:content-[\'\']' : 'text-mono-600 hover:text-mono-900'">
+                        :class="(activeSection === 'catalog-grid' && {{ request()->routeIs('home') ? 'true' : 'false' }}) || {{ request()->routeIs('catalog') || request('search') ? 'true' : 'false' }} ? 'text-mono-900 after:absolute after:bottom-[-28px] after:left-0 after:h-[2px] after:w-full after:bg-pink-600 after:content-[\'\']' : 'text-mono-600 hover:text-mono-900'">
                         Collections
                     </a>
                 </div>
@@ -47,7 +47,7 @@
                             Cart
                             @if($cartCount > 0)
                                 <span
-                                    class="absolute -right-3 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-mono-900 text-[10px] font-medium text-white shadow-sm">{{ $cartCount }}</span>
+                                    class="absolute -right-3 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-pink-600 text-[10px] font-medium text-white shadow-sm">{{ $cartCount }}</span>
                             @endif
                         </a>
 
@@ -93,7 +93,7 @@
                             Login
                         </a>
                         <a href="{{ route('register') }}"
-                            class="rounded-full bg-mono-900 px-7 py-2.5 font-sans text-sm font-medium text-white shadow-md transition duration-300 hover:bg-mono-700 hover:shadow-lg active:scale-95">
+                            class="rounded-full bg-pink-600 px-7 py-2.5 font-sans text-sm font-medium text-white shadow-md transition duration-300 hover:bg-pink-700 hover:shadow-lg active:scale-95">
                             Register
                         </a>
                     </div>
@@ -137,7 +137,7 @@
                         :class="{{ request()->routeIs('cart.index') ? 'true' : 'false' }} ? 'text-mono-900 font-medium' : 'text-mono-600'">
                         My Cart
                         @if($cartCount > 0)
-                            <span class="rounded-full bg-mono-900 px-2.5 py-0.5 text-xs font-medium text-white">{{ $cartCount }}</span>
+                            <span class="rounded-full bg-pink-600 px-2.5 py-0.5 text-xs font-medium text-white">{{ $cartCount }}</span>
                         @endif
                     </a>
 
@@ -166,7 +166,7 @@
                         Login
                     </a>
                     <a href="{{ route('register') }}" 
-                        class="flex h-12 items-center justify-center rounded-xl bg-mono-900 font-sans text-sm font-semibold text-white shadow-md transition active:bg-mono-700">
+                        class="flex h-12 items-center justify-center rounded-xl bg-pink-600 font-sans text-sm font-semibold text-white shadow-md transition active:bg-pink-700">
                         Register Account
                     </a>
                 </div>

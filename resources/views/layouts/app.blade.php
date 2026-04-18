@@ -20,7 +20,7 @@ n
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="min-h-screen overflow-x-hidden bg-mono-50 antialiased selection:bg-mono-900 selection:text-white">
+<body class="min-h-screen overflow-x-hidden bg-mono-50 antialiased selection:bg-pink-600 selection:text-white">
     @php
         $cartCount = collect(session(\App\Services\CartService::SESSION_KEY, []))->sum('quantity');
         $storeMapUrl = 'https://www.google.com/maps/place/Aqlaya+Cake/@-6.8706374,109.1358249,17z/data=!3m1!4b1!4m6!3m5!1s0x2e6fb74b4389ec67:0xc4caa2c69961f46!8m2!3d-6.8706374!4d109.1384052!16s%2Fg%2F11qgbqv9jw?entry=ttu&g_ep=EgoyMDI2MDQwNy4wIKXMDSoASAFQAw%3D%3D';
@@ -40,7 +40,7 @@ n
         @endif
     </main>
 
-    <footer id="visit" class="mt-auto border-t border-white/10 bg-[#a71e2c]">
+    <footer id="visit" class="mt-auto border-t border-white/10 bg-pink-600">
         <div class="mx-auto max-w-[1600px] px-5 py-10 sm:px-8 sm:py-12 lg:px-12 lg:py-14">
             <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
                 <div class="max-w-2xl">

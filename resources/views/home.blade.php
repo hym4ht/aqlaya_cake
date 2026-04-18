@@ -166,7 +166,7 @@
                         @foreach($allBanners as $index => $banner)
                             <button @click="currentSlide = {{ $index }}; resetAutoplay()"
                                 class="h-2 w-2 rounded-full transition-all"
-                                :class="currentSlide === {{ $index }} ? 'bg-mono-900 w-8' : 'bg-mono-900/50'"
+                                :class="currentSlide === {{ $index }} ? 'bg-pink-600 w-8' : 'bg-pink-600/50'"
                                 aria-label="Go to banner {{ $index + 1 }}"></button>
                         @endforeach
                     </div>
@@ -241,8 +241,8 @@
         @endphp
         <span x-ref="productsData" class="hidden">{!! json_encode($bsProductsData) !!}</span>
 
-        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-[35vw] h-[85vh] bg-[#a71e2c] rounded-l-[150px] lg:rounded-l-[400px] z-0 hidden lg:block"></div>
-        <div class="absolute bottom-0 w-full h-[30vh] sm:h-[45vh] bg-[#a71e2c] rounded-t-[100px] z-0 lg:hidden"></div>
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-[35vw] h-[85vh] bg-pink-600 rounded-l-[150px] lg:rounded-l-[400px] z-0 hidden lg:block"></div>
+        <div class="absolute bottom-0 w-full h-[30vh] sm:h-[45vh] bg-pink-600 rounded-t-[100px] z-0 lg:hidden"></div>
 
         <div class="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 relative z-10 w-full">
             <div class="flex flex-col lg:flex-row items-center gap-4 sm:gap-8 lg:gap-0">
@@ -270,10 +270,10 @@
                         <template x-for="(product, index) in products" :key="index">
                             <button @click="activeIdx = index" class="group focus:outline-none flex flex-col items-center flex-shrink-0">
                                 <div class="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full p-1 border-2 transition-all duration-500"
-                                     :class="activeIdx === index ? 'border-[#a71e2c] scale-110 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'">
+                                     :class="activeIdx === index ? 'border-pink-600 scale-110 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'">
                                     <img :src="product.image" class="w-full h-full object-cover rounded-full">
                                 </div>
-                                <div class="mt-2 lg:mt-3 w-6 lg:w-8 h-1 transition-all duration-500" :class="activeIdx === index ? 'bg-[#a71e2c]' : 'bg-transparent'"></div>
+                                <div class="mt-2 lg:mt-3 w-6 lg:w-8 h-1 transition-all duration-500" :class="activeIdx === index ? 'bg-pink-600' : 'bg-transparent'"></div>
                             </button>
                         </template>
                     </div>
@@ -347,7 +347,7 @@
                             @endforeach
                         </select>
                         <button type="submit"
-                            class="w-full sm:w-auto rounded-full bg-mono-900 px-6 py-2.5 sm:py-2 text-xs font-medium uppercase tracking-wider text-white transition hover:bg-mono-800">
+                            class="w-full sm:w-auto rounded-full bg-pink-600 px-6 py-2.5 sm:py-2 text-xs font-medium uppercase tracking-wider text-white transition hover:bg-pink-700">
                             Cari
                         </button>
                     </form>
@@ -358,12 +358,12 @@
                 <!-- Category Tabs -->
                 <div class="flex items-center justify-start gap-2 overflow-x-auto pb-px scrollbar-hide mb-12 lg:mb-16">
                     <a href="{{ route('catalog') }}"
-                        class="whitespace-nowrap rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs uppercase tracking-wider transition {{ !request('category') ? 'bg-mono-900 text-white font-medium shadow-sm' : 'bg-white text-mono-500 hover:text-mono-800 hover:bg-mono-100 border border-mono-200' }}">
+                        class="whitespace-nowrap rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs uppercase tracking-wider transition {{ !request('category') ? 'bg-pink-600 text-white font-medium shadow-sm' : 'bg-white text-mono-500 hover:text-pink-600 hover:bg-pink-50 border border-mono-200' }}">
                         Semua
                     </a>
                     @foreach($categories as $category)
                         <a href="{{ route('catalog', ['category' => $category->slug]) }}"
-                            class="whitespace-nowrap rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs uppercase tracking-wider transition {{ request('category') === $category->slug ? 'bg-mono-900 text-white font-medium shadow-sm' : 'bg-white text-mono-500 hover:text-mono-800 hover:bg-mono-100 border border-mono-200' }}">
+                            class="whitespace-nowrap rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs uppercase tracking-wider transition {{ request('category') === $category->slug ? 'bg-pink-600 text-white font-medium shadow-sm' : 'bg-white text-mono-500 hover:text-pink-600 hover:bg-pink-50 border border-mono-200' }}">
                             {{ $category->name }}
                         </a>
                     @endforeach
@@ -382,7 +382,7 @@
                                         class="aspect-square w-full object-cover transition duration-700 group-hover:scale-105">
                                     @if($product->is_best_seller)
                                         <span
-                                            class="absolute left-3 top-3 rounded-full bg-mono-900 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-white shadow-sm">
+                                            class="absolute left-3 top-3 rounded-full bg-pink-600 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-white shadow-sm">
                                             Best Seller
                                         </span>
                                     @endif
