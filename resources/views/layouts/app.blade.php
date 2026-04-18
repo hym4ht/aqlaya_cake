@@ -1,4 +1,5 @@
-n<!DOCTYPE html>
+n
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -8,7 +9,7 @@ n<!DOCTYPE html>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Shalimar&family=Poppins:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Shalimar&display=swap"
         rel="stylesheet">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
@@ -39,15 +40,15 @@ n<!DOCTYPE html>
         @endif
     </main>
 
-    <footer id="visit" class="mt-auto border-t border-mono-200 bg-mono-50">
+    <footer id="visit" class="mt-auto border-t border-white/10 bg-[#a71e2c]">
         <div class="mx-auto max-w-[1600px] px-5 py-10 sm:px-8 sm:py-12 lg:px-12 lg:py-14">
             <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
                 <div class="max-w-2xl">
-                    <p class="text-[10px] uppercase tracking-ultra-wide text-mono-400">Aqlaya Cake Studio</p>
-                    <h2 class="mt-4 font-serif text-3xl font-light uppercase leading-tight text-mono-900 sm:text-4xl">
+                    <p class="text-[10px] uppercase tracking-ultra-wide text-white/70">Aqlaya Cake Studio</p>
+                    <h2 class="mt-4 font-serif text-3xl font-light uppercase leading-tight text-white sm:text-4xl">
                         Curated cakes for intimate celebrations.
                     </h2>
-                    <p class="mt-4 max-w-xl text-sm leading-7 text-mono-600">
+                    <p class="mt-4 max-w-xl text-sm leading-7 text-white/80">
                         Visual yang rapi, rasa yang tetap hangat, dan proses pemesanan yang dibuat sederhana untuk
                         hadiah maupun momen spesial.
                     </p>
@@ -55,24 +56,24 @@ n<!DOCTYPE html>
 
                 <div class="grid gap-4 sm:grid-cols-3 lg:min-w-[580px]">
                     <a href="{{ route('home') }}#catalog-grid"
-                        class="border-b border-mono-200 pb-3 text-[10px] uppercase tracking-[0.25em] text-mono-600 transition hover:text-mono-900">
+                        class="border-b border-white/20 pb-3 text-[10px] uppercase tracking-[0.25em] text-white transition hover:text-white/60">
                         Catalog
                     </a>
                     <a href="{{ $storeMapUrl }}" target="_blank" rel="noopener noreferrer"
-                        class="border-b border-mono-200 pb-3 text-[10px] uppercase tracking-[0.25em] text-mono-600 transition hover:text-mono-900">
+                        class="border-b border-white/20 pb-3 text-[10px] uppercase tracking-[0.25em] text-white transition hover:text-white/60">
                         Google Maps
                     </a>
                     <a href="https://www.instagram.com/aqlayacake" target="_blank" rel="noopener noreferrer"
-                        class="border-b border-mono-200 pb-3 text-[10px] uppercase tracking-[0.25em] text-mono-600 transition hover:text-mono-900">
+                        class="border-b border-white/20 pb-3 text-[10px] uppercase tracking-[0.25em] text-white transition hover:text-white/60">
                         Instagram
                     </a>
                 </div>
             </div>
 
             <div
-                class="mt-8 flex flex-col gap-2 border-t border-mono-200 pt-4 text-[10px] uppercase tracking-[0.2em] text-mono-400 sm:flex-row sm:items-center sm:justify-between">
+                class="mt-8 flex flex-col gap-2 border-t border-white/10 pt-4 text-[10px] uppercase tracking-[0.2em] text-white/50 sm:flex-row sm:items-center sm:justify-between">
                 <p>&copy; {{ date('Y') }} Aqlaya Cake Studio</p>
-                <p>Pekalongan, Jawa Tengah</p>
+                <p>Tegal, Jawa Tengah</p>
                 <p>Custom cakes, dessert gifting, and soft celebrations.</p>
             </div>
         </div>

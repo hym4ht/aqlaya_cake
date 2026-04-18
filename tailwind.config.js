@@ -29,7 +29,8 @@ export default {
             },
             fontFamily: {
                 sans: ['Plus Jakarta Sans', ...defaultTheme.fontFamily.sans],
-                serif: ['Noto Serif', ...defaultTheme.fontFamily.serif],
+                serif: ['Plus Jakarta Sans', ...defaultTheme.fontFamily.sans],
+                mono: ['Plus Jakarta Sans', ...defaultTheme.fontFamily.sans],
                 logo: ['Shalimar', 'cursive'],
             },
             letterSpacing: {

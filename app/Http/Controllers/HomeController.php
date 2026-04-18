@@ -52,6 +52,7 @@ class HomeController extends Controller
             ->where('is_best_seller', true)
             ->available()
             ->latest()
+            ->take(5)
             ->get();
 
         $banners = Banner::active()->latest()->get();

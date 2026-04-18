@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('title', 'Aqlaya Cake | Curated Patisserie Landing')
@@ -59,26 +60,26 @@
 
             <!-- Combined Banner Carousel -->
             <div class="relative overflow-hidden h-[70vh] lg:h-[80vh] bg-white" x-data="{
-                                                                    currentSlide: 0,
-                                                                    totalSlides: {{ $totalBanners }},
-                                                                    autoplayInterval: null,
-                                                                    startAutoplay() {
-                                                                        this.autoplayInterval = setInterval(() => {
-                                                                            this.currentSlide = this.currentSlide === this.totalSlides - 1 ? 0 : this.currentSlide + 1;
-                                                                        }, 5000);
-                                                                    },
-                                                                    stopAutoplay() {
-                                                                        if (this.autoplayInterval) {
-                                                                            clearInterval(this.autoplayInterval);
-                                                                            this.autoplayInterval = null;
+                                                                        currentSlide: 0,
+                                                                        totalSlides: {{ $totalBanners }},
+                                                                        autoplayInterval: null,
+                                                                        startAutoplay() {
+                                                                            this.autoplayInterval = setInterval(() => {
+                                                                                this.currentSlide = this.currentSlide === this.totalSlides - 1 ? 0 : this.currentSlide + 1;
+                                                                            }, 8000);
+                                                                        },
+                                                                        stopAutoplay() {
+                                                                            if (this.autoplayInterval) {
+                                                                                clearInterval(this.autoplayInterval);
+                                                                                this.autoplayInterval = null;
+                                                                            }
+                                                                        },
+                                                                        resetAutoplay() {
+                                                                            this.stopAutoplay();
+                                                                            this.startAutoplay();
                                                                         }
-                                                                    },
-                                                                    resetAutoplay() {
-                                                                        this.stopAutoplay();
-                                                                        this.startAutoplay();
-                                                                    }
-                                                                }" x-init="startAutoplay()" @mouseenter="stopAutoplay()"
-                @mouseleave="startAutoplay()">
+                                                                    }" x-init="startAutoplay()"
+                @mouseenter="stopAutoplay()" @mouseleave="startAutoplay()">
                 @foreach($allBanners as $index => $banner)
                     <div class="absolute inset-0 transition-opacity duration-700" x-show="currentSlide === {{ $index }}"
                         x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0"
@@ -107,7 +108,7 @@
                                     <div class="mt-8">
                                         <a href="#catalog-grid"
                                             class="inline-flex items-center justify-center w-32 h-10 bg-zinc-600/80 hover:bg-zinc-700 rounded-3xl text-white text-xs font-medium tracking-wide transition-colors"
-                                            style="font-family: 'Poppins', sans-serif;">
+                                            style="font-family: 'Plus Jakarta Sans', sans-serif;">
                                             Order Now
                                         </a>
                                     </div>
@@ -124,7 +125,7 @@
                                 <div class="absolute inset-0 h-full flex flex-col justify-center items-center px-4 lg:px-8">
                                     <!-- Title -->
                                     <h2 class="text-5xl lg:text-6xl font-bold mb-12 text-gray-900"
-                                        style="font-family: 'Poppins', sans-serif;">
+                                        style="font-family: 'Plus Jakarta Sans', sans-serif;">
                                         {{ $banner['title'] }}
                                     </h2>
 
@@ -174,100 +175,141 @@
         </div>
     </section>
 
-    <!-- Best Sellers Carousel Section -->
-    @if($bestSellerCarousel->isNotEmpty())
-        <section id="about" class="scroll-mt-32 bg-white py-16 lg:py-24">
-            <div class="mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12">
-                <div class="mb-16 lg:mb-24 text-center">
-                    <h2 class="font-serif text-4xl font-light text-mono-900 sm:text-5xl lg:text-6xl">
-                        Our Best Seller
+    <!-- About Section -->
+<section id="about" class="scroll-mt-32 bg-white py-24 lg:py-40 relative overflow-hidden">
+    <div class="mx-auto max-w-[1000px] px-6 lg:px-12 text-center">
+        
+        <div class="flex flex-col items-center">
+            <span class="text-[11px] uppercase tracking-[0.4em] text-zinc-400 font-bold mb-8 block">Authentic Taste</span>
+            
+            <h2 class="text-4xl lg:text-6xl font-bold text-zinc-900 leading-[1.1] mb-12 tracking-tight">
+                Kue yang jujur lahir dari <br/>
+                <span class="text-zinc-400 font-light italic serif">bahan-bahan pilihan.</span>
+            </h2>
+            
+            <div class="max-w-2xl space-y-8 text-zinc-600 leading-relaxed text-lg lg:text-xl font-light">
+                <p>
+                    Di <strong>Aqlaya Cake</strong>, kami tidak menggunakan jalan pintas. Setiap adonan diolah dengan teliti menggunakan bahan premium untuk memastikan rasa yang konsisten dan memuaskan.
+                </p>
+                <p>
+                    Bagi kami, sepotong kue bukan sekadar hidangan penutup, tapi sebuah cara untuk merayakan momen manis bersama orang-orang tersayang.
+                </p>
+            </div>
+
+            <div class="mt-20 w-full pt-12 border-t border-zinc-100 flex flex-col items-center gap-6">
+                <div class="text-center">
+                    <p class="text-xs uppercase tracking-widest text-zinc-400 mb-2 font-semibold">Kunjungi Workshop Kami</p>
+                    <p class="text-zinc-900 font-medium text-lg">Jl. KH. Ahmad Dahlan No. 33, Kota Tegal</p>
+                </div>
+                
+                <a href="https://share.google/xhFZ1pTvAWPygYIVo" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="group inline-flex items-center gap-2 text-sm font-bold text-zinc-900 hover:text-zinc-500 transition-colors">
+                    <span class="border-b-2 border-zinc-900 group-hover:border-zinc-500 pb-0.5">Petunjuk Lokasi</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+    <!-- Best Sellers Dynamic Revolve Section -->
+@if($bestSellerCarousel->isNotEmpty())
+    <section class="relative bg-white overflow-hidden py-8 sm:py-16 lg:py-24 min-h-[500px] lg:min-h-[850px] flex items-center" 
+        x-data="{
+            activeIdx: 0,
+            products: [],
+            init() {
+                this.products = JSON.parse(this.$refs.productsData.textContent);
+            }
+        }">
+        
+        @php
+            $bsProductsData = $bestSellerCarousel->take(5)->map(function($p) {
+                return [
+                    'id' => $p->id,
+                    'name' => $p->name,
+                    'excerpt' => $p->excerpt ?? 'Hidangan spesial pilihan terbaik Aqlaya Cake.',
+                    'image' => $p->image_path ? asset('storage/' . $p->image_path) : ($p->image_url ?: asset('images/hero1.png')),
+                ];
+            })->values();
+        @endphp
+        <span x-ref="productsData" class="hidden">{!! json_encode($bsProductsData) !!}</span>
+
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-[35vw] h-[85vh] bg-[#a71e2c] rounded-l-[150px] lg:rounded-l-[400px] z-0 hidden lg:block"></div>
+        <div class="absolute bottom-0 w-full h-[30vh] sm:h-[45vh] bg-[#a71e2c] rounded-t-[100px] z-0 lg:hidden"></div>
+
+        <div class="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 relative z-10 w-full">
+            <div class="flex flex-col lg:flex-row items-center gap-4 sm:gap-8 lg:gap-0">
+                
+                <div class="w-full lg:w-1/2 flex flex-col justify-center relative z-20 text-center lg:text-left mt-2 lg:mt-0">
+                    <h2 class="order-1 text-4xl sm:text-6xl lg:text-8xl font-black text-gray-900 leading-[0.85] mb-2 sm:mb-6 lg:mb-12">
+                        Today's<br/>
+                        <span class="font-normal text-3xl sm:text-5xl lg:text-7xl lowercase">special</span>
                     </h2>
+
+                    <div class="order-3 lg:order-2 relative h-20 sm:h-32 lg:h-52 flex justify-center lg:justify-start mt-2 lg:mt-0">
+                        <template x-for="(product, index) in products" :key="index">
+                            <div class="absolute inset-x-0 lg:inset-auto lg:left-0 lg:right-auto transition-all duration-700"
+                                 x-show="activeIdx === index"
+                                 x-transition:enter="transition ease-out delay-500 duration-500"
+                                 x-transition:enter-start="opacity-0 translate-y-4"
+                                 x-transition:enter-end="opacity-100 translate-y-0">
+                                <h3 class="text-xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-1 lg:mb-4 tracking-tight" x-text="product.name"></h3>
+                                <p class="text-gray-500 text-sm sm:text-base lg:text-lg max-w-sm mx-auto lg:mx-0 leading-relaxed" x-text="product.excerpt"></p>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="order-2 lg:order-3 flex items-center justify-center lg:justify-start gap-3 sm:gap-4 mt-1 lg:mt-12 overflow-x-auto pt-4 pb-2 lg:py-4 px-2 scrollbar-hide">
+                        <template x-for="(product, index) in products" :key="index">
+                            <button @click="activeIdx = index" class="group focus:outline-none flex flex-col items-center flex-shrink-0">
+                                <div class="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full p-1 border-2 transition-all duration-500"
+                                     :class="activeIdx === index ? 'border-[#a71e2c] scale-110 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'">
+                                    <img :src="product.image" class="w-full h-full object-cover rounded-full">
+                                </div>
+                                <div class="mt-2 lg:mt-3 w-6 lg:w-8 h-1 transition-all duration-500" :class="activeIdx === index ? 'bg-[#a71e2c]' : 'bg-transparent'"></div>
+                            </button>
+                        </template>
+                    </div>
                 </div>
 
-                @if($bestSellersSlides->count() > 1)
-                    <!-- Carousel Container (multiple slides) -->
-                    <div class="relative overflow-hidden pb-32"
-                        x-data="{
-                                                                                                                                            currentSlide: 0,
-                                                                                                                                            totalSlides: {{ $bestSellersSlides->count() }},
-                                                                                                                                            autoplayInterval: null,
-                                                                                                                                            startAutoplay() {
-                                                                                                                                                this.autoplayInterval = setInterval(() => {
-                                                                                                                                                    this.currentSlide = this.currentSlide === this.totalSlides - 1 ? 0 : this.currentSlide + 1;
-                                                                                                                                                }, 4000);
-                                                                                                                                            },
-                                                                                                                                            stopAutoplay() {
-                                                                                                                                                if (this.autoplayInterval) {
-                                                                                                                                                    clearInterval(this.autoplayInterval);
-                                                                                                                                                    this.autoplayInterval = null;
-                                                                                                                                                }
-                                                                                                                                            },
-                                                                                                                                            resetAutoplay() {
-                                                                                                                                                this.stopAutoplay();
-                                                                                                                                                this.startAutoplay();
-                                                                                                                                            }
-                                                                                                                                        }" x-init="startAutoplay()">
-
-                        <!-- Slides Wrapper -->
-                        <div class="flex transition-transform duration-700 ease-in-out pb-16"
-                            :style="`transform: translateX(-${currentSlide * 100}%)`">
-                            @foreach($bestSellersSlides as $slideIndex => $slide)
-                                <div class="w-full flex-shrink-0">
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
-                                        @foreach($slide->values() as $productIndex => $bsProduct)
-                                            <article
-                                                class="group flex flex-col items-center {{ $productIndex === 1 ? 'lg:mt-32' : 'lg:mt-0' }}">
-                                                <a href="{{ route('products.show', $bsProduct) }}"
-                                                    class="block w-full max-w-md overflow-hidden">
-                                                    <img src="{{ $bsProduct->image_path ? asset('storage/' . $bsProduct->image_path) : ($bsProduct->image_url ?: asset('images/hero1.png')) }}"
-                                                        alt="{{ $bsProduct->name }}"
-                                                        class="aspect-square w-full object-cover transition duration-700 group-hover:scale-105">
-                                                    <div class="mt-8 text-center px-4">
-                                                        <h3 class="font-serif text-2xl font-light uppercase tracking-wider text-mono-900 sm:text-3xl lg:text-4xl"
-                                                            style="letter-spacing: 0.08em;">
-                                                            {{ $bsProduct->name }}
-                                                        </h3>
-                                                        <p class="mt-6 text-sm leading-relaxed text-mono-600 max-w-xs mx-auto">
-                                                            {{ $bsProduct->excerpt }}
-                                                        </p>
-                                                    </div>
-                                                </a>
-                                            </article>
-                                        @endforeach
-                                    </div>
+                <div class="w-full lg:w-1/2 relative h-[250px] sm:h-[450px] lg:h-[750px] flex items-center justify-center lg:justify-end overflow-visible">
+                    
+                    <div class="relative w-[220px] h-[220px] sm:w-[320px] sm:h-[320px] lg:w-[600px] lg:h-[600px]">
+                        
+                        <template x-for="(product, index) in products" :key="index">
+                            <div class="absolute inset-0 flex items-center justify-center transition-all"
+                                 x-show="activeIdx === index"
+                                 
+                                 /* Animasi Swing: Piring seolah diputar masuk dari sisi luar lingkaran */
+                                 x-transition:enter="transition duration-[1200ms] cubic-bezier(0.19, 1, 0.22, 1)"
+                                 x-transition:enter-start="opacity-0 rotate-[90deg] translate-x-[150px] sm:translate-x-[300px] lg:translate-x-[500px] translate-y-[80px] lg:translate-y-[200px] scale-50"
+                                 x-transition:enter-end="opacity-100 rotate-0 translate-x-0 translate-y-0 scale-100"
+                                 
+                                 x-transition:leave="transition duration-[800ms] ease-in"
+                                 x-transition:leave-start="opacity-100 rotate-0 translate-x-0 scale-100"
+                                 x-transition:leave-end="opacity-0 rotate-[-90deg] translate-x-[150px] sm:translate-x-[300px] lg:translate-x-[500px] translate-y-[-80px] lg:translate-y-[-200px] scale-50 blur-lg">
+                                 
+                                <div class="w-full h-full rounded-full bg-white border-[8px] sm:border-[12px] lg:border-[25px] border-white shadow-[0_20px_40px_rgba(0,0,0,0.3)] lg:shadow-[0_50px_100px_rgba(0,0,0,0.4)] overflow-hidden flex items-center justify-center">
+                                     <img :src="product.image" class="w-full h-full object-cover rounded-full">
                                 </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @else
-                    <!-- Single slide (no carousel needed) -->
-                    <div class="pb-32">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
-                            @foreach($bestSellerCarousel as $productIndex => $bsProduct)
-                                <article class="group flex flex-col items-center {{ $productIndex === 1 ? 'lg:mt-32' : 'lg:mt-0' }}">
-                                    <a href="{{ route('products.show', $bsProduct) }}" class="block w-full max-w-md overflow-hidden">
-                                        <img src="{{ $bsProduct->image_path ? asset('storage/' . $bsProduct->image_path) : ($bsProduct->image_url ?: asset('images/hero1.png')) }}"
-                                            alt="{{ $bsProduct->name }}"
-                                            class="aspect-square w-full object-cover transition duration-700 group-hover:scale-105">
-                                        <div class="mt-8 text-center px-4">
-                                            <h3 class="font-serif text-2xl font-light uppercase tracking-wider text-mono-900 sm:text-3xl lg:text-4xl"
-                                                style="letter-spacing: 0.08em;">
-                                                {{ $bsProduct->name }}
-                                            </h3>
-                                            <p class="mt-6 text-sm leading-relaxed text-mono-600 max-w-xs mx-auto">
-                                                {{ $bsProduct->excerpt }}
-                                            </p>
-                                        </div>
-                                    </a>
-                                </article>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-            </div>
-        </section>
-    @endif
 
+                            </div>
+                        </template>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+@endif
     <section id="catalog-grid" class="scroll-mt-32 bg-mono-50/50">
         <div class="mx-auto max-w-[1600px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-28">
 
