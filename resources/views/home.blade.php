@@ -8,7 +8,7 @@
         $heroProduct = $bestSellers->first() ?? $products->first();
         $minimumOrderLabel = \Illuminate\Support\Carbon::parse($minimumOrderDate)->locale('id')->translatedFormat('d M Y');
         $signatureProducts = $bestSellers
-            ->concat($products->getCollection())
+            ->concat($products)
             ->unique('id')
             ->take(6)
             ->values();
@@ -310,117 +310,111 @@
         </div>
     </section>
 @endif
-    <section id="catalog-grid" class="scroll-mt-32 bg-mono-50/50">
+    <section id="catalog-grid" class="scroll-mt-32 bg-mono-50/50 relative">
         <div class="mx-auto max-w-[1600px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-28">
-
-            <!-- Header and Search Bar -->
-            <div class="mb-12 lg:mb-16 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-                <!-- Header -->
-                <div class="text-left">
-                    <p class="text-xs uppercase tracking-[0.3em] text-mono-400 mb-3">Catalog</p>
-                    <h2 class="font-serif text-4xl font-light text-mono-900 sm:text-5xl lg:text-6xl">
-                        Koleksi Aqlaya
-                    </h2>
-                </div>
-
-                <!-- Search Bar -->
-                <div class="w-full lg:w-auto lg:min-w-[400px] xl:min-w-[500px]">
-                    <form method="GET" action="{{ route('catalog') }}"
-                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 rounded-2xl sm:rounded-full border border-mono-200 bg-white p-4 sm:px-6 sm:py-3 shadow-sm transition focus-within:border-mono-400 focus-within:shadow-md">
-                        <div class="flex items-center gap-3 flex-1">
-                            <svg class="h-5 w-5 flex-shrink-0 text-mono-400" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M21 21l-6m2-5a7 7 0 11-14 0 7 7 0114 0z" />
-                            </svg>
-                            <input type="text" name="search" value="{{ request('search') }}"
-                                class="flex-1 bg-transparent text-sm text-mono-900 outline-none placeholder:text-mono-400"
-                                placeholder="Cari produk favorit Anda...">
-                        </div>
-                        <select name="category"
-                            class="w-full sm:w-auto sm:border-l border-mono-200 bg-transparent sm:pl-3 sm:pr-1 px-3 py-2 sm:py-0 rounded-lg sm:rounded-none text-sm text-mono-600 outline-none border sm:border-0">
-                            <option value="">Semua Kategori</option>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->slug }}" @selected(request('category') === $category->slug)>
-                                    {{ $category->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <button type="submit"
-                            class="w-full sm:w-auto rounded-full bg-pink-600 px-6 py-2.5 sm:py-2 text-xs font-medium uppercase tracking-wider text-white transition hover:bg-pink-700">
-                            Cari
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <div data-catalog-shell>
-                <!-- Category Tabs -->
-                <div class="flex items-center justify-start gap-2 overflow-x-auto pb-px scrollbar-hide mb-12 lg:mb-16">
-                    <a href="{{ route('catalog') }}"
-                        class="whitespace-nowrap rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs uppercase tracking-wider transition {{ !request('category') ? 'bg-pink-600 text-white font-medium shadow-sm' : 'bg-white text-mono-500 hover:text-pink-600 hover:bg-pink-50 border border-mono-200' }}">
-                        Semua
-                    </a>
-                    @foreach($categories as $category)
-                        <a href="{{ route('catalog', ['category' => $category->slug]) }}"
-                            class="whitespace-nowrap rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-xs uppercase tracking-wider transition {{ request('category') === $category->slug ? 'bg-pink-600 text-white font-medium shadow-sm' : 'bg-white text-mono-500 hover:text-pink-600 hover:bg-pink-50 border border-mono-200' }}">
-                            {{ $category->name }}
-                        </a>
-                    @endforeach
-                </div>
-
-                <!-- Product Grid -->
-                <div
-                    class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-10 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-12">
-                    @forelse($products as $product)
-                        <article class="group flex flex-col h-full">
-                            <a href="{{ route('products.show', $product) }}" class="block flex-1 flex flex-col">
-                                <div
-                                    class="relative overflow-hidden rounded-2xl bg-white shadow-sm transition duration-300 group-hover:shadow-lg flex-1">
-                                    <img src="{{ $product->image_path ? asset('storage/' . $product->image_path) : ($product->image_url ?: asset('images/hero.png')) }}"
-                                        alt="{{ $product->name }}"
-                                        class="aspect-square w-full object-cover transition duration-700 group-hover:scale-105">
-                                    @if($product->is_best_seller)
-                                        <span
-                                            class="absolute left-3 top-3 rounded-full bg-pink-600 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-white shadow-sm">
-                                            Best Seller
-                                        </span>
-                                    @endif
-                                </div>
-
-                                <div class="mt-4 space-y-1 px-1 flex-shrink-0">
-                                    <p class="text-[11px] uppercase tracking-[0.2em] text-mono-400 line-clamp-1">
-                                        {{ $product->category?->name ?? 'Cake' }}
-                                    </p>
-                                    <h3 class="line-clamp-2 text-sm font-medium text-mono-900 sm:text-base leading-tight">
-                                        {{ $product->name }}
-                                    </h3>
-                                    <p class="text-xs font-medium text-mono-600 pt-1">
-                                        Rp{{ number_format($product->price, 0, ',', '.') }}
-                                    </p>
-                                </div>
-                            </a>
-                        </article>
-                    @empty
-                        <div class="col-span-full py-24 text-center">
-                            <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-mono-100">
-                                <svg class="h-7 w-7 text-mono-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                    stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M21 21l-6m2-5a7 7 0 11-14 0 7 7 0114 0z" />
-                                </svg>
+            <div class="js-catalog-desktop-stage relative">
+                <div class="js-catalog-desktop-shell flex flex-col w-full z-20">
+                    <div class="flex-shrink-0 bg-mono-50 pb-4 sm:pb-6" style="background-color: #fbfbfb; margin: 0 -1.25rem; padding-left: 1.25rem; padding-right: 1.25rem;">
+                        <!-- Header -->
+                        <div class="mb-6 lg:mb-8 pt-2">
+                            <div class="text-left">
+                                <p class="text-[10px] lg:text-xs uppercase tracking-[0.3em] text-pink-600 font-bold mb-1 sm:mb-2">Catalog</p>
+                                <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-mono-900 leading-none">
+                                    Koleksi Aqlaya
+                                </h2>
                             </div>
-                            <p class="text-base text-mono-500">Tidak ada produk yang ditemukan.</p>
-                            <p class="mt-1 text-sm text-mono-400">Coba kata kunci atau kategori lain.</p>
                         </div>
-                    @endforelse
-                </div>
 
-                @if($products->hasPages())
-                    <div class="mt-14 flex justify-center border-t border-mono-200 pt-8">
-                        {{ $products->links() }}
+                        <!-- Category and Search Row -->
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-2 border-b border-mono-200/60 pb-4">
+                            
+                            <!-- Category Tabs -->
+                            <div class="flex items-center justify-start gap-2 overflow-x-auto scrollbar-hide w-full lg:w-auto flex-1">
+                                <a href="{{ route('catalog') }}"
+                                    class="whitespace-nowrap rounded-full px-4 py-1.5 sm:px-5 sm:py-2 text-[10px] sm:text-xs font-semibold uppercase tracking-wider transition-all {{ !request('category') ? 'bg-pink-600 text-white shadow-sm' : 'bg-white text-mono-500 hover:text-pink-600 hover:bg-pink-50 border border-mono-200' }}">
+                                    Semua
+                                </a>
+                                @foreach($categories as $category)
+                                    <a href="{{ route('catalog', ['category' => $category->slug]) }}"
+                                        class="whitespace-nowrap rounded-full px-4 py-1.5 sm:px-5 sm:py-2 text-[10px] sm:text-xs font-semibold uppercase tracking-wider transition-all {{ request('category') === $category->slug ? 'bg-pink-600 text-white shadow-sm' : 'bg-white text-mono-500 hover:text-pink-600 hover:bg-pink-50 border border-mono-200' }}">
+                                        {{ $category->name }}
+                                    </a>
+                                @endforeach
+                            </div>
+
+                            <!-- Search Bar -->
+                            <div class="w-full lg:w-auto shrink-0">
+                                <form method="GET" action="{{ route('catalog') }}" class="relative group w-full sm:w-72 lg:w-80">
+                                    @if(request('category'))
+                                        <input type="hidden" name="category" value="{{ request('category') }}">
+                                    @endif
+                                    <input type="text" name="search" value="{{ request('search') }}"
+                                        class="w-full rounded-full border border-mono-200 bg-white py-2 pl-11 pr-4 text-sm text-mono-900 outline-none placeholder:text-mono-400 transition-all focus:border-pink-500 focus:ring-1 focus:ring-pink-500 shadow-sm"
+                                        placeholder="Cari produk...">
+                                    <div class="absolute left-4 top-1/2 -translate-y-1/2 text-mono-400 group-focus-within:text-pink-500 transition-colors pointer-events-none">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6m2-5a7 7 0 11-14 0 7 7 0114 0z" />
+                                        </svg>
+                                    </div>
+                                    <button type="submit" class="hidden">Cari</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                @endif
+
+                    <div id="catalog-results-panel" class="flex-1 overflow-visible lg:overflow-hidden min-h-0 pt-4">
+                        <div data-catalog-shell>
+                            <!-- Product Grid -->
+                            <div
+                                class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-10 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-12">
+                                @forelse($products as $product)
+                                    <article class="group flex flex-col h-full">
+                                        <a href="{{ route('products.show', $product) }}" class="block flex-1 flex flex-col">
+                                            <div
+                                                class="relative overflow-hidden rounded-2xl bg-white shadow-sm transition duration-300 group-hover:shadow-lg flex-1">
+                                                <img src="{{ $product->image_path ? asset('storage/' . $product->image_path) : ($product->image_url ?: asset('images/hero.png')) }}"
+                                                    alt="{{ $product->name }}"
+                                                    class="aspect-square w-full object-cover transition duration-700 group-hover:scale-105">
+                                                @if($product->is_best_seller)
+                                                    <span
+                                                        class="absolute left-3 top-3 rounded-full bg-pink-600 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-white shadow-sm">
+                                                        Best Seller
+                                                    </span>
+                                                @endif
+                                            </div>
+
+                                            <div class="mt-4 space-y-1 px-1 flex-shrink-0">
+                                                <p class="text-[11px] uppercase tracking-[0.2em] text-mono-400 line-clamp-1">
+                                                    {{ $product->category?->name ?? 'Cake' }}
+                                                </p>
+                                                <h3 class="line-clamp-2 text-sm font-medium text-mono-900 sm:text-base leading-tight">
+                                                    {{ $product->name }}
+                                                </h3>
+                                                <p class="text-xs font-medium text-mono-600 pt-1">
+                                                    Rp{{ number_format($product->price, 0, ',', '.') }}
+                                                </p>
+                                            </div>
+                                        </a>
+                                    </article>
+                                @empty
+                                    <div class="col-span-full py-24 text-center">
+                                        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-mono-100">
+                                            <svg class="h-7 w-7 text-mono-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M21 21l-6m2-5a7 7 0 11-14 0 7 7 0114 0z" />
+                                            </svg>
+                                        </div>
+                                        <p class="text-base text-mono-500">Tidak ada produk yang ditemukan.</p>
+                                        <p class="mt-1 text-sm text-mono-400">Coba kata kunci atau kategori lain.</p>
+                                    </div>
+                                @endforelse
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -460,12 +454,14 @@
 
                     try {
                         const urlObj = new URL(link.href);
-                        if (urlObj.pathname === catalogPath || link.href.includes('?page=')) {
+                        if (urlObj.pathname === catalogPath) {
                             e.preventDefault();
                             fetchCatalog(link.href);
                         }
                     } catch (err) { }
                 });
+
+
 
                 catalogGrid.addEventListener('submit', function (e) {
                     const form = e.target.closest('form');
@@ -495,10 +491,16 @@
                         .then(html => {
                             const parser = new DOMParser();
                             const doc = parser.parseFromString(html, 'text/html');
-                            const newContent = doc.querySelector('#catalog-grid');
-                            if (newContent) {
-                                catalogGrid.innerHTML = newContent.innerHTML;
+                            const newContent = doc.querySelector('[data-catalog-shell]');
+                            if (newContent && contentContainer) {
+                                contentContainer.innerHTML = newContent.innerHTML;
+                                contentContainer.style.opacity = '1';
+                                contentContainer.style.pointerEvents = '';
                                 window.history.pushState({ path: url }, '', url);
+                                
+                                // Re-bind parallax mechanics
+                                if (window.bindCatalogResultImages) window.bindCatalogResultImages();
+                                if (window.scheduleCatalogDesktopLayout) window.scheduleCatalogDesktopLayout();
                             } else {
                                 window.location.href = url;
                             }
@@ -517,6 +519,106 @@
                     }
                 });
             });
+
+            // PARALLAX DESKTOP CATALOG LAYOUT (Imported from Luwungragi paradigm)
+            var resultsEl   = document.getElementById('catalog-results-panel');
+            var siteHeaderEl = document.querySelector('nav');
+            var catalogDesktopStageEl = document.querySelector('.js-catalog-desktop-stage');
+            var catalogDesktopShellEl = document.querySelector('.js-catalog-desktop-shell');
+            var catalogScrollFrame = null;
+            var catalogLayoutFrame = null;
+            var catalogDesktopState = {
+                enabled: false,
+                stickyTop: 0,
+                maxInternalScroll: 0,
+            };
+
+            function isDesktopCatalogMode() {
+                // Di Luwungragi ini dibatasi >= 1024,
+                // Tapi untuk Aqlaya Cake kita aktifkan untuk SEMUA ukuran layar (termasuk mobile)
+                return true;
+            }
+
+            function syncCatalogDesktopScroll() {
+                if (!catalogDesktopState.enabled || !catalogDesktopStageEl || !resultsEl) return;
+                var stageRect = catalogDesktopStageEl.getBoundingClientRect();
+                var nextScrollTop = Math.max(
+                    0,
+                    Math.min(catalogDesktopState.stickyTop - stageRect.top, catalogDesktopState.maxInternalScroll)
+                );
+                resultsEl.scrollTop = nextScrollTop;
+            }
+
+            function applyCatalogDesktopLayout() {
+                if (!catalogDesktopStageEl || !catalogDesktopShellEl || !resultsEl) return;
+
+                if (!isDesktopCatalogMode()) {
+                    catalogDesktopState.enabled = false;
+                    catalogDesktopStageEl.style.height = '';
+                    catalogDesktopShellEl.classList.remove('sticky');
+                    catalogDesktopShellEl.style.top = '';
+                    catalogDesktopShellEl.style.height = '';
+                    resultsEl.style.overflow = 'visible';
+                    resultsEl.overflowY = 'visible';
+                    resultsEl.scrollTop = 0;
+                    return;
+                }
+
+                var headerHeight = siteHeaderEl ? siteHeaderEl.offsetHeight : 80;
+                var stickyTop = headerHeight; 
+                
+                // Gunakan innerHeight asli device untuk container, tapi jangan batasi minHeight
+                var shellHeight = window.innerHeight - stickyTop;
+
+                catalogDesktopShellEl.classList.add('sticky');
+                catalogDesktopShellEl.style.top = stickyTop + 'px';
+                catalogDesktopShellEl.style.height = shellHeight + 'px';
+                resultsEl.style.overflow = 'hidden';
+                resultsEl.style.overflowY = 'hidden'; // Ensure native touch scroll disables on inner child
+
+                var maxInternalScroll = Math.max(resultsEl.scrollHeight - resultsEl.clientHeight, 0);
+
+                catalogDesktopStageEl.style.height = (shellHeight + maxInternalScroll) + 'px';
+                catalogDesktopState.enabled = true;
+                catalogDesktopState.stickyTop = stickyTop;
+                catalogDesktopState.maxInternalScroll = maxInternalScroll;
+
+                syncCatalogDesktopScroll();
+            }
+
+            function scheduleCatalogDesktopLayout() {
+                if (catalogLayoutFrame) cancelAnimationFrame(catalogLayoutFrame);
+                catalogLayoutFrame = requestAnimationFrame(function () {
+                    catalogLayoutFrame = null;
+                    applyCatalogDesktopLayout();
+                });
+            }
+
+            function scheduleCatalogDesktopScroll() {
+                if (catalogScrollFrame) return;
+                catalogScrollFrame = requestAnimationFrame(function () {
+                    catalogScrollFrame = null;
+                    syncCatalogDesktopScroll();
+                });
+            }
+
+            function bindCatalogResultImages() {
+                if (!resultsEl) return;
+                resultsEl.querySelectorAll('img').forEach(function (img) {
+                    if (img.complete) return;
+                    img.addEventListener('load', scheduleCatalogDesktopLayout, { once: true });
+                    img.addEventListener('error', scheduleCatalogDesktopLayout, { once: true });
+                });
+            }
+
+            window.scheduleCatalogDesktopLayout = scheduleCatalogDesktopLayout;
+            window.bindCatalogResultImages = bindCatalogResultImages;
+            
+            bindCatalogResultImages();
+            scheduleCatalogDesktopLayout();
+            window.addEventListener('load', scheduleCatalogDesktopLayout);
+            window.addEventListener('resize', scheduleCatalogDesktopLayout);
+            window.addEventListener('scroll', scheduleCatalogDesktopScroll, { passive: true });
         </script>
     @endpush
 @endsection

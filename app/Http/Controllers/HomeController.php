@@ -31,9 +31,8 @@ class HomeController extends Controller
                 $query->where('price', '<=', (float) $request->input('max_price'));
             })
             ->available()
-            ->latest()
-            ->paginate(8)
-            ->withQueryString();
+            ->when(!$request->filled('category'), fn ($query) => $query->inRandomOrder(), fn ($query) => $query->latest())
+            ->get();
 
         $bestSellers = Product::query()
             ->with('category')
@@ -78,6 +77,7 @@ class HomeController extends Controller
             ->whereKeyNot($product->id)
             ->when($product->category_id, fn($query) => $query->where('category_id', $product->category_id))
             ->available()
+            ->inRandomOrder()
             ->take(3)
             ->get();
 

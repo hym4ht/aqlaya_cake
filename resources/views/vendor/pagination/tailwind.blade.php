@@ -7,13 +7,13 @@
                     {!! __('Kembali') !!}
                 </span>
             @else
-                <a href="{{ $paginator->previousPageUrl() }}" class="relative inline-flex items-center px-5 py-2.5 text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all shadow-sm">
+                <a href="{{ $paginator->previousPageUrl() }}" class="relative inline-flex items-center px-5 py-2.5 text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-pink-50 hover:text-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-600 transition-all shadow-sm">
                     {!! __('Kembali') !!}
                 </a>
             @endif
 
             @if ($paginator->hasMorePages())
-                <a href="{{ $paginator->nextPageUrl() }}" class="relative inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white bg-slate-900 border border-transparent rounded-xl hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 transition-all shadow-sm">
+                <a href="{{ $paginator->nextPageUrl() }}" class="relative inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white bg-pink-600 border border-transparent rounded-xl hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:ring-offset-2 transition-all shadow-sm">
                     {!! __('Lanjut') !!}
                 </a>
             @else
@@ -37,7 +37,7 @@
                             </span>
                         </span>
                     @else
-                        <a href="{{ $paginator->previousPageUrl() }}" rel="prev" class="relative inline-flex items-center px-3 py-2 text-sm font-medium text-slate-700 bg-transparent rounded-lg hover:bg-slate-100 focus:z-10 focus:outline-none transition-all hover:-translate-x-0.5" aria-label="{{ __('pagination.previous') }}">
+                        <a href="{{ $paginator->previousPageUrl() }}" rel="prev" class="relative inline-flex items-center px-3 py-2 text-sm font-medium text-slate-700 bg-transparent rounded-lg hover:bg-pink-50 hover:text-pink-600 focus:z-10 focus:outline-none transition-all hover:-translate-x-0.5" aria-label="{{ __('pagination.previous') }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                             </svg>
@@ -58,10 +58,10 @@
                             @foreach ($element as $page => $url)
                                 @if ($page == $paginator->currentPage())
                                     <span aria-current="page">
-                                        <span class="relative inline-flex items-center px-4 py-2 text-sm font-bold text-white bg-slate-900 rounded-lg shadow-sm cursor-default">{{ $page }}</span>
+                                        <span class="relative inline-flex items-center px-4 py-2 text-sm font-bold text-white bg-pink-600 rounded-lg shadow-sm cursor-default">{{ $page }}</span>
                                     </span>
                                 @else
-                                    <a href="{{ $url }}" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-slate-500 bg-transparent rounded-lg hover:bg-slate-100 hover:text-slate-900 focus:z-10 focus:outline-none transition-all" aria-label="{{ __('Go to page :page', ['page' => $page]) }}">
+                                    <a href="{{ $url }}" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-slate-500 bg-transparent rounded-lg hover:bg-pink-50 hover:text-pink-600 focus:z-10 focus:outline-none transition-all" aria-label="{{ __('Go to page :page', ['page' => $page]) }}">
                                         {{ $page }}
                                     </a>
                                 @endif
@@ -71,7 +71,7 @@
 
                     {{-- Next Page Link --}}
                     @if ($paginator->hasMorePages())
-                        <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="relative inline-flex items-center px-3 py-2 text-sm font-medium text-slate-700 bg-transparent rounded-lg hover:bg-slate-100 focus:z-10 focus:outline-none transition-all hover:translate-x-0.5" aria-label="{{ __('pagination.next') }}">
+                        <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="relative inline-flex items-center px-3 py-2 text-sm font-medium text-slate-700 bg-transparent rounded-lg hover:bg-pink-50 hover:text-pink-600 focus:z-10 focus:outline-none transition-all hover:translate-x-0.5" aria-label="{{ __('pagination.next') }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                             </svg>

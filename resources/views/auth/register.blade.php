@@ -3,10 +3,9 @@
 @section('title', 'Daftar | Aqlaya Cake')
 
 @section('content')
-<div class="bg-white rounded-[2rem] border border-mono-100 shadow-sm overflow-hidden flex flex-col md:flex-row-reverse min-h-[600px]">
-    <!-- Right: Form -->
-    <div class="w-full md:w-1/2 p-8 sm:p-12 lg:p-16 flex flex-col justify-center">
-        <div class="mb-10">
+<div class="max-w-2xl mx-auto mt-10 mb-20 bg-white rounded-[2rem] border border-mono-100 shadow-sm overflow-hidden min-h-[500px]">
+    <div class="p-8 sm:p-12 lg:p-16 flex flex-col justify-center">
+        <div class="mb-10 text-center">
             <h1 class="font-serif text-3xl sm:text-4xl font-light text-mono-900 mb-3">Buat Akun</h1>
             <p class="text-mono-500 text-sm leading-relaxed">Bergabung dan rasakan pengalaman berbelanja cake spesial yang elegan.</p>
         </div>
@@ -94,16 +93,6 @@
 
         <div class="mt-8 pt-8 border-t border-mono-100 text-center text-sm text-mono-600">
             Sudah memiliki akun? <a href="{{ route('login') }}" class="font-bold text-pink-600 hover:text-pink-700 transition-colors">Masuk di sini</a>
-        </div>
-    </div>
-
-    <!-- Left: Image Cover -->
-    <div class="hidden md:block w-full md:w-1/2 relative bg-mono-50">
-        <img src="{{ asset('images/hero2.png') }}" alt="Aqlaya Cake Style" class="absolute inset-0 w-full h-full object-cover">
-        <!-- Overlay Content -->
-        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex flex-col items-center justify-center p-12 text-center text-white">
-            <h3 class="font-serif text-4xl font-light mb-4 leading-tight">Pengalaman Pesan<br>Lebih Mudah</h3>
-            <p class="text-white/80 text-sm max-w-sm font-light">Simpan riwayat pesanan dan permudah referensi rasa untuk momen mendatang.</p>
         </div>
     </div>
 </div>

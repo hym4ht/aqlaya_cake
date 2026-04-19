@@ -120,73 +120,81 @@
                 <h2 class="font-serif text-3xl font-medium text-slate-900 mb-8">Atur Detail Cake Anda</h2>
 
                 @auth
-                    <form method="POST" action="{{ route('cart.store', $product) }}" class="flex flex-col gap-5">
-                        @csrf
-                        <div class="grid grid-cols-2 gap-5">
-                            <div>
-                                <label
-                                    class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Ukuran</label>
-                                <select name="size"
-                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition text-slate-700 appearance-none"
-                                    required>
-                                    <option value="">Pilih ukuran</option>
-                                    @foreach($product->sizes ?? [] as $size)
-                                        <option value="{{ $size }}" @selected(old('size') === $size)>{{ $size }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label
-                                    class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Jumlah</label>
-                                <input type="number" name="quantity" min="1" max="{{ $product->stock }}"
-                                    value="{{ old('quantity', 1) }}"
-                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition"
-                                    required>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Request
-                                Ucapan <span class="text-slate-400 font-normal lowercase">(opsional)</span></label>
-                            <input type="text" name="custom_message" value="{{ old('custom_message') }}"
-                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition"
-                                placeholder="Contoh: Happy Birthday Aya">
-                        </div>
-
-                        @if($product->isPreOrder())
+                    @if(auth()->user()->role === 'customer')
+                        <form method="POST" action="{{ route('cart.store', $product) }}" class="flex flex-col gap-5">
+                            @csrf
                             <div class="grid grid-cols-2 gap-5">
                                 <div>
                                     <label
-                                        class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Tanggal</label>
-                                    <input type="date" name="scheduled_date" min="{{ $minimumOrderDate }}"
-                                        value="{{ old('scheduled_date', $minimumOrderDate) }}"
-                                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition uppercase"
+                                        class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Ukuran</label>
+                                    <select name="size"
+                                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition text-slate-700 appearance-none"
                                         required>
+                                        <option value="">Pilih ukuran</option>
+                                        @foreach($product->sizes ?? [] as $size)
+                                            <option value="{{ $size }}" @selected(old('size') === $size)>{{ $size }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div>
                                     <label
-                                        class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Jam</label>
-                                    <input type="time" name="scheduled_time" value="{{ old('scheduled_time', '10:00') }}"
-                                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition">
+                                        class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Jumlah</label>
+                                    <input type="number" name="quantity" min="1" max="{{ $product->stock }}"
+                                        value="{{ old('quantity', 1) }}"
+                                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition"
+                                        required>
                                 </div>
                             </div>
-                        @endif
 
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Catatan
-                                Tambahan <span class="text-slate-400 font-normal lowercase">(opsional)</span></label>
-                            <textarea name="notes" rows="3"
-                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition resize-none"
-                                placeholder="Contoh: warna krim dominan pink blush">{{ old('notes') }}</textarea>
-                        </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Request
+                                    Ucapan <span class="text-slate-400 font-normal lowercase">(opsional)</span></label>
+                                <input type="text" name="custom_message" value="{{ old('custom_message') }}"
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition"
+                                    placeholder="Contoh: Happy Birthday Aya">
+                            </div>
 
-                        <div class="mt-4">
-                            <button type="submit"
-                                class="w-full py-4 bg-slate-900 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-honey-bronze hover:text-slate-900 transition-all duration-300 shadow-md transform hover:-translate-y-0.5">
-                                Masukkan ke Keranjang
-                            </button>
+                            @if($product->isPreOrder())
+                                <div class="grid grid-cols-2 gap-5">
+                                    <div>
+                                        <label
+                                            class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Tanggal</label>
+                                        <input type="date" name="scheduled_date" min="{{ $minimumOrderDate }}"
+                                            value="{{ old('scheduled_date', $minimumOrderDate) }}"
+                                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition uppercase"
+                                            required>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Jam</label>
+                                        <input type="time" name="scheduled_time" value="{{ old('scheduled_time', '10:00') }}"
+                                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition">
+                                    </div>
+                                </div>
+                            @endif
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Catatan
+                                    Tambahan <span class="text-slate-400 font-normal lowercase">(opsional)</span></label>
+                                <textarea name="notes" rows="3"
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition resize-none"
+                                    placeholder="Contoh: warna krim dominan pink blush">{{ old('notes') }}</textarea>
+                            </div>
+
+                            <div class="mt-4">
+                                <button type="submit"
+                                    class="w-full py-4 bg-slate-900 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-honey-bronze hover:text-slate-900 transition-all duration-300 shadow-md transform hover:-translate-y-0.5">
+                                    Masukkan ke Keranjang
+                                </button>
+                            </div>
+                        </form>
+                    @else
+                        <div class="bg-slate-50 rounded-2xl p-6 text-center border border-slate-200">
+                            <div class="text-3xl mb-3">🔒</div>
+                            <p class="text-slate-600 text-sm mb-2 font-semibold">Akun Admin</p>
+                            <p class="text-slate-500 text-xs leading-relaxed">Akun admin tidak dapat melakukan pemesanan. Gunakan akun customer untuk memesan produk.</p>
                         </div>
-                    </form>
+                    @endif
                 @else
                     <div class="bg-linen rounded-2xl p-6 text-center border border-mint-leaf/20">
                         <p class="text-slate-600 text-sm mb-6 leading-relaxed">Silakan masuk ke akun Anda untuk menyimpan cake
@@ -245,21 +253,21 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 @foreach($relatedProducts as $related)
-                    <div
+                    <a href="{{ route('products.show', $related) }}"
                         class="group bg-white rounded-3xl p-5 border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col">
                         <div class="relative overflow-hidden rounded-2xl mb-4 bg-linen aspect-[4/3]">
                             <img src="{{ $related->image_path ? asset('storage/' . $related->image_path) : ($related->image_url ?: asset('images/hero1.png')) }}"
                                 alt="{{ $related->name }}"
                                 class="w-full h-full object-cover mix-blend-multiply transition-transform duration-700 group-hover:scale-105">
                         </div>
-                        <h3 class="font-serif text-xl font-medium text-slate-900 mb-2 truncate"><a
-                                href="{{ route('products.show', $related) }}"
-                                class="hover:text-mint-leaf transition-colors">{{ $related->name }}</a></h3>
-                        <p class="text-sm text-slate-500 line-clamp-2 mb-4">{{ $related->excerpt }}</p>
+                        <h3 class="font-serif text-xl font-medium text-slate-900 mb-2 truncate group-hover:text-mint-leaf transition-colors">
+                            {{ $related->name }}
+                        </h3>
+                        <p class="text-sm text-slate-500 line-clamp-2 mb-4 whitespace-normal">{{ $related->excerpt }}</p>
                         <div class="mt-auto pt-4 border-t border-slate-100">
                             <strong class="text-slate-900 text-lg">Rp{{ number_format($related->price, 0, ',', '.') }}</strong>
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
         </section>

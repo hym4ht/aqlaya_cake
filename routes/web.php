@@ -32,7 +32,7 @@ Route::post('/midtrans/webhook', MidtransWebhookController::class)
     ->withoutMiddleware([ValidateCsrfToken::class])
     ->name('midtrans.webhook');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/products/{product}/cart', [CartController::class, 'store'])->name('cart.store');
     Route::patch('/cart/{itemId}', [CartController::class, 'update'])->name('cart.update');

@@ -42,14 +42,16 @@
 
                 @auth
                     <div class="flex items-center gap-6">
-                        <a href="{{ route('cart.index') }}" class="relative font-sans text-sm font-normal transition"
-                            :class="{{ request()->routeIs('cart.index') ? 'true' : 'false' }} ? 'text-mono-900' : 'text-mono-600 hover:text-mono-900'">
-                            Cart
-                            @if($cartCount > 0)
-                                <span
-                                    class="absolute -right-3 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-pink-600 text-[10px] font-medium text-white shadow-sm">{{ $cartCount }}</span>
-                            @endif
-                        </a>
+                        @if(auth()->user()->role === 'customer')
+                            <a href="{{ route('cart.index') }}" class="relative font-sans text-sm font-normal transition"
+                                :class="{{ request()->routeIs('cart.index') ? 'true' : 'false' }} ? 'text-mono-900' : 'text-mono-600 hover:text-mono-900'">
+                                Cart
+                                @if($cartCount > 0)
+                                    <span
+                                        class="absolute -right-3 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-pink-600 text-[10px] font-medium text-white shadow-sm">{{ $cartCount }}</span>
+                                @endif
+                            </a>
+                        @endif
 
                         <div class="relative" x-data="{ open: false }" @click.away="open=false">
                             <button @click="open = !open"
@@ -62,10 +64,12 @@
 
                             <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-cloak
                                 class="absolute right-0 top-full z-50 mt-4 w-48 origin-top-right border border-gray-100 bg-white py-2 shadow-xl">
-                                <a href="{{ route('orders.index') }}"
-                                    class="block px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
-                                    Orders
-                                </a>
+                                @if(auth()->user()->role === 'customer')
+                                    <a href="{{ route('orders.index') }}"
+                                        class="block px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
+                                        Orders
+                                    </a>
+                                @endif
 
                                 @if(auth()->user()->isAdmin())
                                     <a href="{{ route('admin.dashboard') }}"
@@ -132,19 +136,21 @@
 
             @auth
                 <div class="mt-4 space-y-1 border-t border-gray-100 pt-4">
-                    <a href="{{ route('cart.index') }}"
-                        class="flex items-center justify-between py-3 text-base font-normal transition"
-                        :class="{{ request()->routeIs('cart.index') ? 'true' : 'false' }} ? 'text-mono-900 font-medium' : 'text-mono-600'">
-                        My Cart
-                        @if($cartCount > 0)
-                            <span class="rounded-full bg-pink-600 px-2.5 py-0.5 text-xs font-medium text-white">{{ $cartCount }}</span>
-                        @endif
-                    </a>
+                    @if(auth()->user()->role === 'customer')
+                        <a href="{{ route('cart.index') }}"
+                            class="flex items-center justify-between py-3 text-base font-normal transition"
+                            :class="{{ request()->routeIs('cart.index') ? 'true' : 'false' }} ? 'text-mono-900 font-medium' : 'text-mono-600'">
+                            My Cart
+                            @if($cartCount > 0)
+                                <span class="rounded-full bg-pink-600 px-2.5 py-0.5 text-xs font-medium text-white">{{ $cartCount }}</span>
+                            @endif
+                        </a>
 
-                    <a href="{{ route('orders.index') }}" class="block py-3 text-base font-normal transition"
-                        :class="{{ request()->routeIs('orders.index') ? 'true' : 'false' }} ? 'text-mono-900 font-medium' : 'text-mono-600'">
-                        My Orders
-                    </a>
+                        <a href="{{ route('orders.index') }}" class="block py-3 text-base font-normal transition"
+                            :class="{{ request()->routeIs('orders.index') ? 'true' : 'false' }} ? 'text-mono-900 font-medium' : 'text-mono-600'">
+                            My Orders
+                        </a>
+                    @endif
 
                     @if(auth()->user()->isAdmin())
                         <a href="{{ route('admin.dashboard') }}" class="block py-3 text-base font-medium text-mono-900 transition">
