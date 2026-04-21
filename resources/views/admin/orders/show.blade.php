@@ -106,7 +106,7 @@
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="decision" value="accept">
-                        <button class="w-full py-2.5 rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition flex items-center justify-center gap-2">
+                        <button class="w-full py-2.5 rounded-xl bg-pink-600 text-white text-sm font-medium hover:bg-pink-700 transition flex items-center justify-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                             Terima & Mulai Produksi
                         </button>
@@ -154,7 +154,7 @@
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="status" value="{{ \App\Models\Order::STATUS_COMPLETED }}">
-                            <button class="w-full py-2.5 rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition flex items-center justify-center gap-2">
+                            <button class="w-full py-2.5 rounded-xl bg-pink-600 text-white text-sm font-medium hover:bg-pink-700 transition flex items-center justify-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                                 Tandai Pesanan Selesai
                             </button>

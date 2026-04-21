@@ -80,7 +80,7 @@
                 <div class="text-[10px] font-bold tracking-widest text-pink-600 uppercase mb-1">Order Summary</div>
                 <h2 class="font-serif text-xl font-medium text-stone-900 mb-4">Ringkasan Item</h2>
                 
-                <div class="flex flex-col gap-3 mb-5 max-h-[35vh] overflow-y-auto pt-1 pr-4 pb-1 pl-1 -ml-1 custom-scrollbar">
+                <div class="flex flex-col gap-3 mb-5 max-h-[35vh] overflow-y-auto pt-2 pr-4 pb-1 pl-1 -ml-1 custom-scrollbar">
                     @foreach($cartItems as $item)
                         <div class="bg-white p-3 rounded-xl shadow-sm border border-stone-100 relative">
                             <span class="absolute -top-1.5 -right-1.5 w-5 h-5 flex items-center justify-center bg-pink-600 text-white text-[9px] font-bold rounded-full border border-white shadow-sm">{{ $item['quantity'] }}</span>

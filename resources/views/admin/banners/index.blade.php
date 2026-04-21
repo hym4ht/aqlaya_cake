@@ -12,7 +12,7 @@
             <p class="text-sm text-slate-500 mt-1">Kelola banner promo yang tampil di halaman utama.</p>
         </div>
         <a href="{{ route('admin.banners.create') }}"
-           class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-xl hover:bg-slate-800 transition shadow-sm">
+           class="inline-flex items-center gap-2 px-5 py-2.5 bg-pink-600 text-white text-sm font-semibold rounded-xl hover:bg-pink-700 transition shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
             </svg>

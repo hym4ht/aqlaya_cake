@@ -15,7 +15,8 @@ use Illuminate\View\View;
 class AuthController extends Controller
 {
     public function __construct(
-        private readonly NotificationService $notificationService
+        private readonly NotificationService $notificationService,
+        private readonly CartService $cartService,
     ) {
     }
 
@@ -62,6 +63,9 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
+        // Pindahkan cart guest (session) ke DB setelah login
+        $this->cartService->mergeSessionCartToDatabase();
+
         return redirect()->intended(
             $user->isAdmin() ? route('admin.dashboard') : route('home')
         );
@@ -103,17 +107,9 @@ class AuthController extends Controller
 
     public function logout(Request $request): RedirectResponse
     {
-        // Simpan isi keranjang sebelum session di-destroy
-        $cart = session(CartService::SESSION_KEY);
-
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        // Restore keranjang ke session baru agar tidak hilang setelah logout
-        if ($cart) {
-            session([CartService::SESSION_KEY => $cart]);
-        }
 
         return redirect()->route('home');
     }

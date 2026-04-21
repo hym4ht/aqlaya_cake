@@ -58,7 +58,7 @@
             {{-- Submit --}}
             <div class="pt-4 border-t border-slate-100 flex items-center gap-3">
                 <button type="submit"
-                        class="px-6 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-xl hover:bg-slate-800 transition shadow-sm">
+                        class="px-6 py-2.5 bg-pink-600 text-white text-sm font-semibold rounded-xl hover:bg-pink-700 transition shadow-sm">
                     Simpan Banner
                 </button>
                 <a href="{{ route('admin.banners.index') }}" class="px-6 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-800 transition">

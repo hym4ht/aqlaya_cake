@@ -104,7 +104,7 @@
                                         <form method="POST" action="{{ route('admin.customers.decide', $customer) }}" class="inline-flex items-center gap-2">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" name="decision" value="accept" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-slate-900 hover:bg-slate-700 transition">
+                                            <button type="submit" name="decision" value="accept" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-pink-600 hover:bg-pink-700 transition">
                                                 ACC Customer
                                             </button>
                                             <button type="submit" name="decision" value="reject" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 transition">

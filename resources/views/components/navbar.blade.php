@@ -43,22 +43,23 @@
                 @auth
                     <div class="flex items-center gap-6">
                         @if(auth()->user()->role === 'customer')
-                            <a href="{{ route('cart.index') }}" class="relative font-sans text-sm font-normal transition"
+                            <a href="{{ route('cart.index') }}" class="relative inline-flex items-center p-1 transition"
                                 :class="{{ request()->routeIs('cart.index') ? 'true' : 'false' }} ? 'text-mono-900' : 'text-mono-600 hover:text-mono-900'">
-                                Cart
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
                                 @if($cartCount > 0)
                                     <span
-                                        class="absolute -right-3 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-pink-600 text-[10px] font-medium text-white shadow-sm">{{ $cartCount }}</span>
+                                        class="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-pink-600 text-[10px] font-medium text-white shadow-sm">{{ $cartCount }}</span>
                                 @endif
                             </a>
                         @endif
 
-                        <div class="relative" x-data="{ open: false }" @click.away="open=false">
+                        <div class="relative flex items-center" x-data="{ open: false }" @click.away="open=false">
                             <button @click="open = !open"
-                                class="flex items-center gap-2 font-sans text-sm font-medium text-mono-900 transition hover:text-mono-600">
-                                <span>{{ explode(' ', trim(auth()->user()->name ?? auth()->user()->email))[0] }}</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                class="flex items-center justify-center p-1 text-mono-900 transition hover:text-mono-600 rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
                             </button>
 

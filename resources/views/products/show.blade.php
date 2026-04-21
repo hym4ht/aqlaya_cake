@@ -183,7 +183,7 @@
 
                             <div class="mt-4">
                                 <button type="submit"
-                                    class="w-full py-4 bg-slate-900 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-slate-800 transition-all duration-300 shadow-md transform hover:-translate-y-0.5">
+                                    class="w-full py-4 bg-pink-600 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-pink-700 transition-all duration-300 shadow-md transform hover:-translate-y-0.5">
                                     Masukkan ke Keranjang
                                 </button>
                             </div>

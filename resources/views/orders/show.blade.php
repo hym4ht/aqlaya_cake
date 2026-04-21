@@ -116,7 +116,7 @@
                                             <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wide mb-2">Ulasan Singkat</label>
                                             <div class="flex gap-2">
                                                 <input type="text" name="review" class="w-full px-4 py-3 bg-white border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-mint-leaf/50 outline-none transition" placeholder="Sampaikan pendapat Anda">
-                                                <button type="submit" class="px-6 py-3 bg-stone-900 text-white font-bold text-sm tracking-wider uppercase rounded-xl hover:bg-stone-800 transition-colors shrink-0">Kirim</button>
+                                                <button type="submit" class="px-6 py-3 bg-pink-600 text-white font-bold text-sm tracking-wider uppercase rounded-xl hover:bg-pink-700 transition-colors shrink-0">Kirim</button>
                                             </div>
                                         </div>
                                     </div>
