@@ -65,7 +65,7 @@
                         </div>
 
                         <div class="sm:col-span-2 mt-4">
-                            <button type="submit" class="w-full py-4 bg-stone-900 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-honey-bronze hover:text-stone-900 transition-all duration-300 shadow-md transform hover:-translate-y-0.5">
+                            <button type="submit" class="w-full py-4 bg-stone-900 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-stone-800 transition-all duration-300 shadow-md transform hover:-translate-y-0.5">
                                 Buat Pesanan & Lanjut Pembayaran
                             </button>
                         </div>
@@ -80,7 +80,7 @@
                 <div class="text-[11px] font-bold tracking-widest text-mint-leaf uppercase mb-2">Order Summary</div>
                 <h2 class="font-serif text-3xl font-medium text-stone-900 mb-8">Ringkasan Item</h2>
                 
-                <div class="flex flex-col gap-4 mb-8 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+                <div class="flex flex-col gap-4 mb-8 max-h-[40vh] overflow-y-auto pt-2 pr-4 pb-2 pl-1 -ml-1 custom-scrollbar">
                     @foreach($cartItems as $item)
                         <div class="bg-white p-4 rounded-2xl shadow-sm border border-stone-100 relative">
                             <span class="absolute -top-2 -right-2 w-6 h-6 flex items-center justify-center bg-stone-900 text-white text-[10px] font-bold rounded-full border-2 border-white shadow-sm">{{ $item['quantity'] }}</span>

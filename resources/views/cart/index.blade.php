@@ -149,7 +149,7 @@
                 </div>
 
                 <a href="{{ route('checkout.create') }}"
-                    class="w-full flex justify-center py-4 bg-stone-900 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-honey-bronze hover:text-stone-900 transition-all duration-300 shadow-md @if($cartItems->isEmpty()) opacity-50 pointer-events-none @endif">
+                    class="w-full flex justify-center py-4 bg-stone-900 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-stone-800 transition-all duration-300 shadow-md @if($cartItems->isEmpty()) opacity-50 pointer-events-none @endif">
                     Lanjut Checkout
                 </a>
 

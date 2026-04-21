@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\CartService;
 use App\Services\NotificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -102,9 +103,17 @@ class AuthController extends Controller
 
     public function logout(Request $request): RedirectResponse
     {
+        // Simpan isi keranjang sebelum session di-destroy
+        $cart = session(CartService::SESSION_KEY);
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        // Restore keranjang ke session baru agar tidak hilang setelah logout
+        if ($cart) {
+            session([CartService::SESSION_KEY => $cart]);
+        }
 
         return redirect()->route('home');
     }

@@ -27,13 +27,12 @@
                     
                     @php
                         $statusColors = [
-                            'pending' => 'bg-amber-50 text-amber-700',
-                            'paid' => 'bg-blue-50 text-blue-700',
-                            'processing' => 'bg-indigo-50 text-indigo-700',
-                            'shipped' => 'bg-purple-50 text-purple-700',
-                            'ready_for_pickup' => 'bg-teal-50 text-teal-700',
-                            'completed' => 'bg-green-50 text-green-700',
-                            'cancelled' => 'bg-red-50 text-red-700',
+                            'pending_payment'        => 'bg-amber-50 text-amber-700',
+                            'awaiting_confirmation'  => 'bg-blue-50 text-blue-700',
+                            'processing'             => 'bg-indigo-50 text-indigo-700',
+                            'ready'                  => 'bg-teal-50 text-teal-700',
+                            'completed'              => 'bg-green-50 text-green-700',
+                            'rejected'               => 'bg-red-50 text-red-700',
                         ];
                         $statusClass = $statusColors[$order->status] ?? 'bg-stone-50 text-stone-700';
                     @endphp

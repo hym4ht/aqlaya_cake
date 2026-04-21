@@ -183,7 +183,7 @@
 
                             <div class="mt-4">
                                 <button type="submit"
-                                    class="w-full py-4 bg-slate-900 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-honey-bronze hover:text-slate-900 transition-all duration-300 shadow-md transform hover:-translate-y-0.5">
+                                    class="w-full py-4 bg-slate-900 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-slate-800 transition-all duration-300 shadow-md transform hover:-translate-y-0.5">
                                     Masukkan ke Keranjang
                                 </button>
                             </div>
@@ -200,7 +200,7 @@
                         <p class="text-slate-600 text-sm mb-6 leading-relaxed">Silakan masuk ke akun Anda untuk menyimpan cake
                             ini ke keranjang pesanan dan melanjutkan pre-order.</p>
                         <a href="{{ route('login') }}"
-                            class="inline-block w-full py-3 bg-mint-leaf text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-mint-leaf/90 transition-all duration-300 shadow-sm">
+                            class="inline-block w-full py-3 bg-pink-600 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-pink-700 transition-all duration-300 shadow-sm">
                             Masuk untuk Memesan
                         </a>
                     </div>
