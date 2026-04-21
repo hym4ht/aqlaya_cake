@@ -1,6 +1,6 @@
 @props(['cartCount' => 0])
 
-<nav class="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur-sm transition-all duration-300 border-b border-gray-100" x-data="{
+<nav class="fixed left-1/2 z-50 w-[calc(100%-2rem)] max-w-4xl -translate-x-1/2 top-4 sm:top-5 rounded-full bg-white/40 backdrop-blur-md border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300" x-data="{
         mobileOpen: false,
         activeSection: 'home',
         checkScroll() {
@@ -16,26 +16,26 @@
             this.activeSection = current;
         }
     }" @scroll.window="checkScroll()" x-init="setTimeout(() => checkScroll(), 100)">
-    <div class="mx-auto w-full max-w-[1600px] px-6 sm:px-12 lg:px-16">
-        <div class="flex h-20 items-center justify-between">
+    <div class="mx-auto w-full px-5 sm:px-6 lg:px-8">
+        <div class="flex h-14 lg:h-16 items-center justify-between">
             <a href="{{ route('home') }}" class="inline-flex items-center">
-                <span class="font-logo text-3xl font-normal text-mono-900">Aqlaya Cake</span>
+                <span class="font-logo text-2xl font-normal text-mono-900">Aqlaya Cake</span>
             </a>
 
-            <div class="hidden items-center gap-10 md:flex">
-                <div class="flex items-center gap-8 border-r border-gray-200 pr-8">
-                    <a href="{{ route('home') }}" class="relative font-sans text-sm font-normal transition duration-200"
-                        :class="activeSection === 'home' && {{ request()->routeIs('home') ? 'true' : 'false' }} ? 'text-mono-900 after:absolute after:bottom-[-28px] after:left-0 after:h-[2px] after:w-full after:bg-pink-600 after:content-[\'\']' : 'text-mono-600 hover:text-mono-900'">
+            <div class="hidden items-center gap-5 lg:gap-8 md:flex">
+                <div class="flex items-center gap-2 lg:gap-4 border-r border-mono-200/50 pr-6 lg:pr-8">
+                    <a href="{{ route('home') }}" class="relative font-sans text-sm font-medium transition duration-300 px-4 py-2 rounded-full"
+                        :class="activeSection === 'home' && {{ request()->routeIs('home') ? 'true' : 'false' }} ? 'text-pink-700 bg-white/70 shadow-sm' : 'text-mono-600 hover:text-mono-900 hover:bg-white/40'">
                         Home
                     </a>
                     <a href="{{ route('home') }}#about"
-                        class="relative font-sans text-sm font-normal transition duration-200"
-                        :class="activeSection === 'about' && {{ request()->routeIs('home') ? 'true' : 'false' }} ? 'text-mono-900 after:absolute after:bottom-[-28px] after:left-0 after:h-[2px] after:w-full after:bg-pink-600 after:content-[\'\']' : 'text-mono-600 hover:text-mono-900'">
+                        class="relative font-sans text-sm font-medium transition duration-300 px-4 py-2 rounded-full"
+                        :class="activeSection === 'about' && {{ request()->routeIs('home') ? 'true' : 'false' }} ? 'text-pink-700 bg-white/70 shadow-sm' : 'text-mono-600 hover:text-mono-900 hover:bg-white/40'">
                         About
                     </a>
                     <a href="{{ route('home') }}#catalog-grid"
-                        class="relative font-sans text-sm font-normal transition duration-200"
-                        :class="(activeSection === 'catalog-grid' && {{ request()->routeIs('home') ? 'true' : 'false' }}) || {{ request()->routeIs('catalog') || request('search') ? 'true' : 'false' }} ? 'text-mono-900 after:absolute after:bottom-[-28px] after:left-0 after:h-[2px] after:w-full after:bg-pink-600 after:content-[\'\']' : 'text-mono-600 hover:text-mono-900'">
+                        class="relative font-sans text-sm font-medium transition duration-300 px-4 py-2 rounded-full"
+                        :class="(activeSection === 'catalog-grid' && {{ request()->routeIs('home') ? 'true' : 'false' }}) || {{ request()->routeIs('catalog') || request('search') ? 'true' : 'false' }} ? 'text-pink-700 bg-white/70 shadow-sm' : 'text-mono-600 hover:text-mono-900 hover:bg-white/40'">
                         Collections
                     </a>
                 </div>
@@ -62,8 +62,8 @@
                                 </svg>
                             </button>
 
-                            <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-cloak
-                                class="absolute right-0 top-full z-50 mt-4 w-48 origin-top-right border border-gray-100 bg-white py-2 shadow-xl">
+                            <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 -translate-y-2" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 -translate-y-2" x-cloak
+                                class="absolute right-0 top-full z-50 mt-4 w-48 origin-top-right rounded-2xl border border-white/60 bg-white/70 backdrop-blur-xl py-2 shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
                                 @if(auth()->user()->role === 'customer')
                                     <a href="{{ route('orders.index') }}"
                                         class="block px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
@@ -117,9 +117,9 @@
     </div>
 
     <div x-show="mobileOpen" x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
-        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0"
-        x-transition:leave-end="opacity-0 -translate-y-4" x-cloak class="border-t border-gray-100 bg-white shadow-2xl md:hidden">
+        x-transition:enter-start="opacity-0 -translate-y-4 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+        x-transition:leave-end="opacity-0 -translate-y-4 scale-95" x-cloak class="absolute left-0 right-0 top-[calc(100%+0.5rem)] rounded-3xl border border-white/60 bg-white/70 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] md:hidden overflow-hidden">
         <div class="space-y-1 px-6 py-6">
             <a href="{{ route('home') }}" class="block py-3 text-base font-normal transition"
                 :class="activeSection === 'home' && {{ request()->routeIs('home') ? 'true' : 'false' }} ? 'text-mono-900 font-medium' : 'text-mono-600'">

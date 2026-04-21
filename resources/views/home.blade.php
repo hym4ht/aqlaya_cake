@@ -4,6 +4,15 @@
 @section('title', 'Aqlaya Cake | Curated Patisserie Landing')
 
 @section('content')
+    <style>
+        @font-face {
+            font-family: 'Verona-Bold';
+            src: url('{{ asset('fonts/Verona-Bold.otf') }}') format('opentype');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+    </style>
     @php
         $heroProduct = $bestSellers->first() ?? $products->first();
         $minimumOrderLabel = \Illuminate\Support\Carbon::parse($minimumOrderDate)->locale('id')->translatedFormat('d M Y');
@@ -59,7 +68,7 @@
             @include('partials.flash')
 
             <!-- Combined Banner Carousel -->
-            <div class="relative overflow-hidden h-[70vh] lg:h-[80vh] bg-white" x-data="{
+            <div class="relative overflow-hidden h-screen bg-white" x-data="{
                                                                         currentSlide: 0,
                                                                         totalSlides: {{ $totalBanners }},
                                                                         autoplayInterval: null,
@@ -89,59 +98,74 @@
 
                         @if(is_array($banner) && isset($banner['type']) && $banner['type'] === 'static_grid')
                             <!-- Static Grid Banner -->
-                            <div class="relative w-full h-full bg-white overflow-hidden">
-                                <!-- Right Image (Large) -->
-                                <img src="{{ asset($banner['right_image']) }}" alt="Aqlaya Cake"
-                                    class="absolute w-[47.78%] h-auto right-[-15.69%] top-[-4.14%] object-cover">
-                                <!-- Left Image (Small) -->
-                                <img src="{{ asset($banner['left_image']) }}" alt="Aqlaya Cake"
-                                    class="absolute w-[29.24%] h-auto left-[-8.33%] top-[41.82%] object-cover">
+<!-- Static Banner Custom -->
+<div class="relative w-full h-full bg-white overflow-hidden flex flex-col justify-center">
 
-                                <!-- Center Text -->
-                                <div class="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
-                                    <h1 class="text-6xl sm:text-7xl lg:text-9xl font-normal text-black"
-                                        style="font-family: 'Shalimar', cursive;">
-                                        {{ $banner['title'] }}
-                                    </h1>
+    <!-- Background Text Layer -->
+    <div class="absolute inset-0 flex flex-col justify-center items-center select-none pointer-events-none whitespace-nowrap overflow-hidden z-0" style="line-height: 0.82;">
+        <div class="text-rose-400 text-[60px] sm:text-[70px] md:text-[120px] lg:text-[184px] font-bold font-['Verona-Bold'] -ml-[17%]">
+            AQLAYA CAKE
+        </div>
+        <div class="text-rose-400 text-[60px] sm:text-[70px] md:text-[120px] lg:text-[184px] font-bold font-['Verona-Bold'] ml-[5%]">
+            <span class="tracking-[0.07em]">AQLAYA </span><span class="tracking-widest">C</span><span class="tracking-[0.07em]">AKE</span>
+        </div>
+        <div class="text-rose-400 text-[60px] sm:text-[70px] md:text-[120px] lg:text-[184px] font-bold font-['Verona-Bold'] -ml-[4%]">
+            <span class="tracking-[0.07em]">AQLAYA CA</span><span class="tracking-[0.02em]">K</span><span class="tracking-[0.07em]">E</span>
+        </div>
+    </div>
 
-                                    <!-- Order Now Button -->
-                                    <div class="mt-8">
-                                        <a href="#catalog-grid"
-                                            class="inline-flex items-center justify-center w-32 h-10 bg-zinc-600/80 hover:bg-zinc-700 rounded-3xl text-white text-xs font-medium tracking-wide transition-colors"
-                                            style="font-family: 'Plus Jakarta Sans', sans-serif;">
-                                            Order Now
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+    <!-- Main Image -->
+    <div class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none mt-[2%]">
+        <img 
+            src="{{ asset('images/hero1.png') }}" 
+            class="w-[204px] sm:w-[400px] md:w-[600px] lg:w-[614px] object-contain drop-shadow-2xl"
+        >
+    </div>
+
+    <!-- Bottom Content -->
+   <div class="absolute bottom-20 md:bottom-20 xl:bottom-14 w-full flex flex-col md:flex-row items-center justify-center gap-6 lg:gap-12 z-20">
+        <!-- Tagline -->
+        <span class="text-stone-300 text-2xl lg:text-4xl font-normal font-['Niva-Black-Italic']">
+            Toko kue no 1 di Tegal
+        </span>
+
+        <!-- Button -->
+        <a href="#catalog-grid"
+            class="h-10 w-28 lg:h-14 lg:w-44 bg-rose-400 hover:bg-rose-500 text-white rounded-full text-lg lg:text-1xl font-normal font-['Plus_Jakarta_Sans'] transition shadow-lg flex items-center justify-center">
+            Order Now
+        </a>
+
+    </div>
+
+</div>
                         @elseif(is_array($banner) && isset($banner['type']) && $banner['type'] === 'static_list')
                             <!-- Static List Banner -->
                             <div class="relative w-full h-full bg-white overflow-hidden">
                                 <!-- Background Image (Left) - Mirror position dari right_image di banner 1 -->
                                 <img src="{{ asset($banner['background_image']) }}" alt="Background"
-                                    class="absolute w-[47.78%] h-auto left-[-29%] top-[-4.14%] object-cover opacity-90">
+                                    class="absolute w-[47.78%] h-auto left-[-29%] top-[-4.14%] object-cover opacity-90 hidden md:block">
 
                                 <!-- Main Content Area -->
-                                <div class="absolute inset-0 h-full flex flex-col justify-center items-center px-4 lg:px-8">
+                                <div class="absolute inset-0 h-full flex flex-col justify-center items-center px-6 sm:px-8 lg:px-12 w-full max-w-6xl mx-auto">
                                     <!-- Title -->
-                                    <h2 class="text-5xl lg:text-6xl font-bold mb-12 text-gray-900"
+                                    <h2 class="text-3xl sm:text-5xl lg:text-6xl font-bold mb-6 sm:mb-12 text-gray-900 text-center"
                                         style="font-family: 'Plus Jakarta Sans', sans-serif;">
                                         {{ $banner['title'] }}
                                     </h2>
 
                                     <!-- Categories Grid -->
-                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-2 gap-y-6 sm:gap-6 lg:gap-12 w-full">
                                         @foreach($banner['categories'] as $category)
-                                            <div class="space-y-4">
+                                            <div class="space-y-2 sm:space-y-4">
                                                 <!-- Category Title -->
-                                                <h3 class="text-xl lg:text-2xl font-semibold text-gray-800 mb-4"
+                                                <h3 class="text-lg sm:text-xl lg:text-2xl font-semibold text-pink-600 sm:text-gray-800 mb-1 sm:mb-4 border-b border-pink-100 pb-1 sm:border-none sm:pb-0"
                                                     style="font-family: 'Plus Jakarta Sans', sans-serif;">
                                                     {{ $category['name'] }}
                                                 </h3>
                                                 <!-- Product List -->
-                                                <ul class="space-y-2">
+                                                <ul class="space-y-1 sm:space-y-2">
                                                     @foreach($category['items'] as $item)
-                                                        <li class="text-sm lg:text-base text-gray-600"
+                                                        <li class="text-[11px] sm:text-sm lg:text-base text-gray-600 leading-snug"
                                                             style="font-family: 'Plus Jakarta Sans', sans-serif;">
                                                             {{ $item }}
                                                         </li>
@@ -160,17 +184,7 @@
                     </div>
                 @endforeach
 
-                <!-- Dots Indicator -->
-                @if($totalBanners > 1)
-                    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                        @foreach($allBanners as $index => $banner)
-                            <button @click="currentSlide = {{ $index }}; resetAutoplay()"
-                                class="h-2 w-2 rounded-full transition-all"
-                                :class="currentSlide === {{ $index }} ? 'bg-pink-600 w-8' : 'bg-pink-600/50'"
-                                aria-label="Go to banner {{ $index + 1 }}"></button>
-                        @endforeach
-                    </div>
-                @endif
+                <!-- Dots Indicator (Removed) -->
             </div>
         </div>
     </section>
