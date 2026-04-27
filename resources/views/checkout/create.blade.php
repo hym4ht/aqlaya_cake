@@ -84,16 +84,28 @@
                     @foreach($cartItems as $item)
                         <div class="bg-white p-3 rounded-xl shadow-sm border border-stone-100 relative">
                             <span class="absolute -top-1.5 -right-1.5 w-5 h-5 flex items-center justify-center bg-pink-600 text-white text-[9px] font-bold rounded-full border border-white shadow-sm">{{ $item['quantity'] }}</span>
-                            <div class="flex justify-between items-start mb-1.5 pr-2">
-                                <h3 class="font-serif text-sm font-semibold text-stone-900">{{ $item['name'] }}</h3>
-                                <div class="font-bold text-stone-900 text-[13px] whitespace-nowrap">Rp{{ number_format($item['line_total'], 0, ',', '.') }}</div>
-                            </div>
-                            <div class="text-[10px] text-stone-500 leading-relaxed font-medium">
-                                Ukuran {{ $item['size'] }} <span class="mx-1">•</span> 
-                                {{ \Carbon\Carbon::parse($item['scheduled_date'])->translatedFormat('d M Y') }} {{ $item['scheduled_time'] ?: '' }}<br>
-                                @if($item['custom_message'])
-                                    Ucapan: <span class="italic">"{{ $item['custom_message'] }}"</span>
-                                @endif
+                            <div class="flex gap-3">
+                                <!-- Product Image -->
+                                <div class="w-16 h-16 flex-shrink-0">
+                                    <div class="relative w-full h-full rounded-lg overflow-hidden bg-linen">
+                                        <img src="{{ $item['image_url'] }}" alt="{{ $item['name'] }}" class="w-full h-full object-cover mix-blend-multiply">
+                                    </div>
+                                </div>
+                                
+                                <!-- Product Details -->
+                                <div class="flex-grow min-w-0">
+                                    <div class="flex justify-between items-start mb-1.5 pr-2">
+                                        <h3 class="font-serif text-sm font-semibold text-stone-900 line-clamp-1">{{ $item['name'] }}</h3>
+                                        <div class="font-bold text-stone-900 text-[13px] whitespace-nowrap ml-2">Rp{{ number_format($item['line_total'], 0, ',', '.') }}</div>
+                                    </div>
+                                    <div class="text-[10px] text-stone-500 leading-relaxed font-medium">
+                                        Ukuran {{ $item['size'] }} <span class="mx-1">•</span> 
+                                        {{ \Carbon\Carbon::parse($item['scheduled_date'])->translatedFormat('d M Y') }} {{ $item['scheduled_time'] ?: '' }}<br>
+                                        @if($item['custom_message'])
+                                            Ucapan: <span class="italic">"{{ $item['custom_message'] }}"</span>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     @endforeach
