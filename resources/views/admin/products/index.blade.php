@@ -49,6 +49,13 @@
         </form>
     </div>
 
+    <div style="margin-bottom: 1.5rem; display: flex; justify-content: flex-end;">
+        <button type="submit" form="bulk-delete-form"
+            style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 18px; border: 0; border-radius: 12px; background: #dc2626; color: #ffffff; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 18px rgba(220, 38, 38, 0.22);">
+            Hapus Pilihan Produk
+        </button>
+    </div>
+
     {{-- Table --}}
     <div id="product-bulk-table" class="bg-white rounded-2xl border border-slate-200/60 overflow-hidden">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 border-b border-slate-100 bg-slate-50/50">
