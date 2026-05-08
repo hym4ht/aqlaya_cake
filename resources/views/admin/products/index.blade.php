@@ -42,21 +42,7 @@
 
     {{-- Table --}}
     <div class="bg-white rounded-2xl border border-slate-200/60 overflow-hidden"
-        x-data="{
-            selected: [],
-            productIds: @json($products->pluck('id')->map(fn ($id) => (string) $id)->values()),
-            get allSelected() {
-                return this.productIds.length > 0 && this.selected.length === this.productIds.length;
-            },
-            get deleteLabel() {
-                return this.allSelected ? 'Hapus Semua' : 'Hapus Pilihan';
-            },
-            get confirmMessage() {
-                return this.allSelected
-                    ? 'Hapus semua produk yang tampil di halaman ini?'
-                    : 'Hapus ' + this.selected.length + ' produk yang dipilih?';
-            },
-        }">
+        x-data="productBulkDelete()">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 border-b border-slate-100 bg-slate-50/50">
             <p class="text-sm text-slate-500">
                 <span x-show="selected.length === 0">Pilih produk untuk hapus banyak sekaligus.</span>
@@ -103,7 +89,7 @@
                     @forelse($products as $product)
                         <tr class="hover:bg-slate-50/50 transition-colors group">
                             <td class="px-6 py-3.5">
-                                <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" form="bulk-delete-form"
+                                <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" form="bulk-delete-form" data-product-checkbox
                                     x-model="selected"
                                     class="h-4 w-4 rounded border-slate-300 text-pink-600 focus:ring-pink-500">
                             </td>
@@ -189,4 +175,32 @@
             </div>
         @endif
     </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('productBulkDelete', () => ({
+                selected: [],
+                productIds: [],
+
+                init() {
+                    this.productIds = Array.from(this.$root.querySelectorAll('[data-product-checkbox]'))
+                        .map((checkbox) => checkbox.value);
+                },
+
+                get allSelected() {
+                    return this.productIds.length > 0 && this.selected.length === this.productIds.length;
+                },
+
+                get deleteLabel() {
+                    return this.allSelected ? 'Hapus Semua' : 'Hapus Pilihan';
+                },
+
+                get confirmMessage() {
+                    return this.allSelected
+                        ? 'Hapus semua produk yang tampil di halaman ini?'
+                        : `Hapus ${this.selected.length} produk yang dipilih?`;
+                },
+            }));
+        });
+    </script>
 @endsection
