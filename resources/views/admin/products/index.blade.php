@@ -41,27 +41,22 @@
     </div>
 
     {{-- Table --}}
-    <div class="bg-white rounded-2xl border border-slate-200/60 overflow-hidden"
-        x-data="productBulkDelete()">
+    <div id="product-bulk-table" class="bg-white rounded-2xl border border-slate-200/60 overflow-hidden">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 border-b border-slate-100 bg-slate-50/50">
             <p class="text-sm text-slate-500">
-                <span x-show="selected.length === 0">Pilih produk untuk hapus banyak sekaligus.</span>
-                <span x-show="selected.length > 0" x-cloak><span x-text="selected.length"></span> produk dipilih.</span>
+                <span id="bulk-empty-message">Pilih produk untuk hapus banyak sekaligus.</span>
+                <span id="bulk-selected-message" class="hidden"><span id="bulk-selected-count">0</span> produk dipilih.</span>
             </p>
             <form id="bulk-delete-form" method="POST" action="{{ route('admin.products.bulk-destroy') }}"
-                x-show="selected.length > 0"
-                x-cloak
-                x-transition
-                @submit="if (!selected.length || !confirm(confirmMessage)) $event.preventDefault()">
+                class="hidden">
                 @csrf
                 @method('DELETE')
-                <button type="submit"
-                    :disabled="selected.length === 0"
+                <button type="submit" id="bulk-delete-button" disabled
                     class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0 bg-red-600 text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
-                    <span x-text="deleteLabel">Hapus Pilihan</span>
+                    <span id="bulk-delete-label">Hapus Pilihan</span>
                 </button>
             </form>
         </div>
@@ -71,10 +66,8 @@
                     <tr class="text-left text-xs font-medium text-slate-400 uppercase tracking-wider border-b border-slate-100">
                         <th class="w-12 px-6 py-3.5">
                             <input type="checkbox"
-                                class="h-4 w-4 rounded border-slate-300 text-pink-600 focus:ring-pink-500"
-                                :checked="allSelected"
-                                x-effect="$el.indeterminate = selected.length > 0 && selected.length < productIds.length"
-                                @change="selected = $event.target.checked ? [...productIds] : []">
+                                id="product-select-all"
+                                class="h-4 w-4 rounded border-slate-300 text-pink-600 focus:ring-pink-500">
                         </th>
                         <th class="px-6 py-3.5">Produk</th>
                         <th class="px-6 py-3.5">Kategori</th>
@@ -90,7 +83,6 @@
                         <tr class="hover:bg-slate-50/50 transition-colors group">
                             <td class="px-6 py-3.5">
                                 <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" form="bulk-delete-form" data-product-checkbox
-                                    x-model="selected"
                                     class="h-4 w-4 rounded border-slate-300 text-pink-600 focus:ring-pink-500">
                             </td>
                             <td class="px-6 py-3.5">
@@ -177,30 +169,64 @@
     </div>
 
     <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('productBulkDelete', () => ({
-                selected: [],
-                productIds: [],
+        document.addEventListener('DOMContentLoaded', () => {
+            const root = document.getElementById('product-bulk-table');
+            if (!root) return;
 
-                init() {
-                    this.productIds = Array.from(this.$root.querySelectorAll('[data-product-checkbox]'))
-                        .map((checkbox) => checkbox.value);
-                },
+            const selectAll = document.getElementById('product-select-all');
+            const checkboxes = Array.from(root.querySelectorAll('[data-product-checkbox]'));
+            const form = document.getElementById('bulk-delete-form');
+            const button = document.getElementById('bulk-delete-button');
+            const label = document.getElementById('bulk-delete-label');
+            const emptyMessage = document.getElementById('bulk-empty-message');
+            const selectedMessage = document.getElementById('bulk-selected-message');
+            const selectedCount = document.getElementById('bulk-selected-count');
 
-                get allSelected() {
-                    return this.productIds.length > 0 && this.selected.length === this.productIds.length;
-                },
+            const getSelected = () => checkboxes.filter((checkbox) => checkbox.checked);
 
-                get deleteLabel() {
-                    return this.allSelected ? 'Hapus Semua' : 'Hapus Pilihan';
-                },
+            const updateBulkState = () => {
+                const count = getSelected().length;
+                const allSelected = checkboxes.length > 0 && count === checkboxes.length;
 
-                get confirmMessage() {
-                    return this.allSelected
-                        ? 'Hapus semua produk yang tampil di halaman ini?'
-                        : `Hapus ${this.selected.length} produk yang dipilih?`;
-                },
-            }));
+                if (selectAll) {
+                    selectAll.checked = allSelected;
+                    selectAll.indeterminate = count > 0 && count < checkboxes.length;
+                }
+
+                selectedCount.textContent = count;
+                emptyMessage.classList.toggle('hidden', count > 0);
+                selectedMessage.classList.toggle('hidden', count === 0);
+                form.classList.toggle('hidden', count === 0);
+                button.disabled = count === 0;
+                label.textContent = allSelected ? 'Hapus Semua' : 'Hapus Pilihan';
+            };
+
+            if (selectAll) {
+                selectAll.addEventListener('change', () => {
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.checked = selectAll.checked;
+                    });
+                    updateBulkState();
+                });
+            }
+
+            checkboxes.forEach((checkbox) => {
+                checkbox.addEventListener('change', updateBulkState);
+            });
+
+            form.addEventListener('submit', (event) => {
+                const count = getSelected().length;
+                const allSelected = checkboxes.length > 0 && count === checkboxes.length;
+                const message = allSelected
+                    ? 'Hapus semua produk yang tampil di halaman ini?'
+                    : `Hapus ${count} produk yang dipilih?`;
+
+                if (count === 0 || !confirm(message)) {
+                    event.preventDefault();
+                }
+            });
+
+            updateBulkState();
         });
     </script>
 @endsection
