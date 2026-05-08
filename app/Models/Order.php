@@ -76,26 +76,44 @@ class Order extends Model
         return $this->payment_status === self::PAYMENT_PAID;
     }
 
-    public function statusLabel(): string
+    public static function statusOptions(): array
     {
-        return match ($this->status) {
-            self::STATUS_PENDING_PAYMENT => 'Pending Payment',
-            self::STATUS_AWAITING_CONFIRMATION => 'Menunggu Konfirmasi Admin',
+        return [
+            self::STATUS_PENDING_PAYMENT => 'Menunggu Pembayaran',
+            self::STATUS_AWAITING_CONFIRMATION => 'Menunggu Konfirmasi',
             self::STATUS_PROCESSING => 'Diproses',
             self::STATUS_READY => 'Siap Diambil/Diantar',
             self::STATUS_COMPLETED => 'Selesai',
             self::STATUS_REJECTED => 'Ditolak',
-            default => ucfirst(str_replace('_', ' ', $this->status)),
-        };
+        ];
+    }
+
+    public static function statusLabelFor(string $status): string
+    {
+        return self::statusOptions()[$status] ?? ucfirst(str_replace('_', ' ', $status));
+    }
+
+    public function statusLabel(): string
+    {
+        return self::statusLabelFor($this->status);
+    }
+
+    public static function paymentOptions(): array
+    {
+        return [
+            self::PAYMENT_UNPAID => 'Belum Dibayar',
+            self::PAYMENT_PAID => 'Sudah Dibayar',
+            self::PAYMENT_REFUNDED => 'Dana Dikembalikan',
+        ];
+    }
+
+    public static function paymentLabelFor(string $paymentStatus): string
+    {
+        return self::paymentOptions()[$paymentStatus] ?? ucfirst(str_replace('_', ' ', $paymentStatus));
     }
 
     public function paymentLabel(): string
     {
-        return match ($this->payment_status) {
-            self::PAYMENT_UNPAID => 'Belum Dibayar',
-            self::PAYMENT_PAID => 'Sudah Dibayar',
-            self::PAYMENT_REFUNDED => 'Dana Dikembalikan',
-            default => ucfirst($this->payment_status),
-        };
+        return self::paymentLabelFor($this->payment_status);
     }
 }

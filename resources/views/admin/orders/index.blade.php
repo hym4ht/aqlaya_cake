@@ -17,8 +17,8 @@
                 <label class="block text-xs font-medium text-slate-500 mb-1.5">Status Pesanan</label>
                 <select name="status" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 focus:border-slate-400 focus:ring-2 focus:ring-slate-200 outline-none transition">
                     <option value="">Semua status</option>
-                    @foreach([\App\Models\Order::STATUS_PENDING_PAYMENT, \App\Models\Order::STATUS_AWAITING_CONFIRMATION, \App\Models\Order::STATUS_PROCESSING, \App\Models\Order::STATUS_READY, \App\Models\Order::STATUS_COMPLETED, \App\Models\Order::STATUS_REJECTED] as $status)
-                        <option value="{{ $status }}" @selected(request('status') === $status)>{{ str($status)->replace('_', ' ')->title() }}</option>
+                    @foreach(\App\Models\Order::statusOptions() as $status => $label)
+                        <option value="{{ $status }}" @selected(request('status') === $status)>{{ $label }}</option>
                     @endforeach
                 </select>
             </div>
@@ -26,8 +26,8 @@
                 <label class="block text-xs font-medium text-slate-500 mb-1.5">Status Pembayaran</label>
                 <select name="payment_status" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 focus:border-slate-400 focus:ring-2 focus:ring-slate-200 outline-none transition">
                     <option value="">Semua pembayaran</option>
-                    @foreach([\App\Models\Order::PAYMENT_UNPAID, \App\Models\Order::PAYMENT_PAID, \App\Models\Order::PAYMENT_REFUNDED] as $paymentStatus)
-                        <option value="{{ $paymentStatus }}" @selected(request('payment_status') === $paymentStatus)>{{ str($paymentStatus)->replace('_', ' ')->title() }}</option>
+                    @foreach(\App\Models\Order::paymentOptions() as $paymentStatus => $label)
+                        <option value="{{ $paymentStatus }}" @selected(request('payment_status') === $paymentStatus)>{{ $label }}</option>
                     @endforeach
                 </select>
             </div>
