@@ -11,13 +11,6 @@
             <p class="text-sm text-slate-500 mt-1">Kelola katalog produk Aqlaya Cake</p>
         </div>
         <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
-            <button type="submit" form="bulk-delete-form"
-                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                Hapus Pilihan
-            </button>
             <a href="{{ route('admin.products.create') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-pink-600 text-white text-sm font-medium hover:bg-pink-700 transition shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                 Tambah Produk
@@ -34,7 +27,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.1-5.4a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z" />
                     </svg>
-                    <input type="search" name="search" value="{{ $search }}" placeholder="Cari nama, deskripsi, atau kategori produk"
+                    <input type="search" name="search" value="{{ $search }}" placeholder="Cari produk..."
                         class="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3.5 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-200 outline-none transition">
                 </div>
             </div>
@@ -49,31 +42,42 @@
         </form>
     </div>
 
-    <div style="margin-bottom: 1.5rem; display: flex; justify-content: flex-end;">
-        <button type="submit" form="bulk-delete-form"
-            style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 18px; border: 0; border-radius: 12px; background: #dc2626; color: #ffffff; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 18px rgba(220, 38, 38, 0.22);">
-            Hapus Pilihan Produk
-        </button>
-    </div>
-
     {{-- Table --}}
+    <style>
+        @supports selector(:has(*)) {
+            #product-bulk-table:has([data-product-checkbox]:checked) #bulk-action-bar {
+                display: flex !important;
+            }
+
+            #product-bulk-table:has([data-product-checkbox]:checked) #bulk-empty-message {
+                display: none !important;
+            }
+
+            #product-bulk-table:has([data-product-checkbox]:checked) #bulk-selected-message {
+                display: inline !important;
+            }
+        }
+    </style>
+
     <div id="product-bulk-table" class="bg-white rounded-2xl border border-slate-200/60 overflow-hidden">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 border-b border-slate-100 bg-slate-50/50">
             <p class="text-sm text-slate-500">
                 <span id="bulk-empty-message">Centang produk, lalu klik Hapus Pilihan.</span>
                 <span id="bulk-selected-message" class="hidden"><span id="bulk-selected-count">0</span> produk dipilih.</span>
             </p>
-            <form id="bulk-delete-form" method="POST" action="{{ route('admin.products.bulk-destroy') }}">
+            <form id="bulk-delete-form" method="POST" action="{{ route('admin.products.bulk-destroy') }}" class="hidden">
                 @csrf
                 @method('DELETE')
-                <button type="submit" id="bulk-delete-button"
-                    class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0 bg-red-600 text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    <span id="bulk-delete-label">Hapus Pilihan</span>
-                </button>
             </form>
+        </div>
+        <div id="bulk-action-bar" class="hidden items-center justify-end gap-3 px-6 py-4 border-b border-slate-100 bg-red-50/70">
+            <button type="submit" form="bulk-delete-form" id="bulk-delete-button"
+                class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0 bg-red-600 text-white hover:bg-red-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span id="bulk-delete-label">Hapus Pilihan</span>
+            </button>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -197,6 +201,7 @@
                 const selectAll = document.getElementById('product-select-all');
                 const checkboxes = Array.from(root.querySelectorAll('[data-product-checkbox]'));
                 const form = document.getElementById('bulk-delete-form');
+                const actionBar = document.getElementById('bulk-action-bar');
                 const label = document.getElementById('bulk-delete-label');
                 const emptyMessage = document.getElementById('bulk-empty-message');
                 const selectedMessage = document.getElementById('bulk-selected-message');
@@ -216,6 +221,8 @@
                     selectedCount.textContent = count;
                     emptyMessage.classList.toggle('hidden', count > 0);
                     selectedMessage.classList.toggle('hidden', count === 0);
+                    actionBar.classList.toggle('hidden', count === 0);
+                    actionBar.classList.toggle('flex', count > 0);
                     label.textContent = allSelected ? 'Hapus Semua' : 'Hapus Pilihan';
                 };
 
