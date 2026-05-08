@@ -139,6 +139,10 @@ class ProductController extends Controller
 
     public function bulkDestroy(Request $request): RedirectResponse
     {
+        if (! $request->filled('product_ids')) {
+            return back()->with('error', 'Pilih minimal satu produk untuk dihapus.');
+        }
+
         $validated = $request->validate([
             'product_ids' => ['required', 'array', 'min:1'],
             'product_ids.*' => ['integer', 'distinct', Rule::exists('products', 'id')],

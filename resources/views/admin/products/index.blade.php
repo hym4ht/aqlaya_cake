@@ -41,30 +41,13 @@
     </div>
 
     {{-- Table --}}
-    <style>
-        @supports selector(:has(*)) {
-            #product-bulk-table:has([data-product-checkbox]:checked) #bulk-delete-form {
-                display: block !important;
-            }
-
-            #product-bulk-table:has([data-product-checkbox]:checked) #bulk-empty-message {
-                display: none !important;
-            }
-
-            #product-bulk-table:has([data-product-checkbox]:checked) #bulk-selected-message {
-                display: inline !important;
-            }
-        }
-    </style>
-
     <div id="product-bulk-table" class="bg-white rounded-2xl border border-slate-200/60 overflow-hidden">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 border-b border-slate-100 bg-slate-50/50">
             <p class="text-sm text-slate-500">
-                <span id="bulk-empty-message">Pilih produk untuk hapus banyak sekaligus.</span>
+                <span id="bulk-empty-message">Centang produk, lalu klik Hapus Pilihan.</span>
                 <span id="bulk-selected-message" class="hidden"><span id="bulk-selected-count">0</span> produk dipilih.</span>
             </p>
-            <form id="bulk-delete-form" method="POST" action="{{ route('admin.products.bulk-destroy') }}"
-                class="hidden">
+            <form id="bulk-delete-form" method="POST" action="{{ route('admin.products.bulk-destroy') }}">
                 @csrf
                 @method('DELETE')
                 <button type="submit" id="bulk-delete-button"
@@ -217,7 +200,6 @@
                     selectedCount.textContent = count;
                     emptyMessage.classList.toggle('hidden', count > 0);
                     selectedMessage.classList.toggle('hidden', count === 0);
-                    form.classList.toggle('hidden', count === 0);
                     label.textContent = allSelected ? 'Hapus Semua' : 'Hapus Pilihan';
                 };
 
