@@ -12,17 +12,27 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
-
 class ProductController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $search = trim((string) $request->query('search', ''));
+
         $products = Product::query()
             ->with('category')
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('excerpt', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhereHas('category', fn ($query) => $query->where('name', 'like', "%{$search}%"));
+                });
+            })
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
-        return view('admin.products.index', compact('products'));
+        return view('admin.products.index', compact('products', 'search'));
     }
 
     public function create(): View
@@ -120,9 +130,30 @@ class ProductController extends Controller
 
     public function destroy(Product $product): RedirectResponse
     {
+        $this->deleteProductImages($product);
+
         $product->delete();
 
         return back()->with('success', 'Produk berhasil dihapus.');
+    }
+
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'product_ids' => ['required', 'array', 'min:1'],
+            'product_ids.*' => ['integer', 'distinct', Rule::exists('products', 'id')],
+        ]);
+
+        $products = Product::query()
+            ->whereKey($validated['product_ids'])
+            ->get();
+
+        $products->each(function (Product $product) {
+            $this->deleteProductImages($product);
+            $product->delete();
+        });
+
+        return back()->with('success', $products->count() . ' produk berhasil dihapus.');
     }
 
     public function toggleBestSeller(Product $product): RedirectResponse
@@ -199,5 +230,14 @@ class ProductController extends Controller
         $path = $file->storeAs('products', $filename, 'public');
 
         return $path;
+    }
+
+    private function deleteProductImages(Product $product): void
+    {
+        foreach (['image_path', 'image_path_2', 'image_path_3'] as $imageField) {
+            if ($product->$imageField) {
+                Storage::disk('public')->delete($product->$imageField);
+            }
+        }
     }
 }

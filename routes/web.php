@@ -53,6 +53,7 @@ Route::prefix('admin')
     ->group(function () {
         Route::get('/', DashboardController::class)->name('dashboard');
         Route::patch('/customers/{user}/decision', CustomerApprovalController::class)->name('customers.decide');
+        Route::delete('/products/bulk-delete', [AdminProductController::class, 'bulkDestroy'])->name('products.bulk-destroy');
         Route::resource('products', AdminProductController::class)->except('show');
         Route::patch('/products/{product}/toggle-best-seller', [AdminProductController::class, 'toggleBestSeller'])->name('products.toggle-best-seller');
         Route::resource('banners', AdminBannerController::class)->except('show');
