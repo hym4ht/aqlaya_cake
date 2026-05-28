@@ -14,6 +14,7 @@ class Cart extends Model
         'id',
         'user_id',
         'product_id',
+        'product_size_id',
         'name',
         'slug',
         'image_url',
@@ -41,5 +42,10 @@ class Cart extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function productSize(): BelongsTo
+    {
+        return $this->belongsTo(ProductSize::class);
     }
 }

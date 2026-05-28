@@ -1,6 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.owner')
 
-@section('title', 'Dashboard — ​Admin Aqlaya Cake')
+@section('title', 'Dashboard — ​Owner Aqlaya Cake')
 @section('page-title', 'Dashboard')
 
 @section('content')
@@ -71,6 +71,7 @@
 
         {{-- LEFT: Incoming Orders (2 cols) --}}
         <div class="lg:col-span-2 space-y-6">
+
             {{-- Incoming Orders --}}
             <div class="bg-white rounded-2xl border border-slate-200/60 overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
@@ -78,7 +79,7 @@
                         <h3 class="text-sm font-semibold text-slate-800">Pesanan Masuk</h3>
                         <p class="text-xs text-slate-400 mt-0.5">Order menunggu keputusan admin</p>
                     </div>
-                    <a href="{{ route("admin.orders.index") }}" class="text-xs font-medium text-slate-500 hover:text-slate-800 transition px-3 py-1.5 rounded-lg hover:bg-slate-50">Lihat Semua →</a>
+                    <a href="{{ route('owner.orders.index') }}" class="text-xs font-medium text-slate-500 hover:text-slate-800 transition px-3 py-1.5 rounded-lg hover:bg-slate-50">Lihat Semua →</a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
@@ -112,7 +113,7 @@
                                     </td>
                                     <td class="px-6 py-3.5 font-medium text-slate-800">Rp{{ number_format($order->total_amount, 0, ',', '.') }}</td>
                                     <td class="px-6 py-3.5 text-right">
-                                        <a href="{{ route('admin.orders.show', $order) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 transition">
+                                        <a href="{{ route('owner.orders.show', $order) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 transition">
                                             Buka
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
                                         </a>
@@ -207,15 +208,15 @@
             <div class="bg-white rounded-2xl border border-slate-200/60 p-5">
                 <h3 class="text-sm font-semibold text-slate-800 mb-3">Aksi Cepat</h3>
                 <div class="grid grid-cols-2 gap-2">
-                    <a href="{{ route("admin.products.create") }}" class="flex flex-col items-center gap-2 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition text-center group">
+                    <a href="{{ route('owner.products.create') }}" class="flex flex-col items-center gap-2 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition text-center group">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 group-hover:text-slate-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                         <span class="text-xs font-medium text-slate-600">Tambah Produk</span>
                     </a>
-                    <a href="{{ route("admin.orders.index") }}" class="flex flex-col items-center gap-2 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition text-center group">
+                    <a href="{{ route('owner.orders.index') }}" class="flex flex-col items-center gap-2 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition text-center group">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 group-hover:text-slate-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
                         <span class="text-xs font-medium text-slate-600">Kelola Pesanan</span>
                     </a>
-                    <a href="{{ route("admin.reports.index") }}" class="flex flex-col items-center gap-2 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition text-center group">
+                    <a href="{{ route('owner.reports.index') }}" class="flex flex-col items-center gap-2 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition text-center group">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 group-hover:text-slate-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                         <span class="text-xs font-medium text-slate-600">Laporan</span>
                     </a>

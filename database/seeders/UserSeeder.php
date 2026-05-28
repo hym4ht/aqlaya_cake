@@ -12,13 +12,21 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::query()->create([
+            'name' => 'Owner Aqlaya',
+            'email' => 'owner@aqlaya.test',
+            'phone' => '081200000000',
+            'address' => 'Jl. Raya Aqlaya No. 1, Bandung',
+            'role' => 'owner',
+            'api_token' => Str::random(60),
+            'password' => Hash::make('password'),
+        ]);
+
+        User::query()->create([
             'name' => 'Admin Aqlaya',
             'email' => 'admin@aqlaya.test',
             'phone' => '081200000001',
             'address' => 'Jl. Raya Aqlaya No. 17, Bandung',
             'role' => 'admin',
-            'is_approved' => true,
-            'approved_at' => now(),
             'api_token' => Str::random(60),
             'password' => Hash::make('password'),
         ]);
@@ -29,8 +37,6 @@ class UserSeeder extends Seeder
             'phone' => '081200000002',
             'address' => 'Jl. Melati No. 20, Bandung',
             'role' => 'customer',
-            'is_approved' => true,
-            'approved_at' => now(),
             'api_token' => Str::random(60),
             'password' => Hash::make('password'),
         ]);

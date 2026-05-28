@@ -20,7 +20,7 @@ class NotificationService
     public function notifyAdmins(string $title, string $message, ?string $actionUrl = null): void
     {
         User::query()
-            ->where('role', 'admin')
+            ->whereIn('role', ['admin', 'owner'])
             ->get()
             ->each(function (User $admin) use ($title, $message, $actionUrl): void {
                 $this->notifyUser($admin, $title, $message, $actionUrl);

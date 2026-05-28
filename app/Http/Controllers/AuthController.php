@@ -41,33 +41,13 @@ class AuthController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        if ($user->isRejected()) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-            return back()->withErrors([
-                'email' => 'Pendaftaran akun customer kamu ditolak admin. Silakan hubungi admin toko untuk informasi lebih lanjut.',
-            ])->onlyInput('email');
-        }
-
-        if ($user->isPendingApproval()) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-            return back()->withErrors([
-                'email' => 'Akun customer kamu masih menunggu persetujuan admin.',
-            ])->onlyInput('email');
-        }
-
         $request->session()->regenerate();
 
         // Pindahkan cart guest (session) ke DB setelah login
         $this->cartService->mergeSessionCartToDatabase();
 
         return redirect()->intended(
-            $user->isAdmin() ? route('admin.dashboard') : route('home')
+            $user->isOwner() ? route('owner.dashboard') : ($user->isAdmin() ? route('admin.dashboard') : route('home'))
         );
     }
 
@@ -89,20 +69,18 @@ class AuthController extends Controller
         $user = User::query()->create([
             ...$validated,
             'role' => 'customer',
-            'is_approved' => false,
-            'rejected_at' => null,
             'api_token' => Str::random(60),
         ]);
 
-        $this->notificationService->notifyAdmins(
-            'Customer baru menunggu persetujuan',
-            "Akun {$user->name} baru saja mendaftar dan menunggu ACC admin.",
-            route('admin.dashboard')
-        );
+        // Auto login after registration
+        Auth::login($user);
+
+        // Merge cart from session to database
+        $this->cartService->mergeSessionCartToDatabase();
 
         return redirect()
-            ->route('login')
-            ->with('success', 'Akun berhasil dibuat dan sedang menunggu persetujuan admin.');
+            ->route('home')
+            ->with('success', 'Akun berhasil dibuat! Selamat berbelanja di Aqlaya Cake.');
     }
 
     public function logout(Request $request): RedirectResponse

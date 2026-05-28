@@ -38,19 +38,21 @@ class CartService
     public function add(Product $product, array $payload): void
     {
         $quantity = (int) $payload['quantity'];
-        $price    = (float) $product->price;
+        $productSize = $product->productSizes()->findOrFail($payload['product_size_id']);
+        $price = (float) $productSize->final_price;
 
         if ($this->isLoggedIn()) {
             Cart::create([
                 'id'             => (string) Str::uuid(),
                 'user_id'        => Auth::id(),
                 'product_id'     => $product->id,
+                'product_size_id' => $productSize->id,
                 'name'           => $product->name,
                 'slug'           => $product->slug,
                 'image_url'      => $product->image_url,
                 'price'          => $price,
                 'quantity'       => $quantity,
-                'size'           => $payload['size'],
+                'size'           => $productSize->name,
                 'custom_message' => $payload['custom_message'] ?? null,
                 'scheduled_date' => $payload['scheduled_date'] ?? null,
                 'scheduled_time' => $payload['scheduled_time'] ?? null,
@@ -65,12 +67,13 @@ class CartService
         $items = $this->all();
         $items->put((string) Str::uuid(), [
             'product_id'     => $product->id,
+            'product_size_id' => $productSize->id,
             'name'           => $product->name,
             'slug'           => $product->slug,
             'image_url'      => $product->image_url,
             'price'          => $price,
             'quantity'       => $quantity,
-            'size'           => $payload['size'],
+            'size'           => $productSize->name,
             'custom_message' => $payload['custom_message'] ?? null,
             'scheduled_date' => $payload['scheduled_date'] ?? null,
             'scheduled_time' => $payload['scheduled_time'] ?? null,
@@ -167,6 +170,7 @@ class CartService
                 'id'             => (string) Str::uuid(),
                 'user_id'        => Auth::id(),
                 'product_id'     => $item['product_id'],
+                'product_size_id' => $item['product_size_id'] ?? null,
                 'name'           => $item['name'],
                 'slug'           => $item['slug'],
                 'image_url'      => $item['image_url'] ?? null,
@@ -190,6 +194,7 @@ class CartService
     {
         return [
             'product_id'     => $row->product_id,
+            'product_size_id' => $row->product_size_id,
             'name'           => $row->name,
             'slug'           => $row->slug,
             'image_url'      => $row->image_url,

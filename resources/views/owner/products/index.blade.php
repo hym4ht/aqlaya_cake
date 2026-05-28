@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.owner')
 
 @section('title', 'Produk — Admin Aqlaya Cake')
 @section('page-title', 'Produk')
@@ -11,7 +11,7 @@
             <p class="text-sm text-slate-500 mt-1">Kelola katalog produk Aqlaya Cake</p>
         </div>
         <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
-            <a href="{{ route("admin.products.create") }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-pink-600 text-white text-sm font-medium hover:bg-pink-700 transition shrink-0">
+            <a href="{{ route("owner.products.create") }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-pink-600 text-white text-sm font-medium hover:bg-pink-700 transition shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                 Tambah Produk
             </a>
@@ -20,7 +20,7 @@
 
     {{-- Search --}}
     <div class="bg-white rounded-2xl border border-slate-200/60 p-5 mb-6">
-        <form method="GET" action="{{ route("admin.products.index") }}" class="flex flex-col sm:flex-row items-end gap-3">
+        <form method="GET" action="{{ route("owner.products.index") }}" class="flex flex-col sm:flex-row items-end gap-3">
             <div class="flex-1 w-full">
                 <label class="block text-xs font-medium text-slate-500 mb-1.5">Cari Produk</label>
                 <div class="relative">
@@ -35,7 +35,7 @@
                 Cari
             </button>
             @if($search !== '')
-                <a href="{{ route("admin.products.index") }}" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition shrink-0">
+                <a href="{{ route("owner.products.index") }}" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition shrink-0">
                     Reset
                 </a>
             @endif
@@ -65,7 +65,7 @@
                 <span id="bulk-empty-message">Centang produk, lalu klik Hapus Pilihan.</span>
                 <span id="bulk-selected-message" class="hidden"><span id="bulk-selected-count">0</span> produk dipilih.</span>
             </p>
-            <form id="bulk-delete-form" method="POST" action="{{ route("admin.products.bulk-destroy") }}" class="hidden">
+            <form id="bulk-delete-form" method="POST" action="{{ route("owner.products.bulk-destroy") }}" class="hidden">
                 @csrf
                 @method('DELETE')
             </form>
@@ -131,7 +131,7 @@
                                 @endif
                             </td>
                             <td class="px-6 py-3.5">
-                                <form method="POST" action="{{ route('admin.products.toggle-best-seller', $product) }}">
+                                <form method="POST" action="{{ route("owner.products.toggle-best-seller", $product) }}">
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" title="{{ $product->is_best_seller ? 'Hapus dari Best Seller' : 'Tandai sebagai Best Seller' }}"
@@ -142,11 +142,11 @@
                             </td>
                             <td class="px-6 py-3.5 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('admin.products.edit', $product) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 transition">
+                                    <a href="{{ route("owner.products.edit", $product) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 transition">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                                         Edit
                                     </a>
-                                    <form method="POST" action="{{ route('admin.products.destroy', $product) }}" class="inline" onsubmit="return confirm('Hapus produk ini?')">
+                                    <form method="POST" action="{{ route("owner.products.destroy", $product) }}" class="inline" onsubmit="return confirm('Hapus produk ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 transition">
@@ -165,12 +165,12 @@
                                 </svg>
                                 @if($search !== '')
                                     <p class="text-sm text-slate-400 mb-3">Tidak ada produk yang cocok dengan pencarian.</p>
-                                    <a href="{{ route("admin.products.index") }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-medium hover:bg-slate-800 transition">
+                                    <a href="{{ route("owner.products.index") }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-medium hover:bg-slate-800 transition">
                                         Reset Pencarian
                                     </a>
                                 @else
                                     <p class="text-sm text-slate-400 mb-3">Belum ada produk pada katalog.</p>
-                                    <a href="{{ route("admin.products.create") }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-pink-600 text-white text-xs font-medium hover:bg-pink-700 transition">
+                                    <a href="{{ route("owner.products.create") }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-pink-600 text-white text-xs font-medium hover:bg-pink-700 transition">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                                         Tambah Produk Pertama
                                     </a>

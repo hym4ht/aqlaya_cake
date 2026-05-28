@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.owner')
 
 @section('title', 'Laporan — Admin Aqlaya Cake')
 @section('page-title', 'Laporan')
@@ -12,7 +12,7 @@
 
     {{-- Date Filter --}}
     <div class="bg-white rounded-2xl border border-slate-200/60 p-5 mb-6">
-        <form method="GET" action="{{ route("admin.reports.index") }}" class="flex flex-col sm:flex-row items-end gap-3">
+        <form method="GET" action="{{ route("owner.reports.index") }}" class="flex flex-col sm:flex-row items-end gap-3">
             <div class="flex-1 w-full">
                 <label class="block text-xs font-medium text-slate-500 mb-1.5">Tanggal Awal</label>
                 <input type="date" name="start_date" value="{{ $startDate }}"
@@ -26,7 +26,7 @@
             <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-pink-600 text-white text-sm font-medium hover:bg-pink-700 transition shrink-0">
                 Tampilkan
             </button>
-            <a href="{{ route('admin.reports.export-pdf', ['start_date' => $startDate, 'end_date' => $endDate]) }}"
+            <a href="{{ route('owner.reports.export-pdf', ['start_date' => $startDate, 'end_date' => $endDate]) }}"
                class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition shrink-0 text-center inline-flex items-center justify-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

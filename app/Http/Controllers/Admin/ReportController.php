@@ -5,13 +5,35 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class ReportController extends Controller
 {
     public function __invoke(Request $request): View
+    {
+        $data = $this->getReportData($request);
+        
+        $prefix = $this->getRoutePrefix();
+        return view("{$prefix}.reports.index", $data);
+    }
+
+    public function exportPdf(Request $request): Response
+    {
+        $data = $this->getReportData($request);
+        
+        $pdf = Pdf::loadView('reports.pdf', $data)
+            ->setPaper('a4', 'portrait');
+        
+        $filename = 'laporan-penjualan-' . $data['startDate'] . '-to-' . $data['endDate'] . '.pdf';
+        
+        return $pdf->download($filename);
+    }
+
+    private function getReportData(Request $request): array
     {
         $startDate = $request->date('start_date') ?? now()->startOfMonth();
         $endDate = $request->date('end_date') ?? now()->endOfMonth();
@@ -28,7 +50,7 @@ class ReportController extends Controller
             })
             ->groupBy('product_name')
             ->orderByDesc('total_qty')
-            ->take(5)
+            ->take(10)
             ->get();
 
         $dailyRevenue = Order::query()
@@ -39,7 +61,14 @@ class ReportController extends Controller
             ->orderBy('paid_date')
             ->get();
 
-        return view('admin.reports.index', [
+        $orders = Order::query()
+            ->with('user')
+            ->where('payment_status', Order::PAYMENT_PAID)
+            ->whereBetween('paid_at', [$startDate->copy()->startOfDay(), $endDate->copy()->endOfDay()])
+            ->orderBy('paid_at')
+            ->get();
+
+        return [
             'startDate' => $startDate->toDateString(),
             'endDate' => $endDate->toDateString(),
             'summary' => [
@@ -49,6 +78,7 @@ class ReportController extends Controller
             ],
             'topProducts' => $topProducts,
             'dailyRevenue' => $dailyRevenue,
-        ]);
+            'orders' => $orders,
+        ];
     }
 }

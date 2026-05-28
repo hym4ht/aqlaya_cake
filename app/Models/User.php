@@ -24,9 +24,6 @@ class User extends Authenticatable
         'phone',
         'address',
         'role',
-        'is_approved',
-        'approved_at',
-        'rejected_at',
         'api_token',
         'password',
     ];
@@ -51,9 +48,6 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'approved_at' => 'datetime',
-            'rejected_at' => 'datetime',
-            'is_approved' => 'boolean',
             'password' => 'hashed',
         ];
     }
@@ -73,6 +67,11 @@ class User extends Authenticatable
         return $this->hasMany(SystemNotification::class)->latest();
     }
 
+    public function isOwner(): bool
+    {
+        return $this->role === 'owner';
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -81,20 +80,5 @@ class User extends Authenticatable
     public function isCustomer(): bool
     {
         return $this->role === 'customer';
-    }
-
-    public function isApproved(): bool
-    {
-        return $this->is_approved;
-    }
-
-    public function isRejected(): bool
-    {
-        return $this->rejected_at !== null;
-    }
-
-    public function isPendingApproval(): bool
-    {
-        return $this->isCustomer() && ! $this->isApproved() && ! $this->isRejected();
     }
 }

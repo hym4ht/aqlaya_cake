@@ -23,14 +23,16 @@ class OrderController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        return view('admin.orders.index', compact('orders'));
+        $prefix = $this->getRoutePrefix();
+        return view("{$prefix}.orders.index", compact('orders'));
     }
 
     public function show(Order $order): View
     {
         $order->load(['user', 'items.product', 'reviews']);
 
-        return view('admin.orders.show', compact('order'));
+        $prefix = $this->getRoutePrefix();
+        return view("{$prefix}.orders.show", compact('order'));
     }
 
     public function decide(Request $request, Order $order, NotificationService $notificationService): RedirectResponse
@@ -47,13 +49,25 @@ class OrderController extends Controller
         if ($validated['decision'] === 'accept') {
             DB::transaction(function () use ($order): void {
                 foreach ($order->items as $item) {
-                    if ($item->product && $item->product->stock < $item->quantity) {
+                    // Check size stock if available
+                    if ($item->product_size_id) {
+                        $productSize = \App\Models\ProductSize::find($item->product_size_id);
+                        if ($productSize && $productSize->stock < $item->quantity) {
+                            abort(422, "Stok {$item->product_name} ukuran {$item->size_name} tidak mencukupi.");
+                        }
+                    } elseif ($item->product && $item->product->stock < $item->quantity) {
                         abort(422, "Stok {$item->product->name} tidak mencukupi.");
                     }
                 }
 
                 foreach ($order->items as $item) {
-                    if ($item->product) {
+                    // Decrement size stock if available
+                    if ($item->product_size_id) {
+                        $productSize = \App\Models\ProductSize::find($item->product_size_id);
+                        if ($productSize) {
+                            $productSize->decrement('stock', $item->quantity);
+                        }
+                    } elseif ($item->product) {
                         $item->product->decrement('stock', $item->quantity);
                     }
                 }

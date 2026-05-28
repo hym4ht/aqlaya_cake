@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.owner')
 
 @section('title', 'Kelola Banner — Aqlaya Cake')
 @section('page-title', 'Banner Promo')
@@ -11,7 +11,7 @@
             <h2 class="text-xl font-semibold text-slate-800">Banner Promo</h2>
             <p class="text-sm text-slate-500 mt-1">Kelola banner promo yang tampil di halaman utama.</p>
         </div>
-        <a href="{{ route("admin.banners.create") }}"
+        <a href="{{ route("owner.banners.create") }}"
            class="inline-flex items-center gap-2 px-5 py-2.5 bg-pink-600 text-white text-sm font-semibold rounded-xl hover:bg-pink-700 transition shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -54,11 +54,11 @@
                                 <p class="text-xs text-slate-400">Ditambahkan: {{ $banner->created_at->format('d M Y') }}</p>
                             </div>
                             <div class="flex items-center gap-2 mt-4">
-                                <a href="{{ route('admin.banners.edit', $banner) }}"
+                                <a href="{{ route("owner.banners.edit", $banner) }}"
                                    class="px-4 py-2 text-sm font-medium bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition">
                                     Edit
                                 </a>
-                                <form method="POST" action="{{ route('admin.banners.destroy', $banner) }}"
+                                <form method="POST" action="{{ route("owner.banners.destroy", $banner) }}"
                                       onsubmit="return confirm('Yakin ingin menghapus banner ini?')">
                                     @csrf
                                     @method('DELETE')

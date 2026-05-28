@@ -1,11 +1,11 @@
-@extends('layouts.admin')
+@extends('layouts.owner')
 
 @section('title', ($product->exists ? 'Edit' : 'Tambah') . ' Produk — Admin Aqlaya Cake')
 @section('page-title', $product->exists ? 'Edit Produk' : 'Tambah Produk')
 
 @section('content')
     {{-- Back link --}}
-    <a href="{{ route("admin.products.index") }}" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 transition mb-6 group">
+    <a href="{{ route("owner.products.index") }}" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 transition mb-6 group">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
         Kembali ke Daftar Produk
     </a>
@@ -267,7 +267,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                         {{ $product->exists ? 'Simpan Perubahan' : 'Tambah Produk' }}
                     </button>
-                    <a href="{{ route("admin.products.index") }}" class="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
+                    <a href="{{ route("owner.products.index") }}" class="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
                         Batal
                     </a>
                 </div>

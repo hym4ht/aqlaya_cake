@@ -90,9 +90,12 @@ class CheckoutController extends Controller
 
             foreach ($cartItems as $item) {
                 $product = Product::query()->find($item['product_id']);
+                $productSize = isset($item['product_size_id']) ? \App\Models\ProductSize::find($item['product_size_id']) : null;
 
                 $order->items()->create([
                     'product_id' => $product?->id,
+                    'product_size_id' => $productSize?->id,
+                    'size_name' => $item['size'],
                     'product_name' => $item['name'],
                     'product_price' => $item['price'],
                     'size' => $item['size'],

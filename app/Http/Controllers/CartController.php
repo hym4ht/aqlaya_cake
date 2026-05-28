@@ -28,11 +28,11 @@ class CartController extends Controller
 
     public function store(Request $request, Product $product): RedirectResponse
     {
-        abort_unless($product->is_active && $product->stock > 0, 404);
+        abort_unless($product->is_active, 404);
 
         $rules = [
-            'quantity' => ['required', 'integer', 'min:1', 'max:' . $product->stock],
-            'size' => ['required', Rule::in($product->sizes ?? [])],
+            'product_size_id' => ['required', 'exists:product_sizes,id'],
+            'quantity' => ['required', 'integer', 'min:1'],
             'custom_message' => ['nullable', 'string', 'max:120'],
             'notes' => ['nullable', 'string', 'max:500'],
         ];
@@ -46,7 +46,16 @@ class CartController extends Controller
             $rules['scheduled_time'] = ['nullable', 'date_format:H:i'];
         }
 
-        $request->validate($rules);
+        $validated = $request->validate($rules);
+
+        // Validate size belongs to product and has stock
+        $productSize = $product->productSizes()->findOrFail($validated['product_size_id']);
+        
+        if ($validated['quantity'] > $productSize->stock) {
+            return back()->withErrors([
+                'quantity' => 'Stok tidak mencukupi. Tersedia: ' . $productSize->stock,
+            ])->withInput();
+        }
 
         // Only validate lead time for pre-order products
         if ($product->isPreOrder() && !$this->leadTimeService->isAllowed($request->string('scheduled_date'), $product->lead_time_days)) {
@@ -57,7 +66,7 @@ class CartController extends Controller
 
         $this->cartService->add($product, $request->only([
             'quantity',
-            'size',
+            'product_size_id',
             'custom_message',
             'scheduled_date',
             'scheduled_time',

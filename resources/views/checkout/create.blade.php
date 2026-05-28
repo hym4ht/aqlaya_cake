@@ -100,7 +100,12 @@
                                     </div>
                                     <div class="text-[10px] text-stone-500 leading-relaxed font-medium">
                                         Ukuran {{ $item['size'] }} <span class="mx-1">•</span> 
-                                        {{ \Carbon\Carbon::parse($item['scheduled_date'])->translatedFormat('d M Y') }} {{ $item['scheduled_time'] ?: '' }}<br>
+                                        @if(!empty($item['scheduled_date']))
+                                            {{ \Carbon\Carbon::parse($item['scheduled_date'])->translatedFormat('d M Y') }} {{ $item['scheduled_time'] ?: '' }}
+                                        @else
+                                            Ready Stock
+                                        @endif
+                                        <br>
                                         @if($item['custom_message'])
                                             Ucapan: <span class="italic">"{{ $item['custom_message'] }}"</span>
                                         @endif

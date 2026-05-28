@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
@@ -45,7 +45,7 @@ class DashboardController extends Controller
             ->groupBy('status')
             ->pluck('total', 'status');
 
-        return view('admin.dashboard.index', [
+        return view('owner.dashboard.index', [
             'todayRevenue' => $todayRevenue,
             'monthRevenue' => $monthRevenue,
             'incomingOrders' => $incomingOrders,

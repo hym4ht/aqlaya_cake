@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.owner')
 
 @section('title', 'Pesanan — Admin Aqlaya Cake')
 @section('page-title', 'Pesanan')
@@ -12,7 +12,7 @@
 
     {{-- Filter --}}
     <div class="bg-white rounded-2xl border border-slate-200/60 p-5 mb-6">
-        <form method="GET" action="{{ route("admin.orders.index") }}" class="flex flex-col sm:flex-row items-end gap-3">
+        <form method="GET" action="{{ route("owner.orders.index") }}" class="flex flex-col sm:flex-row items-end gap-3">
             <div class="flex-1 w-full">
                 <label class="block text-xs font-medium text-slate-500 mb-1.5">Status Pesanan</label>
                 <select name="status" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 focus:border-slate-400 focus:ring-2 focus:ring-slate-200 outline-none transition">
@@ -73,7 +73,7 @@
                             </td>
                             <td class="px-6 py-3.5 font-medium text-slate-800">Rp{{ number_format($order->total_amount, 0, ',', '.') }}</td>
                             <td class="px-6 py-3.5 text-right">
-                                <a href="{{ route('admin.orders.show', $order) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 transition">
+                                <a href="{{ route("owner.orders.show", $order) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 transition">
                                     Detail
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
                                 </a>

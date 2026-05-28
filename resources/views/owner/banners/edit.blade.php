@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.owner')
 
 @section('title', 'Edit Banner — Aqlaya Cake')
 @section('page-title', 'Edit Banner')
@@ -6,7 +6,7 @@
 @section('content')
 <div class="max-w-2xl">
     <div class="mb-6">
-        <a href="{{ route("admin.banners.index") }}" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 transition">
+        <a href="{{ route("owner.banners.index") }}" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 transition">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
@@ -17,7 +17,7 @@
     <div class="bg-white rounded-2xl border border-slate-200 p-6 lg:p-8 shadow-sm">
         <h2 class="text-lg font-semibold text-slate-800 mb-6">Edit Banner</h2>
 
-        <form method="POST" action="{{ route('admin.banners.update', $banner) }}" enctype="multipart/form-data" class="space-y-6">
+        <form method="POST" action="{{ route("owner.banners.update", $banner) }}" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
 
@@ -68,7 +68,7 @@
                         class="px-6 py-2.5 bg-pink-600 text-white text-sm font-semibold rounded-xl hover:bg-pink-700 transition shadow-sm">
                     Perbarui Banner
                 </button>
-                <a href="{{ route("admin.banners.index") }}" class="px-6 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-800 transition">
+                <a href="{{ route("owner.banners.index") }}" class="px-6 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-800 transition">
                     Batal
                 </a>
             </div>

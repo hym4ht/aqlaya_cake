@@ -1,11 +1,11 @@
-@extends('layouts.admin')
+@extends('layouts.owner')
 
 @section('title', $order->order_code . ' — Admin Aqlaya Cake')
 @section('page-title', 'Detail Pesanan')
 
 @section('content')
     {{-- Back link --}}
-    <a href="{{ route("admin.orders.index") }}" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 transition mb-6 group">
+    <a href="{{ route("owner.orders.index") }}" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 transition mb-6 group">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
         Kembali ke Daftar Pesanan
     </a>
@@ -102,7 +102,7 @@
                     <h3 class="text-sm font-semibold text-slate-800 mb-1">Konfirmasi Admin</h3>
                     <p class="text-xs text-slate-400 mb-5">Terima atau tolak pesanan ini</p>
 
-                    <form method="POST" action="{{ route('admin.orders.decide', $order) }}" class="mb-4">
+                    <form method="POST" action="{{ route("owner.orders.decide", $order) }}" class="mb-4">
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="decision" value="accept">
@@ -117,7 +117,7 @@
                         <div class="relative flex justify-center"><span class="bg-white px-3 text-xs text-slate-400">atau</span></div>
                     </div>
 
-                    <form method="POST" action="{{ route('admin.orders.decide', $order) }}">
+                    <form method="POST" action="{{ route("owner.orders.decide", $order) }}">
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="decision" value="reject">
@@ -138,7 +138,7 @@
                     <p class="text-xs text-slate-400 mb-5">Ubah status produksi pesanan</p>
 
                     @if($order->status === \App\Models\Order::STATUS_PROCESSING)
-                        <form method="POST" action="{{ route('admin.orders.update-status', $order) }}">
+                        <form method="POST" action="{{ route("owner.orders.update-status", $order) }}">
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="status" value="{{ \App\Models\Order::STATUS_READY }}">
@@ -150,7 +150,7 @@
                     @endif
 
                     @if($order->status === \App\Models\Order::STATUS_READY)
-                        <form method="POST" action="{{ route('admin.orders.update-status', $order) }}">
+                        <form method="POST" action="{{ route("owner.orders.update-status", $order) }}">
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="status" value="{{ \App\Models\Order::STATUS_COMPLETED }}">

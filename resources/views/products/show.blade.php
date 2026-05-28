@@ -119,30 +119,83 @@
                 <div class="text-[11px] font-bold tracking-widest text-mint-leaf uppercase mb-2">Kustomisasi Pesanan</div>
                 <h2 class="font-serif text-3xl font-medium text-slate-900 mb-8">Atur Detail Cake Anda</h2>
 
+                @php
+                    $sizeOptions = $product->productSizes;
+                    $selectedSize = $sizeOptions->firstWhere('id', (int) old('product_size_id'))
+                        ?? $sizeOptions->firstWhere('stock', '>', 0)
+                        ?? $sizeOptions->first();
+                    $sizeJson = $sizeOptions
+                        ->map(fn ($size) => [
+                            'id' => $size->id,
+                            'name' => $size->name,
+                            'price' => $size->final_price,
+                            'additional' => $size->additional_price,
+                            'stock' => $size->stock,
+                        ])
+                        ->values();
+                @endphp
+
                 @auth
                     @if(auth()->user()->role === 'customer')
-                        <form method="POST" action="{{ route('cart.store', $product) }}" class="flex flex-col gap-5">
+                        <form method="POST" action="{{ route('cart.store', $product) }}" class="flex flex-col gap-5" x-data="{
+                            selectedSize: {{ $selectedSize?->id ?? 'null' }},
+                            selectedPrice: {{ $selectedSize?->final_price ?? $product->price }},
+                            quantity: {{ (int) old('quantity', 1) }},
+                            sizes: @js($sizeJson)
+                        }">
                             @csrf
+                            
+                            <!-- Size Selector -->
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Pilih Ukuran</label>
+                                @if($sizeOptions->isNotEmpty())
+                                    <div class="relative">
+                                        <select name="product_size_id" x-model.number="selectedSize"
+                                            @change="
+                                                const size = sizes.find((item) => item.id === selectedSize);
+                                                selectedPrice = size?.price || selectedPrice;
+                                                if (quantity > (size?.stock || 1)) quantity = size?.stock || 1;
+                                            "
+                                            class="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 pr-10 text-sm font-medium text-slate-800 outline-none transition focus:border-mint-leaf focus:bg-white focus:ring-2 focus:ring-mint-leaf/40"
+                                            required>
+                                            @foreach($sizeOptions as $size)
+                                                <option value="{{ $size->id }}" @selected($selectedSize?->id === $size->id) @disabled($size->stock < 1)>
+                                                    {{ $size->name }} - Rp{{ number_format($size->final_price, 0, ',', '.') }} - Stok {{ $size->stock }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="mt-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                                        @foreach($sizeOptions as $size)
+                                            <div x-show="selectedSize === {{ $size->id }}" class="flex items-center justify-between gap-4">
+                                                <span>{{ $size->additional_price > 0 ? 'Harga tambahan: Rp' . number_format($size->additional_price, 0, ',', '.') : 'Tanpa harga tambahan' }}</span>
+                                                <span class="font-semibold text-slate-900">Stok: {{ $size->stock }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+                                        Ukuran produk belum tersedia. Silakan hubungi admin untuk memperbarui data produk.
+                                    </div>
+                                @endif
+                            </div>
+
                             <div class="grid grid-cols-2 gap-5">
                                 <div>
-                                    <label
-                                        class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Ukuran</label>
-                                    <select name="size"
-                                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition text-slate-700 appearance-none"
-                                        required>
-                                        <option value="">Pilih ukuran</option>
-                                        @foreach($product->sizes ?? [] as $size)
-                                            <option value="{{ $size }}" @selected(old('size') === $size)>{{ $size }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div>
-                                    <label
-                                        class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Jumlah</label>
-                                    <input type="number" name="quantity" min="1" max="{{ $product->stock }}"
-                                        value="{{ old('quantity', 1) }}"
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Jumlah</label>
+                                    <input type="number" name="quantity" min="1" :max="sizes.find(s => s.id === selectedSize)?.stock || 1"
+                                        x-model.number="quantity"
                                         class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-mint-leaf/50 focus:border-mint-leaf outline-none transition"
                                         required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Subtotal</label>
+                                    <div class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 flex items-center">
+                                        <span x-text="'Rp' + (selectedPrice * (quantity || 1)).toLocaleString('id-ID')"></span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -196,13 +249,45 @@
                         </div>
                     @endif
                 @else
-                    <div class="bg-linen rounded-2xl p-6 text-center border border-mint-leaf/20">
+                    <div class="space-y-5" x-data="{
+                        selectedSize: {{ $selectedSize?->id ?? 'null' }},
+                        selectedPrice: {{ $selectedSize?->final_price ?? $product->price }},
+                        sizes: @js($sizeJson)
+                    }">
+                        @if($sizeOptions->isNotEmpty())
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">Pilihan Ukuran</label>
+                                <div class="relative">
+                                    <select x-model.number="selectedSize"
+                                        @change="selectedPrice = sizes.find((item) => item.id === selectedSize)?.price || selectedPrice"
+                                        class="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 pr-10 text-sm font-medium text-slate-800 outline-none transition focus:border-mint-leaf focus:bg-white focus:ring-2 focus:ring-mint-leaf/40">
+                                        @foreach($sizeOptions as $size)
+                                            <option value="{{ $size->id }}" @selected($selectedSize?->id === $size->id) @disabled($size->stock < 1)>
+                                                {{ $size->name }} - Rp{{ number_format($size->final_price, 0, ',', '.') }} - Stok {{ $size->stock }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </div>
+                                <div class="mt-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                                    <div class="flex items-center justify-between gap-4">
+                                        <span>Harga pilihan</span>
+                                        <span class="font-bold text-slate-900" x-text="'Rp' + selectedPrice.toLocaleString('id-ID')"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="bg-linen rounded-2xl p-6 text-center border border-mint-leaf/20">
                         <p class="text-slate-600 text-sm mb-6 leading-relaxed">Silakan masuk ke akun Anda untuk menyimpan cake
                             ini ke keranjang pesanan dan melanjutkan pre-order.</p>
                         <a href="{{ route('login') }}"
                             class="inline-block w-full py-3 bg-pink-600 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-pink-700 transition-all duration-300 shadow-sm">
                             Masuk untuk Memesan
                         </a>
+                        </div>
                     </div>
                 @endauth
             </div>

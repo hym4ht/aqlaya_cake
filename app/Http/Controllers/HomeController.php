@@ -71,6 +71,7 @@ class HomeController extends Controller
         $product->load([
             'category',
             'reviews.user',
+            'productSizes' => fn($query) => $query->where('is_available', true),
         ])->loadAvg('reviews', 'rating')->loadCount('reviews');
 
         $relatedProducts = Product::query()

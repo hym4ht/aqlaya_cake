@@ -13,12 +13,14 @@ class BannerController extends Controller
     {
         $banners = Banner::latest()->get();
 
-        return view('admin.banners.index', compact('banners'));
+        $prefix = $this->getRoutePrefix();
+        return view("{$prefix}.banners.index", compact('banners'));
     }
 
     public function create()
     {
-        return view('admin.banners.create');
+        $prefix = $this->getRoutePrefix();
+        return view("{$prefix}.banners.create");
     }
 
     public function store(Request $request)
@@ -35,13 +37,15 @@ class BannerController extends Controller
             'is_active'  => $request->boolean('is_active', true),
         ]);
 
-        return redirect()->route('admin.banners.index')
+        $prefix = $this->getRoutePrefix();
+        return redirect()->route("{$prefix}.banners.index")
             ->with('success', 'Banner berhasil ditambahkan.');
     }
 
     public function edit(Banner $banner)
     {
-        return view('admin.banners.edit', compact('banner'));
+        $prefix = $this->getRoutePrefix();
+        return view("{$prefix}.banners.edit", compact('banner'));
     }
 
     public function update(Request $request, Banner $banner)
@@ -61,7 +65,8 @@ class BannerController extends Controller
         $banner->is_active = $request->boolean('is_active', true);
         $banner->save();
 
-        return redirect()->route('admin.banners.index')
+        $prefix = $this->getRoutePrefix();
+        return redirect()->route("{$prefix}.banners.index")
             ->with('success', 'Banner berhasil diperbarui.');
     }
 
@@ -73,7 +78,8 @@ class BannerController extends Controller
 
         $banner->delete();
 
-        return redirect()->route('admin.banners.index')
+        $prefix = $this->getRoutePrefix();
+        return redirect()->route("{$prefix}.banners.index")
             ->with('success', 'Banner berhasil dihapus.');
     }
 }

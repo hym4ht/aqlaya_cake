@@ -32,15 +32,18 @@ class ProductController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('admin.products.index', compact('products', 'search'));
+        $prefix = $this->getRoutePrefix();
+        return view("{$prefix}.products.index", compact('products', 'search'));
     }
 
     public function create(): View
     {
-        return view('admin.products.form', [
+        $prefix = $this->getRoutePrefix();
+        
+        return view("{$prefix}.products.form", [
             'product' => new Product(),
             'categories' => Category::query()->orderBy('name')->get(),
-            'formAction' => route('admin.products.store'),
+            'formAction' => route("{$prefix}.products.store"),
             'formMethod' => 'POST',
         ]);
     }
@@ -62,17 +65,32 @@ class ProductController extends Controller
             }
         }
 
-        Product::query()->create($validated);
+        $product = Product::query()->create($validated);
 
-        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
+        foreach ($this->productSizePayloads($request, $validated['sizes'], (int) $validated['stock']) as $index => $sizeData) {
+            $product->productSizes()->create([
+                'name' => $sizeData['name'],
+                'additional_price' => $sizeData['additional_price'],
+                'stock' => $sizeData['stock'],
+                'is_available' => true,
+                'sort_order' => $index + 1,
+            ]);
+        }
+
+        $prefix = $this->getRoutePrefix();
+        return redirect()->route("{$prefix}.products.index")->with('success', 'Produk berhasil ditambahkan.');
     }
 
     public function edit(Product $product): View
     {
-        return view('admin.products.form', [
+        $prefix = $this->getRoutePrefix();
+        
+        $product->load('productSizes');
+        
+        return view("{$prefix}.products.form", [
             'product' => $product,
             'categories' => Category::query()->orderBy('name')->get(),
-            'formAction' => route('admin.products.update', $product),
+            'formAction' => route("{$prefix}.products.update", $product),
             'formMethod' => 'PUT',
         ]);
     }
@@ -125,7 +143,20 @@ class ProductController extends Controller
 
         $product->update($validated);
 
-        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui.');
+        $product->productSizes()->delete();
+
+        foreach ($this->productSizePayloads($request, $validated['sizes'], (int) $validated['stock']) as $index => $sizeData) {
+            $product->productSizes()->create([
+                'name' => $sizeData['name'],
+                'additional_price' => $sizeData['additional_price'],
+                'stock' => $sizeData['stock'],
+                'is_available' => true,
+                'sort_order' => $index + 1,
+            ]);
+        }
+
+        $prefix = $this->getRoutePrefix();
+        return redirect()->route("{$prefix}.products.index")->with('success', 'Produk berhasil diperbarui.');
     }
 
     public function destroy(Product $product): RedirectResponse
@@ -181,6 +212,10 @@ class ProductController extends Controller
             'image_url' => ['nullable', 'url'],
             'image_files.*' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:5120'],
             'sizes_input' => ['required', 'string'],
+            'sizes' => ['nullable', 'array'],
+            'sizes.*.name' => ['required_with:sizes', 'string', 'max:255'],
+            'sizes.*.additional_price' => ['nullable', 'numeric', 'min:0'],
+            'sizes.*.stock' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
             'is_best_seller' => ['nullable', 'boolean'],
             'product_type' => ['required', 'in:pre_order,ready_stock'],
@@ -207,6 +242,30 @@ class ProductController extends Controller
         $validated['is_best_seller'] = $request->boolean('is_best_seller');
 
         return $validated;
+    }
+
+    private function productSizePayloads(Request $request, array $sizeNames, int $defaultStock): array
+    {
+        $sizes = collect($request->input('sizes', []))
+            ->map(fn ($size) => [
+                'name' => trim((string) ($size['name'] ?? '')),
+                'additional_price' => (float) ($size['additional_price'] ?? 0),
+                'stock' => (int) ($size['stock'] ?? 0),
+            ])
+            ->filter(fn ($size) => $size['name'] !== '')
+            ->values();
+
+        if ($sizes->isNotEmpty()) {
+            return $sizes->all();
+        }
+
+        return collect($sizeNames)
+            ->map(fn ($name) => [
+                'name' => $name,
+                'additional_price' => 0,
+                'stock' => $defaultStock,
+            ])
+            ->all();
     }
 
     private function uniqueSlug(string $name, ?int $ignoreId = null): string
