@@ -24,7 +24,7 @@ class CartService
     public function all(): Collection
     {
         if ($this->isLoggedIn()) {
-            return Cart::where('user_id', Auth::id())
+            return Cart::with('product')->where('user_id', Auth::id())
                 ->get()
                 ->keyBy('id')
                 ->map(fn ($row) => $this->rowToArray($row));
@@ -40,6 +40,7 @@ class CartService
         $quantity = (int) $payload['quantity'];
         $productSize = $product->productSizes()->findOrFail($payload['product_size_id']);
         $price = (float) $productSize->final_price;
+        $imageUrl = $product->image_path ? asset('storage/' . $product->image_path) : ($product->image_url ?: asset('images/hero.png'));
 
         if ($this->isLoggedIn()) {
             Cart::create([
@@ -49,7 +50,7 @@ class CartService
                 'product_size_id' => $productSize->id,
                 'name'           => $product->name,
                 'slug'           => $product->slug,
-                'image_url'      => $product->image_url,
+                'image_url'      => $imageUrl,
                 'price'          => $price,
                 'quantity'       => $quantity,
                 'size'           => $productSize->name,
@@ -70,7 +71,7 @@ class CartService
             'product_size_id' => $productSize->id,
             'name'           => $product->name,
             'slug'           => $product->slug,
-            'image_url'      => $product->image_url,
+            'image_url'      => $imageUrl,
             'price'          => $price,
             'quantity'       => $quantity,
             'size'           => $productSize->name,
@@ -192,12 +193,21 @@ class CartService
 
     private function rowToArray(Cart $row): array
     {
+        $imageUrl = $row->image_url;
+        
+        // If image_url does not look like a full URL or is relative/empty/invalid, resolve from product
+        if (empty($imageUrl) || (!str_starts_with($imageUrl, 'http://') && !str_starts_with($imageUrl, 'https://'))) {
+            $imageUrl = $row->product?->image_path 
+                ? asset('storage/' . $row->product->image_path) 
+                : ($row->product?->image_url ?: asset('images/hero.png'));
+        }
+
         return [
             'product_id'     => $row->product_id,
             'product_size_id' => $row->product_size_id,
             'name'           => $row->name,
             'slug'           => $row->slug,
-            'image_url'      => $row->image_url,
+            'image_url'      => $imageUrl,
             'price'          => $row->price,
             'quantity'       => $row->quantity,
             'size'           => $row->size,
