@@ -97,6 +97,14 @@
                 Banner
             </a>
 
+            <a href="{{ route('owner.admins.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 {{ str_starts_with($currentRoute, 'owner.admins') ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                Kelola Admin
+            </a>
+
             <div class="pt-4">
                 <p class="px-3 text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-2">Lainnya</p>
 

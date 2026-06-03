@@ -62,6 +62,19 @@ Owner dashboard memiliki tampilan yang lebih premium:
 ### 8. **Notifications**
 [`NotificationService`](app/Services/NotificationService.php:20) telah diupdate untuk mengirim notifikasi ke owner dan admin secara bersamaan.
 
+### 9. **Kelola Admin (Admin Management)**
+Owner dapat mengelola akun Administrator:
+- Menampilkan daftar semua administrator
+- Mencari administrator berdasarkan nama, email, atau no. telepon
+- Menambah administrator baru
+- Mengubah data administrator (nama, email, no. telepon, alamat, dan password)
+- Menghapus akun administrator
+- Controller: [`App\Http\Controllers\Owner\AdminController`](app/Http/Controllers/Owner/AdminController.php)
+- Routes: `owner.admins.*` (resource)
+- Views:
+  - List: [`resources/views/owner/admins/index.blade.php`](resources/views/owner/admins/index.blade.php)
+  - Form: [`resources/views/owner/admins/form.blade.php`](resources/views/owner/admins/form.blade.php)
+
 ## Testing
 
 ### Login sebagai Owner
@@ -92,14 +105,19 @@ Jalankan di tinker atau seeder:
 ### Modified Files:
 1. [`app/Models/User.php`](app/Models/User.php) - Added `isOwner()` method
 2. [`database/seeders/UserSeeder.php`](database/seeders/UserSeeder.php) - Added owner user seed
-3. [`routes/web.php`](routes/web.php) - Added owner routes
+3. [`routes/web.php`](routes/web.php) - Added owner routes & admin management routes
 4. [`app/Http/Controllers/AuthController.php`](app/Http/Controllers/AuthController.php) - Updated login redirect logic
 5. [`app/Services/NotificationService.php`](app/Services/NotificationService.php) - Updated to notify owners
+6. [`resources/views/layouts/owner.blade.php`](resources/views/layouts/owner.blade.php) - Added Kelola Admin link to sidebar
 
 ### New Files:
 1. [`app/Http/Controllers/Owner/DashboardController.php`](app/Http/Controllers/Owner/DashboardController.php)
 2. [`resources/views/layouts/owner.blade.php`](resources/views/layouts/owner.blade.php)
 3. [`resources/views/owner/dashboard/index.blade.php`](resources/views/owner/dashboard/index.blade.php)
+4. [`app/Http/Controllers/Owner/AdminController.php`](app/Http/Controllers/Owner/AdminController.php) - Controller for admin management
+5. [`resources/views/owner/admins/index.blade.php`](resources/views/owner/admins/index.blade.php) - List of admin accounts
+6. [`resources/views/owner/admins/form.blade.php`](resources/views/owner/admins/form.blade.php) - Add/edit admin form
+7. [`tests/Feature/OwnerAdminManagementTest.php`](tests/Feature/OwnerAdminManagementTest.php) - Test coverage for admin management
 
 ## Notes
 - Owner memiliki akses penuh ke semua fitur admin
