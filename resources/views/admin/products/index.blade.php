@@ -31,7 +31,7 @@
                         class="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3.5 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-200 outline-none transition">
                 </div>
             </div>
-            <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition shrink-0">
+            <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-pink-600 text-white text-sm font-medium hover:bg-pink-700 transition shrink-0">
                 Cari
             </button>
             @if($search !== '')
@@ -165,7 +165,7 @@
                                 </svg>
                                 @if($search !== '')
                                     <p class="text-sm text-slate-400 mb-3">Tidak ada produk yang cocok dengan pencarian.</p>
-                                    <a href="{{ route("admin.products.index") }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-medium hover:bg-slate-800 transition">
+                                    <a href="{{ route("admin.products.index") }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-pink-600 text-white text-xs font-medium hover:bg-pink-700 transition">
                                         Reset Pencarian
                                     </a>
                                 @else
