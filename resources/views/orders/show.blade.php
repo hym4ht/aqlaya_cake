@@ -40,8 +40,8 @@
                         <div class="text-lg font-medium text-stone-900">{{ $order->paymentLabel() }}</div>
                     </div>
                     <div>
-                        <div class="text-xs text-stone-400 font-bold uppercase tracking-wider mb-2">Pengiriman</div>
-                        <div class="text-lg font-medium text-stone-900">{{ $order->shipping_method === 'delivery' ? 'Antar ke Alamat' : 'Ambil di Toko' }}</div>
+                        <div class="text-xs text-stone-400 font-bold uppercase tracking-wider mb-2">Metode</div>
+                        <div class="text-lg font-medium text-stone-900">Ambil di Toko</div>
                     </div>
                     <div>
                         <div class="text-xs text-stone-400 font-bold uppercase tracking-wider mb-2">Total Tagihan</div>
@@ -219,9 +219,9 @@
                         <div class="font-medium text-stone-900">{{ $order->customer_phone }}</div>
                     </div>
                     <div class="pt-4 border-t border-stone-100">
-                        <div class="text-stone-400 text-xs font-bold uppercase tracking-wider mb-1">Tujuan / Alamat</div>
+                        <div class="text-stone-400 text-xs font-bold uppercase tracking-wider mb-1">Pengambilan</div>
                         <div class="font-medium text-stone-800 leading-relaxed bg-stone-50 p-3 rounded-xl border border-stone-100 mt-2">
-                            {{ $order->shipping_method === 'delivery' ? $order->delivery_address : 'Pesanan akan diambil langsung oleh pelanggan ke toko (Pickup).' }}
+                            Pesanan akan diambil langsung oleh pelanggan ke toko (Pickup).
                         </div>
                     </div>
                 </div>

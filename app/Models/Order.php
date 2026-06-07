@@ -27,16 +27,13 @@ class Order extends Model
         'order_code',
         'status',
         'payment_status',
-        'shipping_method',
         'customer_name',
         'customer_email',
         'customer_phone',
-        'delivery_address',
         'scheduled_for',
         'message_on_cake',
         'order_notes',
         'subtotal',
-        'delivery_fee',
         'total_amount',
         'rejection_reason',
         'midtrans_reference',
@@ -51,7 +48,6 @@ class Order extends Model
             'paid_at' => 'datetime',
             'completed_at' => 'datetime',
             'subtotal' => 'decimal:2',
-            'delivery_fee' => 'decimal:2',
             'total_amount' => 'decimal:2',
         ];
     }
@@ -82,7 +78,7 @@ class Order extends Model
             self::STATUS_PENDING_PAYMENT => 'Menunggu Pembayaran',
             self::STATUS_AWAITING_CONFIRMATION => 'Menunggu Konfirmasi',
             self::STATUS_PROCESSING => 'Diproses',
-            self::STATUS_READY => 'Siap Diambil/Diantar',
+            self::STATUS_READY => 'Siap Diambil',
             self::STATUS_COMPLETED => 'Selesai',
             self::STATUS_REJECTED => 'Ditolak',
         ];

@@ -45,7 +45,7 @@
                 <div class="flex items-center gap-6 text-sm text-stone-600 mb-5 pb-5 border-b border-stone-100">
                     <div class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
-                        <span>{{ $order->shipping_method === 'delivery' ? 'Diantar' : 'Diambil' }}</span>
+                        <span>Diambil (Pickup)</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>

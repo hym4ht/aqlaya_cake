@@ -47,16 +47,8 @@ class CheckoutController extends Controller
             'customer_name' => ['required', 'string', 'max:255'],
             'customer_email' => ['required', 'email'],
             'customer_phone' => ['required', 'string', 'max:30'],
-            'shipping_method' => ['required', Rule::in(['pickup', 'delivery'])],
-            'delivery_address' => ['nullable', 'string'],
             'order_notes' => ['nullable', 'string', 'max:1000'],
         ]);
-
-        if ($validated['shipping_method'] === 'delivery' && blank($validated['delivery_address'])) {
-            return back()->withErrors([
-                'delivery_address' => 'Alamat wajib diisi untuk opsi pengantaran.',
-            ])->withInput();
-        }
 
         $scheduledFor = $cartItems
             ->filter(fn(array $item) => !empty($item['scheduled_date']))
@@ -67,25 +59,21 @@ class CheckoutController extends Controller
             ->first();
 
         $subtotal = $this->cartService->subtotal();
-        $deliveryFee = $this->cartService->deliveryFee($validated['shipping_method']);
 
-        $order = DB::transaction(function () use ($request, $validated, $cartItems, $subtotal, $deliveryFee, $scheduledFor) {
+        $order = DB::transaction(function () use ($request, $validated, $cartItems, $subtotal, $scheduledFor) {
             $order = Order::query()->create([
                 'user_id' => $request->user()->id,
                 'order_code' => $this->generateOrderCode(),
                 'status' => Order::STATUS_PENDING_PAYMENT,
                 'payment_status' => Order::PAYMENT_UNPAID,
-                'shipping_method' => $validated['shipping_method'],
                 'customer_name' => $validated['customer_name'],
                 'customer_email' => $validated['customer_email'],
                 'customer_phone' => $validated['customer_phone'],
-                'delivery_address' => $validated['shipping_method'] === 'delivery' ? $validated['delivery_address'] : null,
                 'scheduled_for' => $scheduledFor,
                 'message_on_cake' => $cartItems->pluck('custom_message')->filter()->implode(', '),
                 'order_notes' => $validated['order_notes'] ?? null,
                 'subtotal' => $subtotal,
-                'delivery_fee' => $deliveryFee,
-                'total_amount' => $subtotal + $deliveryFee,
+                'total_amount' => $subtotal,
             ]);
 
             foreach ($cartItems as $item) {

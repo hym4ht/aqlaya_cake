@@ -35,15 +35,7 @@ class MidtransService
             ];
         }
 
-        // Add delivery fee as an item if applicable
-        if ($order->delivery_fee > 0) {
-            $items[] = [
-                'id' => 'DELIVERY-FEE',
-                'price' => (int) $order->delivery_fee,
-                'quantity' => 1,
-                'name' => 'Biaya Pengiriman',
-            ];
-        }
+
 
         $params = [
             'transaction_details' => [

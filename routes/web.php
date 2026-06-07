@@ -53,7 +53,7 @@ Route::prefix('owner')
     ->middleware(['auth', 'role:owner'])
     ->group(function () {
         Route::get('/', OwnerDashboardController::class)->name('dashboard');
-        Route::resource('admins', App\Http\Controllers\Owner\AdminController::class)->except('show');
+        Route::resource('users', App\Http\Controllers\Admin\UserController::class)->except('show');
         Route::delete('/products/bulk-delete', [AdminProductController::class, 'bulkDestroy'])->name('products.bulk-destroy');
         Route::resource('products', AdminProductController::class)->except('show');
         Route::patch('/products/{product}/toggle-best-seller', [AdminProductController::class, 'toggleBestSeller'])->name('products.toggle-best-seller');
@@ -71,6 +71,7 @@ Route::prefix('admin')
     ->middleware(['auth', 'role:admin'])
     ->group(function () {
         Route::get('/', DashboardController::class)->name('dashboard');
+        Route::resource('users', App\Http\Controllers\Admin\UserController::class)->except('show');
         Route::delete('/products/bulk-delete', [AdminProductController::class, 'bulkDestroy'])->name('products.bulk-destroy');
         Route::resource('products', AdminProductController::class)->except('show');
         Route::patch('/products/{product}/toggle-best-seller', [AdminProductController::class, 'toggleBestSeller'])->name('products.toggle-best-seller');

@@ -131,8 +131,8 @@
                         <strong class="text-stone-900 text-base">Rp{{ number_format($subtotal, 0, ',', '.') }}</strong>
                     </div>
                     <div class="flex justify-between items-center py-2 border-b border-stone-50">
-                        <span>Biaya Pengantaran</span>
-                        <span class="text-stone-400 italic text-xs">Dihitung di checkout</span>
+                        <span>Metode Pengambilan</span>
+                        <span class="text-stone-800 text-xs font-semibold">Ambil di Toko (Pickup)</span>
                     </div>
                 </div>
 
@@ -143,8 +143,7 @@
                             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <p class="text-[11px] text-stone-500 leading-relaxed">
-                        Tanggal dan jam setiap item sudah tersimpan. Di langkah checkout, Anda tinggal melengkapi opsi
-                        pengiriman dan data kontak.
+                        Tanggal dan jam pengambilan setiap item sudah tersimpan. Di langkah checkout, Anda tinggal melengkapi data kontak dan catatan order.
                     </p>
                 </div>
 

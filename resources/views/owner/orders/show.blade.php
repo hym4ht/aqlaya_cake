@@ -34,31 +34,17 @@
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $color }} shrink-0">{{ $order->statusLabel() }}</span>
                 </div>
 
-                {{-- 3 mini cards --}}
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {{-- 2 mini cards --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="bg-slate-50 rounded-xl p-4">
                         <p class="text-[11px] font-medium uppercase tracking-wider text-slate-400 mb-1">Pembayaran</p>
                         <p class="text-sm font-semibold text-slate-800">{{ $order->paymentLabel() }}</p>
-                    </div>
-                    <div class="bg-slate-50 rounded-xl p-4">
-                        <p class="text-[11px] font-medium uppercase tracking-wider text-slate-400 mb-1">Metode</p>
-                        <p class="text-sm font-semibold text-slate-800">{{ $order->shipping_method === 'delivery' ? 'Antar ke Alamat' : 'Ambil di Toko' }}</p>
                     </div>
                     <div class="bg-slate-50 rounded-xl p-4">
                         <p class="text-[11px] font-medium uppercase tracking-wider text-slate-400 mb-1">Total</p>
                         <p class="text-sm font-semibold text-slate-800">Rp{{ number_format($order->total_amount, 0, ',', '.') }}</p>
                     </div>
                 </div>
-
-                @if($order->delivery_address)
-                    <div class="mt-4 flex items-start gap-2.5 p-3.5 bg-slate-50 rounded-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        <p class="text-sm text-slate-600">{{ $order->delivery_address }}</p>
-                    </div>
-                @endif
             </div>
 
             {{-- Items table --}}
@@ -144,7 +130,7 @@
                             <input type="hidden" name="status" value="{{ \App\Models\Order::STATUS_READY }}">
                             <button class="w-full py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition flex items-center justify-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                                Tandai Siap Diambil/Diantar
+                                Tandai Siap Diambil
                             </button>
                         </form>
                     @endif

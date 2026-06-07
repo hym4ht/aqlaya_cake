@@ -155,9 +155,7 @@ return [
         'password' => [
             'confirmed' => 'Konfirmasi kata sandi tidak sesuai.',
         ],
-        'shipping_method' => [
-            'in' => 'Metode pengiriman yang dipilih tidak tersedia.',
-        ],
+
         'decision' => [
             'in' => 'Keputusan yang dipilih tidak valid.',
         ],
@@ -192,8 +190,6 @@ return [
         'customer_name' => 'nama pemesan',
         'customer_email' => 'email pemesan',
         'customer_phone' => 'nomor WhatsApp',
-        'shipping_method' => 'metode pengiriman',
-        'delivery_address' => 'alamat pengiriman',
         'order_notes' => 'catatan pesanan',
         'rating' => 'rating',
         'review' => 'ulasan',

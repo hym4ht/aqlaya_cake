@@ -22,7 +22,7 @@ class OrderingFlowTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('Sistem pemesanan kue')
+            ->assertSee('AQLAYA CAKE')
             ->assertSee($product->name);
     }
 
@@ -36,9 +36,11 @@ class OrderingFlowTest extends TestCase
             'password' => 'password123',
         ]);
 
+        $productSize = $product->productSizes->first();
+
         $response = $this->actingAs($customer)->post(route('cart.store', $product), [
             'quantity' => 1,
-            'size' => $product->sizes[0],
+            'product_size_id' => $productSize->id,
             'custom_message' => 'Selamat',
             'scheduled_date' => now()->addDay()->toDateString(),
             'scheduled_time' => '10:00',
@@ -70,12 +72,10 @@ class OrderingFlowTest extends TestCase
             'order_code' => 'AQL-WEBHOOK-001',
             'status' => Order::STATUS_PENDING_PAYMENT,
             'payment_status' => Order::PAYMENT_UNPAID,
-            'shipping_method' => 'pickup',
             'customer_name' => $customer->name,
             'customer_email' => $customer->email,
             'customer_phone' => '0812',
             'subtotal' => 100000,
-            'delivery_fee' => 0,
             'total_amount' => 100000,
         ]);
 
@@ -125,12 +125,10 @@ class OrderingFlowTest extends TestCase
             'order_code' => 'AQL-ACCEPT-001',
             'status' => Order::STATUS_AWAITING_CONFIRMATION,
             'payment_status' => Order::PAYMENT_PAID,
-            'shipping_method' => 'pickup',
             'customer_name' => $customer->name,
             'customer_email' => $customer->email,
             'customer_phone' => '0812',
             'subtotal' => 200000,
-            'delivery_fee' => 0,
             'total_amount' => 200000,
         ]);
 
@@ -167,7 +165,7 @@ class OrderingFlowTest extends TestCase
             'slug' => 'kue-tart',
         ]);
 
-        return Product::query()->create([
+        $product = Product::query()->create([
             'category_id' => $category->id,
             'name' => 'Rose Velvet Cake',
             'slug' => 'rose-velvet-cake',
@@ -179,5 +177,15 @@ class OrderingFlowTest extends TestCase
             'sizes' => ['Diameter 12 cm', 'Diameter 16 cm'],
             'image_url' => 'https://example.com/cake.jpg',
         ]);
+
+        $product->productSizes()->create([
+            'name' => 'Diameter 12 cm',
+            'additional_price' => 0,
+            'stock' => $stock,
+            'is_available' => true,
+            'sort_order' => 1,
+        ]);
+
+        return $product;
     }
 }

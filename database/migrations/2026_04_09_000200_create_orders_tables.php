@@ -14,16 +14,13 @@ return new class extends Migration
             $table->string('order_code')->unique();
             $table->string('status')->default('pending_payment');
             $table->string('payment_status')->default('unpaid');
-            $table->string('shipping_method');
             $table->string('customer_name');
             $table->string('customer_email');
             $table->string('customer_phone');
-            $table->text('delivery_address')->nullable();
             $table->timestamp('scheduled_for')->nullable();
             $table->string('message_on_cake')->nullable();
             $table->text('order_notes')->nullable();
             $table->decimal('subtotal', 12, 2);
-            $table->decimal('delivery_fee', 12, 2)->default(0);
             $table->decimal('total_amount', 12, 2);
             $table->text('rejection_reason')->nullable();
             $table->string('midtrans_reference')->nullable();

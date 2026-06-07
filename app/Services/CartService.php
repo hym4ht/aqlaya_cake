@@ -153,10 +153,7 @@ class CartService
         return (float) $this->all()->sum('line_total');
     }
 
-    public function deliveryFee(string $shippingMethod): float
-    {
-        return $shippingMethod === 'delivery' ? 25000 : 0;
-    }
+
 
     // ─── Migrate guest cart ke DB setelah login ───────────────
 
