@@ -19,7 +19,7 @@
     <div class="mx-auto w-full px-5 sm:px-6 lg:px-8">
         <div class="flex h-14 lg:h-16 items-center justify-between">
             <a href="{{ route('home') }}" class="inline-flex items-center">
-                <span class="font-logo text-2xl font-normal text-mono-900">Aqlaya Cake</span>
+                <img src="{{ asset('logo.png') }}" alt="Aqlaya Cake" class="h-10 w-auto object-contain">
             </a>
 
             <div class="hidden items-center gap-5 lg:gap-8 md:flex">
