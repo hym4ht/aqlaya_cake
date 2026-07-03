@@ -41,6 +41,14 @@ class AuthController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
+        // Cek apakah email sudah diverifikasi
+        if (! $user->hasVerifiedEmail()) {
+            Auth::logout();
+            return redirect()->route('login')->withErrors([
+                'email' => 'Email kamu belum diverifikasi. Silakan cek inbox/spam emailmu.',
+            ])->onlyInput('email');
+        }
+
         $request->session()->regenerate();
 
         // Pindahkan cart guest (session) ke DB setelah login
@@ -72,15 +80,24 @@ class AuthController extends Controller
             'api_token' => Str::random(60),
         ]);
 
-        // Auto login after registration
+        // Login sementara agar bisa kirim email verifikasi
         Auth::login($user);
 
-        // Merge cart from session to database
-        $this->cartService->mergeSessionCartToDatabase();
+        // Kirim email verifikasi
+        $user->sendEmailVerificationNotification();
 
-        return redirect()
-            ->route('home')
-            ->with('success', 'Akun berhasil dibuat! Selamat berbelanja di Aqlaya Cake.');
+        return redirect()->route('verification.notice');
+    }
+
+    public function resendVerification(Request $request): RedirectResponse
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->route('home');
+        }
+
+        $request->user()->sendEmailVerificationNotification();
+
+        return back()->with('status', 'Link verifikasi sudah dikirim ulang ke emailmu!');
     }
 
     public function logout(Request $request): RedirectResponse

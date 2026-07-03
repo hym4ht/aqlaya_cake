@@ -29,6 +29,24 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
+// Email verification routes
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
+
+    Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+        $request->fulfill();
+        // Merge cart setelah email diverifikasi
+        app(\App\Services\CartService::class)->mergeSessionCartToDatabase();
+        return redirect()->route('home')->with('success', 'Email berhasil diverifikasi! Selamat berbelanja di Aqlaya Cake.');
+    })->middleware('signed')->name('verification.verify');
+
+    Route::post('/email/resend', [AuthController::class, 'resendVerification'])
+        ->middleware('throttle:6,1')
+        ->name('verification.send');
+});
+
 Route::post('/midtrans/webhook', MidtransWebhookController::class)
     ->withoutMiddleware([ValidateCsrfToken::class])
     ->name('midtrans.webhook');
