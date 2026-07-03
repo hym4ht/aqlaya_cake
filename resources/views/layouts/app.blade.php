@@ -40,44 +40,7 @@
         @endif
     </main>
 
-    <footer id="visit" class="mt-auto border-t border-white/10 bg-pink-600">
-        <div class="mx-auto max-w-[1600px] px-5 py-10 sm:px-8 sm:py-12 lg:px-12 lg:py-14">
-            <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-                <div class="max-w-2xl">
-                    <p class="text-[10px] uppercase tracking-ultra-wide text-white/70">Aqlaya Cake Studio</p>
-                    <h2 class="mt-4 font-serif text-3xl font-light uppercase leading-tight text-white sm:text-4xl">
-                        Curated cakes for intimate celebrations.
-                    </h2>
-                    <p class="mt-4 max-w-xl text-sm leading-7 text-white/80">
-                        Visual yang rapi, rasa yang tetap hangat, dan proses pemesanan yang dibuat sederhana untuk
-                        hadiah maupun momen spesial.
-                    </p>
-                </div>
-
-                <div class="grid gap-4 sm:grid-cols-3 lg:min-w-[580px]">
-                    <a href="{{ route('home') }}#catalog-grid"
-                        class="border-b border-white/20 pb-3 text-[10px] uppercase tracking-[0.25em] text-white transition hover:text-white/60">
-                        Catalog
-                    </a>
-                    <a href="{{ $storeMapUrl }}" target="_blank" rel="noopener noreferrer"
-                        class="border-b border-white/20 pb-3 text-[10px] uppercase tracking-[0.25em] text-white transition hover:text-white/60">
-                        Google Maps
-                    </a>
-                    <a href="https://www.instagram.com/aqlayacake" target="_blank" rel="noopener noreferrer"
-                        class="border-b border-white/20 pb-3 text-[10px] uppercase tracking-[0.25em] text-white transition hover:text-white/60">
-                        Instagram
-                    </a>
-                </div>
-            </div>
-
-            <div
-                class="mt-8 flex flex-col gap-2 border-t border-white/10 pt-4 text-[10px] uppercase tracking-[0.2em] text-white/50 sm:flex-row sm:items-center sm:justify-between">
-                <p>&copy; {{ date('Y') }} Aqlaya Cake Studio</p>
-                <p>Tegal, Jawa Tengah</p>
-                <p>Custom cakes, dessert gifting, and soft celebrations.</p>
-            </div>
-        </div>
-    </footer>
+    <x-footer />
 
     @stack('scripts')
 </body>
