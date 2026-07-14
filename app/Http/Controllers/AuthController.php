@@ -86,7 +86,7 @@ class AuthController extends Controller
         // Kirim email verifikasi
         $user->sendEmailVerificationNotification();
 
-        return redirect()->route('verification.notice');
+        return redirect()->route('verification.notice')->with('registered', true);
     }
 
     public function resendVerification(Request $request): RedirectResponse

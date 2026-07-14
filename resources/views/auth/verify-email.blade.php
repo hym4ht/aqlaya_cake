@@ -30,9 +30,9 @@
 
         <div class="mt-8 flex flex-col sm:flex-row gap-3 w-full max-w-sm">
             {{-- Tombol kirim ulang --}}
-            <form method="POST" action="{{ route('verification.send') }}" class="flex-1">
+            <form method="POST" action="{{ route('verification.send') }}" class="flex-1" id="resend-form">
                 @csrf
-                <button type="submit" class="w-full py-3 bg-pink-600 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-pink-700 transition-all duration-300 shadow-md">
+                <button type="submit" id="resend-btn" class="w-full py-3 bg-pink-600 text-white rounded-xl text-sm font-bold tracking-wide uppercase hover:bg-pink-700 transition-all duration-300 shadow-md disabled:bg-mono-200 disabled:text-mono-400 disabled:shadow-none disabled:cursor-not-allowed">
                     Kirim Ulang Email
                 </button>
             </form>
@@ -48,4 +48,52 @@
 
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const resendBtn = document.getElementById('resend-btn');
+        const resendForm = document.getElementById('resend-form');
+        const cooldownTime = 30; // 30 detik
+        const storageKey = 'email_resend_cooldown';
+
+        function startCooldown(remaining) {
+            resendBtn.disabled = true;
+            resendBtn.innerText = `Kirim Ulang (${remaining}s)`;
+            
+            const interval = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(interval);
+                    resendBtn.disabled = false;
+                    resendBtn.innerText = 'Kirim Ulang Email';
+                    localStorage.removeItem(storageKey);
+                } else {
+                    resendBtn.innerText = `Kirim Ulang (${remaining}s)`;
+                }
+            }, 1000);
+        }
+
+        // Cek jika baru registrasi atau baru saja klik resend
+        const hasSessionStatus = @json(session('status') == 'Link verifikasi sudah dikirim ulang ke emailmu!');
+        const justRegistered = @json(session('registered') === true);
+        
+        if ((hasSessionStatus || justRegistered) && !localStorage.getItem(storageKey)) {
+            localStorage.setItem(storageKey, Date.now().toString());
+        }
+
+        // Cek apakah ada cooldown aktif saat load page
+        const lastSent = localStorage.getItem(storageKey);
+        if (lastSent) {
+            const timePassed = Math.floor((Date.now() - parseInt(lastSent)) / 1000);
+            if (timePassed < cooldownTime) {
+                startCooldown(cooldownTime - timePassed);
+            }
+        }
+
+        // Mulai cooldown saat form di-submit
+        resendForm.addEventListener('submit', function () {
+            localStorage.setItem(storageKey, Date.now().toString());
+        });
+    });
+</script>
 @endsection

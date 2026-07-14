@@ -40,7 +40,7 @@
                     </a>
                 </div>
 
-                @auth
+                @if(auth()->check() && auth()->user()->hasVerifiedEmail())
                     <div class="flex items-center gap-6">
                         @if(auth()->user()->role === 'customer')
                             <a href="{{ route('cart.index') }}" class="relative inline-flex items-center p-1 transition"
@@ -102,7 +102,7 @@
                             Register
                         </a>
                     </div>
-                @endauth
+                @endif
             </div>
 
             <button @click="mobileOpen = !mobileOpen"
@@ -135,12 +135,12 @@
                 Collections
             </a>
 
-            @auth
+            @if(auth()->check() && auth()->user()->hasVerifiedEmail())
                 <div class="mt-4 space-y-1 border-t border-gray-100 pt-4">
                     @if(auth()->user()->role === 'customer')
                         <a href="{{ route('cart.index') }}"
                             class="flex items-center justify-between py-3 text-base font-normal transition"
-                            :class="{{ request()->routeIs('cart.index') ? 'true' : 'false' }} ? 'text-mono-900 font-medium' : 'text-mono-600'">
+                            :class="{{ request()->routeIs('cart.index') ? 'true' : 'false' }} ? 'text-mono-900' : 'text-mono-600'">
                             My Cart
                             @if($cartCount > 0)
                                 <span class="rounded-full bg-pink-600 px-2.5 py-0.5 text-xs font-medium text-white">{{ $cartCount }}</span>
@@ -177,7 +177,7 @@
                         Register Account
                     </a>
                 </div>
-            @endauth
+            @endif
         </div>
     </div>
 </nav>
