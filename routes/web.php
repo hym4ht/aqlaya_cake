@@ -31,9 +31,15 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 
 // Email verification routes
 Route::middleware('auth')->group(function () {
-    Route::get('/email/verify', function () {
-        return view('auth.verify-email');
+    Route::get('/email/verify', function (\Illuminate\Http\Request $request) {
+        return $request->user()->hasVerifiedEmail()
+            ? redirect()->intended(route('home'))
+            : view('auth.verify-email');
     })->name('verification.notice');
+
+    Route::get('/email/verify/status', function (\Illuminate\Http\Request $request) {
+        return response()->json(['verified' => $request->user()->hasVerifiedEmail()]);
+    })->name('verification.check-status');
 
     Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
         $request->fulfill();

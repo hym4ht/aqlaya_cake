@@ -94,6 +94,18 @@
         resendForm.addEventListener('submit', function () {
             localStorage.setItem(storageKey, Date.now().toString());
         });
+
+        // Auto check status verifikasi setiap 3 detik (otomatis pindah screen jika link diklik via HP/tab lain)
+        setInterval(function() {
+            fetch("{{ route('verification.check-status') }}")
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.verified) {
+                        window.location.href = "{{ route('home') }}";
+                    }
+                })
+                .catch(err => console.error(err));
+        }, 3000);
     });
 </script>
 @endsection
